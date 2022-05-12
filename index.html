@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/musical-keyboard_1f3b9.png" rel="icon">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="script.js" defer></script>
+    <title>Piano</title>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-md navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Relative Pitch Training</a>
+        <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="navbar-nav ml-auto mt-2">
+            <li class="nav-item"><a class="nav-link" href="#">Train</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Test</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Log In</a></li>
+          </ul>
+        </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <div class="buttons container">
+      <div class="row">
+        <button type="button" class="btn btn-primary col-4" id="reference">Play reference note</button>
+        <button type="button" class="btn btn-success col-4" id="random">Play random notes</button>
+        <button type="button" class="btn btn-warning col-4" id="shuffle">Shuffle random notes</button>
+      </div> 
+      <div class="row">
+        <select class="form-select col-4" id="reference-note" aria-label="Default select example">
+          <option selected>Select reference</option>
+          <option value="0" selected="selected">C</option>
+          <option value="1">Db</option>
+          <option value="2">D</option>
+          <option value="3">Eb</option>
+          <option value="4">E</option>
+          <option value="5">F</option>
+          <option value="6">Gb</option>
+          <option value="7">G</option>
+          <option value="8">Ab</option>
+          <option value="9">A</option>
+          <option value="10">Bb</option>
+          <option value="11">B</option>
+        </select>
+        <select class="form-select col-4" id="num-of-random" aria-label="Default select example">
+          <option selected>How many random notes?</option>
+          <option value="1" selected="selected">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="3">4</option>
+          <option value="3">5</option>
+        </select>
+      </div> 
+    </div>
+  
+    <div class="piano">
+      <!--First octave-->
+      <div>
+        <div data-note="C" id="C-key" class="key white"></div>
+        <div data-note="Db" id="Db-key" class="key black"></div>
+        <div data-note="D" id="D-key" class="key white"></div>
+        <div data-note="Eb" id="Eb-key" class="key black"></div>
+        <div data-note="E" id="E-key" class="key white"></div>
+        <div data-note="F" id="F-key" class="key white"></div>
+        <div data-note="Gb" id="Gb-key" class="key black"></div>
+        <div data-note="G" id="G-key" class="key white"></div>
+        <div data-note="Ab" id="Ab-key" class="key black"></div>
+        <div data-note="A" id="A-key" class="key white"></div>
+        <div data-note="Bb" id="Bb-key" class="key black"></div>
+        <div data-note="B" id="B-key" class="key white"></div>
+        <div data-note="C" id="C-key" class="key white"></div>
+      </div>
+      <!--Second octave-->
+      <!-- <div>
+        <div data-note="C" id="C-key" class="key white"></div>
+        <div data-note="Db" id="Db-key" class="key black"></div>
+        <div data-note="D" id="D-key" class="key white"></div>
+        <div data-note="Eb" id="Eb-key" class="key black"></div>
+        <div data-note="E" id="E-key" class="key white"></div>
+        <div data-note="F" id="F-key" class="key white"></div>
+        <div data-note="Gb" id="Gb-key" class="key black"></div>
+        <div data-note="G" id="G-key" class="key white"></div>
+        <div data-note="Ab" id="Ab-key" class="key black"></div>
+        <div data-note="A" id="A-key" class="key white"></div>
+        <div data-note="Bb" id="Bb-key" class="key black"></div>
+        <div data-note="B" id="B-key" class="key white"></div>
+        <div data-note="C" id="C-key" class="key white"></div>
+      </div> -->
+    </div>
+
+  </main>
+
+
+
+  <audio id="C" src="notes/C.mp3"></audio>
+  <audio id="Db" src="notes/Db.mp3"></audio>
+  <audio id="D" src="notes/D.mp3"></audio>
+  <audio id="Eb" src="notes/Eb.mp3"></audio>
+  <audio id="E" src="notes/E.mp3"></audio>
+  <audio id="F" src="notes/F.mp3"></audio>
+  <audio id="Gb" src="notes/Gb.mp3"></audio>
+  <audio id="G" src="notes/G.mp3"></audio>
+  <audio id="Ab" src="notes/Ab.mp3"></audio>
+  <audio id="A" src="notes/A.mp3"></audio>
+  <audio id="Bb" src="notes/Bb.mp3"></audio>
+  <audio id="B" src="notes/B.mp3"></audio>
+
+
+</body>
+</html>
