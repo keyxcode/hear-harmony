@@ -2,6 +2,7 @@
 const keys = document.querySelectorAll(".key");
 const whiteKeys = document.querySelectorAll(".key.white");
 const blackKeys = document.querySelectorAll(".key.black");
+const NUM_OF_NOTES = 13;
 
 // Keyboard buttons
 const WHITE_KEYS = ["z", "x", "c", "v", "b", "n", "m", ","];
@@ -81,7 +82,9 @@ let numOfRandom = randomSelect.value;
 const shuffle = document.querySelector("#shuffle");
 let randomIndex;
 let randomArray = [];
+let randomArrayCopy = [];
 let gameStart = false;
+let correctCount = 0;
 
 // Figure out the reference index user selects
 referenceNote.addEventListener("change", () => {
@@ -96,6 +99,7 @@ referencePlay.addEventListener("click", () => {
 // Figure out how many random notes the user wants
 randomSelect.addEventListener("change", () => {
     numOfRandom = randomSelect.value;
+    shuffleRandom();
     console.log(numOfRandom);
 })
 
@@ -104,11 +108,26 @@ shuffle.addEventListener("click", () => {
     shuffleRandom();
 })
 
+// Generate n random indexes within the range of number of notes
 function shuffleRandom() {
     
-    randomIndex = parseInt((Math.random() * 100)) % 26;
+    // Clear the random array
+    randomArray = [];
+
+    for (let i = 0; i < numOfRandom; ++i) {
+        do { // assures unique numbers
+            randomIndex = parseInt((Math.random() * 100)) % NUM_OF_NOTES;
+        } while (randomArray.includes(randomIndex) == true);
+
+        randomArray.push(randomIndex);
+    }  
+
+    randomArrayCopy = randomArray.slice();
+    console.log(randomArray);
+    console.log(randomArrayCopy);
 }
 
+// Play the random note when clicked
 random.addEventListener("click", () => {
     playRandom();
 })
@@ -116,22 +135,46 @@ random.addEventListener("click", () => {
 function playRandom() {
 
     if (randomIndex == null) {
-        randomIndex = parseInt((Math.random() * 100)) % 26;
+        shuffleRandom();
     }
 
     gameStart = true;
 
-    let keyRandom = keys[randomIndex];
-    playNote(keyRandom);
+    // Play all the random notes in the array
+    for (let i = 0; i < numOfRandom; ++i)
+    {
+        let keyRandom = keys[randomArrayCopy[i]];
+        playNote(keyRandom);
+    }
 }
 
+// Check guess mechanism
 function checkGuess(key) {
-    let keyRandom = keys[randomIndex];
+        
+    let keyIndex = (Array.from(keys)).indexOf(key);
 
-    if (key == keyRandom) {
-        alert("Correct!");
-        return true;
+    if (randomArray.includes(keyIndex) == true) {
+        correctCount += 1;
+        let removeIndex = randomArray.indexOf(keyIndex);
+        randomArray.splice(removeIndex, 1);
+
+        console.log(correctCount);
+        console.log(numOfRandom);
+
+        if (correctCount == numOfRandom) {
+            alert("All done! Shuffle for new random notes");
+            correctCount = 0;
+        }
+        else {
+            alert("Correct! " + (numOfRandom - correctCount) + " more to go!");
+            console.log(randomArray);
+            console.log(randomArrayCopy);
+        } 
     } 
 
+    else if (randomArrayCopy.includes(keyIndex) == true) {
+        alert("Correct! But you've already guesed it")
+    } 
+    
     else alert("Please try again");
 }
