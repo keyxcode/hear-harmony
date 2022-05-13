@@ -52,6 +52,16 @@ function playNote(key) {
     // Play the audio
     noteAudio.play();
 
+    // Pause audio when pointer is up
+    document.addEventListener("pointerup", () => {
+        noteAudio.pause();
+    })
+
+    // Pause audio when computer keyboard is up
+    document.addEventListener("keyup", () => {
+        noteAudio.pause();
+    })
+
 }
 
 function changeColor(key) {
@@ -162,7 +172,7 @@ function checkGuess(key) {
         console.log(numOfRandom);
 
         if (correctCount == numOfRandom) {
-            alert("All done! Shuffle for new random notes");
+            alert("Correct! Shuffle for new random notes");
             correctCount = 0;
         }
         else {
