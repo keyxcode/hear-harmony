@@ -96,6 +96,9 @@ let randomArrayCopy = [];
 let gameStart = false;
 let correctCount = 0;
 
+referenceIndex = parseInt((Math.random() * 100)) % NUM_OF_NOTES;
+referenceNote.value = referenceIndex;
+
 // Figure out the reference index user selects
 referenceNote.addEventListener("change", () => {
     referenceIndex = referenceNote.value;
@@ -109,17 +112,29 @@ referencePlay.addEventListener("click", () => {
 // Figure out how many random notes the user wants
 randomSelect.addEventListener("change", () => {
     numOfRandom = randomSelect.value;
-    shuffleRandom();
+    shuffleNoteArray();
     console.log(numOfRandom);
 })
 
 // Shuffle the random index
 shuffle.addEventListener("click", () => {
-    shuffleRandom();
+    shuffleEverything();
 })
 
+function shuffleEverything() {
+    shuffleNoteArray();
+    shuffleReference();
+}
+
+function shuffleReference() {
+
+    // Shuffle the reference note
+    referenceIndex = parseInt((Math.random() * 100)) % NUM_OF_NOTES;
+    referenceNote.value = referenceIndex;
+}
+
 // Generate n random indexes within the range of number of notes
-function shuffleRandom() {
+function shuffleNoteArray() {
     
     // Clear the random array
     randomArray = [];
@@ -145,7 +160,7 @@ random.addEventListener("click", () => {
 function playRandom() {
 
     if (randomIndex == null) {
-        shuffleRandom();
+        shuffleNoteArray();
     }
 
     gameStart = true;
@@ -172,7 +187,7 @@ function checkGuess(key) {
         console.log(numOfRandom);
 
         if (correctCount == numOfRandom) {
-            alert("Correct! Shuffle for new random notes");
+            alert("Correct! Shuffle to get new notes");
             correctCount = 0;
         }
         else {
