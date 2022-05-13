@@ -7,17 +7,28 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
     <link href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/musical-keyboard_1f3b9.png" rel="icon">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="script.js" defer></script>
-    <title>Piano</title>
+    
+    <title>Relative Harmony</title>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
-  <nav class="navbar navbar-expand-md navbar-dark">
+  <nav class="navbar navbar-dark bg-dark navbar-expand-md">
+    <a href="#" class="navbar-brand">DemoTech</a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse" id="navbar">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+  <!-- <nav class="navbar navbar-expand-md navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Relative Pitch Training</a>
+        <a class="navbar-brand" href="#">Relative Harmony</a>
         <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -29,8 +40,8 @@
           </ul>
         </div>
     </div>
-  </nav>
-
+  </nav> -->
+  
   <!--Modal-->
   <div class="modal" id="correctModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -132,13 +143,12 @@
 
   </main>
 
-  <footer class="text-center text-white fixed-bottom" style="background-color: #22223B;">
-    <div class="text-center p-3">
-      © 2020 Copyright:
-      <a class="text-white" href="https://github.com/keyxcode">keyxcode</a>
+  <footer class="text-center mt-auto">
+    <div class="container p-3">
+      © 2022 Copyright:
+      <span><a href="https://github.com/keyxcode">keyxcode</a></span>
     </div>
   </footer>
-
 
   <audio id="C3" src="Weber Baby Grand keyxcode/C3.mp3"></audio>
   <audio id="Db3" src="Weber Baby Grand keyxcode/Db3.mp3"></audio>
@@ -166,6 +176,10 @@
   <audio id="Bb4" src="Weber Baby Grand keyxcode/Bb4.mp3"></audio>
   <audio id="B4" src="Weber Baby Grand keyxcode/B4.mp3"></audio>
   <audio id="C5" src="Weber Baby Grand keyxcode/C5.mp3"></audio>
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+  <script src="script.js" defer></script>
   
 </body>
 </html>
