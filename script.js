@@ -5,8 +5,8 @@ const blackKeys = document.querySelectorAll(".key.black");
 const NUM_OF_NOTES = 25;
 
 // Keyboard buttons
-const WHITE_KEYS = ["z", "x", "c", "v", "b", "n", "m", ","];
-const BLACK_KEYS = ["s", "d", "g", "h", "j"];
+const WHITE_KEYS = ["z", "x", "c", "v", "b", "n", "m", "q", "w", "e", "r", "t", "y", "u", "i"];
+const BLACK_KEYS = ["s", "d", "g", "h", "j", "2", "3", "5", "6", "7"];
 
 //=====================================================================
 // Detect mouse mechanism
@@ -187,7 +187,8 @@ function checkGuess(key) {
         console.log(numOfRandom);
 
         if (correctCount == numOfRandom) {
-            alert("Correct! Shuffle to get new notes");
+            //alert("Correct! Shuffle to get new notes");
+            $("#correctModal").modal("show");
             correctCount = 0;
         }
         else {
