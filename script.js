@@ -2,7 +2,7 @@
 const keys = document.querySelectorAll(".key");
 const whiteKeys = document.querySelectorAll(".key.white");
 const blackKeys = document.querySelectorAll(".key.black");
-const NUM_OF_NOTES = 26;
+const NUM_OF_NOTES = 25;
 
 // Keyboard buttons
 const WHITE_KEYS = ["z", "x", "c", "v", "b", "n", "m", ","];
