@@ -124,8 +124,7 @@ shuffle.addEventListener("click", () => {
 function shuffleEverything() {
     shuffleNoteArray();
     shuffleReference();
-    feedback1.innerHTML = "First, click \"Play reference note.\"";
-    feedback2.innerHTML = "Then, click \"Play random notes\" and play your guess on the keyboard.";
+    initFeedback();
 }
 
 function shuffleReference() {
@@ -187,6 +186,13 @@ answer.addEventListener("click", () => {
 
 let feedback1 = document.querySelector("#feedback1");
 let feedback2 = document.querySelector("#feedback2");
+
+function initFeedback() {
+    feedback1.innerHTML = "First, \"Play reference.\"";
+    feedback2.innerHTML = "Then, \"Play random\" and select what you hear on the keyboard.";
+}
+
+initFeedback();
 
 // Check guess mechanism
 function checkGuess(key) {

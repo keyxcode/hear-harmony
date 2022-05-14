@@ -1,127 +1,172 @@
-*, *::before, *::after {
-    box-sizing: border-box;
+/* global vars */
+:root {
+    --global-margin: 50px;
+    --bg-color: #9A8C98;
+    --white-key-color: #F2E9E4;
+    --white-key-active-color: #C9ADA7;
+    --black-key-color: #22223B;
+    --black-key-active-color: #4A4E69;
 }
 
+/* https://coolors.co/22223b-4a4e69-9a8c98-c9ada7-f2e9e4 */
+
+/*=================================================================*/
+/* main page background color */
 body {
-    background-color: #9A8C98;
-    /* display: flex;
-    justify-content: center;
-    align-items: center; */
+    background-color: var(--bg-color);
 }
 
-.feedback {
-    text-align: center;
-    margin: 25px auto;
-}
-
+/*=================================================================*/
+/* navbar and footer stuff*/
 .navbar, footer {
-    background-color: #22223B !important;
+    background-color: var(--black-key-color) !important;
 }
 
 .navbar-brand, footer div, footer a {
-    color: #F2E9E4 !important;
+    color: var(--white-key-color) !important;
 }
 
+/*=================================================================*/
+/* main area has a 5vw padding LR*/
 main {
     padding: 0 5vw;
 }
 
+/*=================================================================*/
+/* button and select group */
 .buttons {
-    margin: 50px auto 25px;
+    margin: var(--global-margin) auto calc(var(--global-margin)/2);
     width: 50%;
 }
 
-::-webkit-scrollbar {
-    height: 20px;
-    width: 20px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #f2e9e4; 
-    border-radius: 10px;
-  }
-   
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #22223B; 
-    border-radius: 10px;
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #4A4E69; 
-  }
+.btn {
+    color: var(--white-key-color);
+}
 
+.btn-warning {
+    color: var(--black-key-color);
+}
+
+select {
+    background-color: var(--white-key-color);
+}
+
+/*=================================================================*/
+/* feedback area */
+.feedback {
+    text-align: center;
+    margin: calc(var(--global-margin)/2) auto;
+    background-color: var(--white-key-color);
+    width: 50%;
+    border-radius: 5px;
+}
+
+.feedback p {
+    margin-bottom: 5px;
+}
+
+/*=================================================================*/
+/* piano frame aka container */
 .piano {
     position: relative;
-    white-space: nowrap;
     overflow: auto;
     white-space: nowrap;
     font-size: 0;
-    margin-bottom: 50px;
+    margin-bottom: var(--global-margin);
 }
 
+/* piano keys */
 .key {
-    border-radius: 5px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
     cursor: pointer;
     position: relative;
     text-align: center;
     display: inline-block;
-    margin-bottom: 25px;
+    margin-bottom: calc(var(--global-margin)/2);
     font-size: 1vw;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
+/* piano note name container */
 .key span {
     display: flex;
     justify-content: center;
-    align-items: end;
+    align-items: flex-end;
 }
 
+/* Black and white key design */
 .white {
+    /* white key is about 1.75 the size of black key */
     width: 5.9vw;
     height: 20vw;
-    background-color: #F2E9E4;
-    border: 1px solid #22223B;
-    color: #22223B;
+    background-color: var(--white-key-color);
+    border: 1px solid var(--black-key-color);
+    color: var(--black-key-color);
 }
 
 .white.active {
-    background-color: #C9ADA7;
+    background-color: var(--white-key-active-color);
 }
 
 .black {
     width: 3vw;
-    height: 12vw; 
+    height: 11.5vw; 
     margin: 0 -1.5vw;
-    background-color: #22223B;
-    color: #F2E9E4;
+    background-color: var(--black-key-color);
+    color: var(--white-key-color);
     z-index: 1;
 }
 
+.black.active {
+    background-color: var(--black-key-active-color);
+}
+
+/*=================================================================*/
+/* customize piano scrollbar */
+::-webkit-scrollbar {
+    height: 20px;
+    width: 20px;
+}
+  
+::-webkit-scrollbar-track {
+    background-color: var(--white-key-color); 
+    border-radius: 5px;
+}
+   
+::-webkit-scrollbar-thumb {
+    background-color: var(--black-key-color); 
+    border-radius: 5px;
+}
+  
+::-webkit-scrollbar-thumb:hover {
+    background-color: #363852; /* blend between normal and active */
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: var(--black-key-active-color);  
+}
+
+/*=================================================================*/
+/* Responsive design */
 @media screen and (max-width: 768px) {
     .key {
         font-size: 16px;
     }
 
+    /* white key is 1.75 the size of black key */
     .white {
-        width: 75px;
-        height: 300px;
+        width: 70px;
+        height: 320px;
     }
 
     .black {
         width: 40px;
-        height: 160px; 
-        margin: 0 -20px;
+        height: 182px; 
+        margin: 0 -20px; /* LR margin is half the size of width */
     }
 
-    .buttons {
+    .buttons, .feedback {
         width: 100%;
     }
-  }
-
-.black.active {
-    background-color: #4A4E69;
 }
-
-/* https://coolors.co/22223b-4a4e69-9a8c98-c9ada7-f2e9e4 */
