@@ -11,7 +11,7 @@ body {
 
 .feedback {
     text-align: center;
-    margin: 35px auto;
+    margin: 30px auto;
 }
 
 .navbar, footer {
@@ -27,7 +27,8 @@ main {
 }
 
 .buttons {
-    margin: 70px auto 35px;
+    margin: 60px auto 30px;
+    width: 50%;
 }
 
 ::-webkit-scrollbar {
@@ -58,7 +59,7 @@ main {
     overflow: auto;
     white-space: nowrap;
     font-size: 0;
-    margin-bottom: 70px;
+    margin-bottom: 60px;
 }
 
 .key {
@@ -67,7 +68,7 @@ main {
     position: relative;
     text-align: center;
     display: inline-block;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
     font-size: 1vw;
 }
 
@@ -112,6 +113,10 @@ main {
         width: 40px;
         height: 160px; 
         margin: 0 -20px;
+    }
+
+    .buttons {
+        width: 100%;
     }
   }
 

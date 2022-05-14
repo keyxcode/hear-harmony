@@ -175,6 +175,16 @@ function playRandom() {
     }
 }
 
+const answer = document.querySelector("#answer");
+answer.addEventListener("click", () => {
+    var answers = randomArrayCopy.map((index) => {
+        return keys[index].dataset.note;
+    })
+
+    feedback1.innerHTML = answers;
+    feedback2.innerHTML = "Keep trying!";
+})
+
 let feedback1 = document.querySelector("#feedback1");
 let feedback2 = document.querySelector("#feedback2");
 
@@ -192,7 +202,7 @@ function checkGuess(key) {
         console.log(numOfRandom);
 
         if (correctCount == numOfRandom) {
-            feedback1.innerHTML = "Great job!";
+            feedback1.innerHTML = "Great job!!!";
             feedback2.innerHTML = "Click \"Shuffle\" to get a new challenge."
             correctCount = 0;
         }
@@ -211,6 +221,7 @@ function checkGuess(key) {
     
     else {
         feedback1.innerHTML = "Incorrect!";
-        feedback2.innerHTML = "Let's try again."
+        feedback2.innerHTML = "Let's try again.";
     }
+
 }
