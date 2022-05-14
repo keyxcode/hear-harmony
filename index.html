@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,16 +8,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
     <link href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/musical-keyboard_1f3b9.png" rel="icon">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <script src="script.js" defer></script>
     <title>Relative Harmony</title>
 </head>
-<body class="d-flex flex-column min-vh-100">
 
+<body class="d-flex flex-column min-vh-100">
+  <!--Navigation bar-->
   <nav class="navbar navbar-expand-md navbar-dark">
     <div class="container-fluid">
+      <!--Nav Brand-->
         <a class="navbar-brand" href="#">Relative Harmony</a>
         <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <!--Nav items-->
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav ml-auto mt-2">
             <li class="nav-item"><a class="nav-link" href="#">Train</a></li>
@@ -27,17 +33,20 @@
     </div>
   </nav>
 
+  <!--Main content-->
   <main>
-
+    <!--Buttons-->
     <div class="buttons container">
       <div class="row">
         <button type="button" class="btn btn-primary col" id="reference">Play reference</button>
         <button type="button" class="btn btn-success col" id="random">Play random</button>
         <button type="button" class="btn btn-warning col" id="shuffle">Shuffle</button>
       </div> 
+      <!--Selects-->
       <div class="row">
+        <!--Select reference note-->
         <select class="form-select col-4" id="reference-note" aria-label="Default select example">
-          <option selected>Select reference</option>
+          <option disabled>Select reference</option>
           <option value="0">C3</option>
           <option value="1">Db3</option>
           <option value="2">D3</option>
@@ -64,21 +73,23 @@
           <option value="23">B4</option>
           <option value="24">C5</option>
         </select>
+        <!--Choose how many random notes-->
         <select class="form-select col-4" id="num-of-random" aria-label="Default select example">
-          <option selected>How many random notes?</option>
+          <option disabled>How many random notes?</option>
           <option value="1" selected="selected">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
-          <!-- <option value="4">4</option>
-          <option value="5">5</option> -->
+          <option value="4">4</option>
+          <option value="5">5</option>
         </select>
         <button type="button" class="btn btn-warning disabled btn-sm col-4" id="answer">Show answer</button>
       </div> 
     </div>
   
+    <!--Feedback area. Text is generated in JS-->
     <div class="feedback p-1">
-      <p id="feedback1">First, "Play reference."</p>
-      <p id="feedback2">Then, "Play random" and select that note on the keyboard.</p>
+      <p id="feedback1"></p>
+      <p id="feedback2"></p>
     </div>
 
     <div class="piano">
@@ -111,15 +122,16 @@
       <div data-note="B4" id="B-key" class="key white"><span>B4</span></div>
       <div data-note="C5" id="C-key" class="key white"><span>C5</span></div>
     </div>
-
   </main>
 
+  <!--Footer-->
   <footer class="text-center mt-auto">
     <div class="container p-3">
       All rights reserved © <span><a href="https://github.com/keyxcode">keyxcode</a></span>
     </div>
   </footer>
 
+  <!--Piano Samples-->
   <audio id="C3" src="Weber Baby Grand keyxcode/C3.mp3"></audio>
   <audio id="Db3" src="Weber Baby Grand keyxcode/Db3.mp3"></audio>
   <audio id="D3" src="Weber Baby Grand keyxcode/D3.mp3"></audio>
@@ -145,11 +157,6 @@
   <audio id="A4" src="Weber Baby Grand keyxcode/A4.mp3"></audio>
   <audio id="Bb4" src="Weber Baby Grand keyxcode/Bb4.mp3"></audio>
   <audio id="B4" src="Weber Baby Grand keyxcode/B4.mp3"></audio>
-  <audio id="C5" src="Weber Baby Grand keyxcode/C5.mp3"></audio>
-  
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
-  <script src="script.js" defer></script>
-  
+  <audio id="C5" src="Weber Baby Grand keyxcode/C5.mp3"></audio>  
 </body>
 </html>
