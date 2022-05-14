@@ -1,3 +1,14 @@
+// Playing mechanism:
+// - All of the HTML keys div in .piano are stored in a keys array
+// - These keys will thus be indexed automatically from 0 (C3) to 24 (C5)
+// - These indexes are be used to pick random notes and reference note
+
+// - White keys and Black keys are also stored in each individual array
+// - They will correspond to the computer keyboard White keys and Black keys array
+
+// - When a key is played, the data set stored in each key will be converted
+// to the corresponding audio ID to play
+
 // Array of keys
 const keys = document.querySelectorAll(".key");
 const whiteKeys = document.querySelectorAll(".key.white");
@@ -9,6 +20,8 @@ const WHITE_KEYS = ["z", "x", "c", "v", "b", "n", "m", "q", "w", "e", "r", "t", 
 const BLACK_KEYS = ["s", "d", "g", "h", "j", "2", "3", "5", "6", "7"];
 
 //=====================================================================
+// USER INPUT DETECTION
+
 // Detect mouse mechanism
 keys.forEach(key => {
     key.addEventListener("pointerdown", () => playPiano(key))
@@ -32,12 +45,17 @@ document.addEventListener("keydown", e => {
     if (blackKeyIndex > -1) playPiano(blackKeys[blackKeyIndex]);
 })
 
+//=====================================================================
+// PIANO KEY FUNCTIONS
+
+// The master key function
 function playPiano(key) {
     playNote(key);
     changeColor(key);
     if (gameStart == true) checkGuess(key);
 }
 
+// Play key sound
 function playNote(key) {
 
     // Get the note name
@@ -61,9 +79,9 @@ function playNote(key) {
     document.addEventListener("keyup", () => {
         noteAudio.pause();
     })
-
 }
 
+// Change key color
 function changeColor(key) {
 
     // Add an active class to our key
@@ -174,11 +192,20 @@ function playRandom() {
     }
 }
 
+// Show answer
 const answer = document.querySelector("#answer");
 answer.addEventListener("click", () => {
     var answers = randomArrayCopy.map((index) => {
         return keys[index].dataset.note;
     })
+
+    // Play all the random notes in the array
+    for (let i = 0; i < numOfRandom; ++i)
+    {
+        let keyRandom = keys[randomArrayCopy[i]];
+        playNote(keyRandom);
+        changeColor(keyRandom);
+    }
 
     feedback1.innerHTML = answers;
     feedback2.innerHTML = "Keep trying!";
