@@ -124,6 +124,8 @@ shuffle.addEventListener("click", () => {
 function shuffleEverything() {
     shuffleNoteArray();
     shuffleReference();
+    feedback1.innerHTML = "First, click \"Play reference note.\"";
+    feedback2.innerHTML = "Then, click \"Play random notes\" and play your guess on the keyboard.";
 }
 
 function shuffleReference() {
@@ -173,6 +175,9 @@ function playRandom() {
     }
 }
 
+let feedback1 = document.querySelector("#feedback1");
+let feedback2 = document.querySelector("#feedback2");
+
 // Check guess mechanism
 function checkGuess(key) {
         
@@ -187,20 +192,25 @@ function checkGuess(key) {
         console.log(numOfRandom);
 
         if (correctCount == numOfRandom) {
-            //alert("Correct! Shuffle to get new notes");
-            $("#correctModal").modal("show");
+            feedback1.innerHTML = "Great job!";
+            feedback2.innerHTML = "Click \"Shuffle\" to get a new challenge."
             correctCount = 0;
         }
         else {
-            alert("Correct! " + (numOfRandom - correctCount) + " more to go!");
+            feedback1.innerHTML = "Correct!";
+            feedback2.innerHTML = (numOfRandom - correctCount) + " more to go!"
             console.log(randomArray);
             console.log(randomArrayCopy);
         } 
     } 
 
     else if (randomArrayCopy.includes(keyIndex) == true) {
-        alert("Correct! But you've already guesed it")
+        feedback1.innerHTML = "Correct!";
+        feedback2.innerHTML = "But you've already guessed it."
     } 
     
-    else alert("Please try again");
+    else {
+        feedback1.innerHTML = "Incorrect!";
+        feedback2.innerHTML = "Let's try again."
+    }
 }
