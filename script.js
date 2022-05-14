@@ -143,6 +143,7 @@ function shuffleEverything() {
     shuffleNoteArray();
     shuffleReference();
     initFeedback();
+    gameStart = true;
 }
 
 function shuffleReference() {
@@ -207,6 +208,10 @@ answer.addEventListener("click", () => {
         changeColor(keyRandom);
     }
 
+    correctCount = 0;
+
+    gameStart = false;
+
     feedback1.innerHTML = answers;
     feedback2.innerHTML = "Keep trying!";
 })
@@ -231,19 +236,15 @@ function checkGuess(key) {
         let removeIndex = randomArray.indexOf(keyIndex);
         randomArray.splice(removeIndex, 1);
 
-        console.log(correctCount);
-        console.log(numOfRandom);
-
         if (correctCount == numOfRandom) {
             feedback1.innerHTML = "Great job!!!";
             feedback2.innerHTML = "Click \"Shuffle\" to get a new challenge."
             correctCount = 0;
+            gameStart = false;
         }
         else {
             feedback1.innerHTML = "Correct!";
             feedback2.innerHTML = (numOfRandom - correctCount) + " more to go!"
-            console.log(randomArray);
-            console.log(randomArrayCopy);
         } 
     } 
 
