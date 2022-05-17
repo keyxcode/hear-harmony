@@ -10,32 +10,32 @@
 // to the corresponding audio ID to play
 
 const keyboard = [ 
-    {pianoKey: "C3", computerKey: "z"},
-    {pianoKey: "Db3", computerKey: "s"},
-    {pianoKey: "D3", computerKey: "x"},
-    {pianoKey: "Eb3", computerKey: "d"},
-    {pianoKey: "E3", computerKey: "c"},
-    {pianoKey: "F3", computerKey: "v"},
-    {pianoKey: "Gb3", computerKey: "g"},
-    {pianoKey: "G3", computerKey: "b"},
-    {pianoKey: "Ab3", computerKey: "h"},
-    {pianoKey: "A3", computerKey: "n"},
-    {pianoKey: "Bb3", computerKey: "j"},
-    {pianoKey: "B3", computerKey: "m"},
+    {note: "C3", computerKey: "z"},
+    {note: "Db3", computerKey: "s"},
+    {note: "D3", computerKey: "x"},
+    {note: "Eb3", computerKey: "d"},
+    {note: "E3", computerKey: "c"},
+    {note: "F3", computerKey: "v"},
+    {note: "Gb3", computerKey: "g"},
+    {note: "G3", computerKey: "b"},
+    {note: "Ab3", computerKey: "h"},
+    {note: "A3", computerKey: "n"},
+    {note: "Bb3", computerKey: "j"},
+    {note: "B3", computerKey: "m"},
 
-    {pianoKey: "C4", computerKey: "q"},
-    {pianoKey: "Db4", computerKey: "2"},
-    {pianoKey: "D4", computerKey: "w"},
-    {pianoKey: "Eb4", computerKey: "3"},
-    {pianoKey: "E4", computerKey: "e"},
-    {pianoKey: "F4", computerKey: "r"},
-    {pianoKey: "Gb4", computerKey: "5"},
-    {pianoKey: "G4", computerKey: "t"},
-    {pianoKey: "Ab4", computerKey: "6"},
-    {pianoKey: "A4", computerKey: "y"},
-    {pianoKey: "Bb4", computerKey: "7"},
-    {pianoKey: "B4", computerKey: "u"},
-    {pianoKey: "C5", computerKey: "i"},
+    {note: "C4", computerKey: "q"},
+    {note: "Db4", computerKey: "2"},
+    {note: "D4", computerKey: "w"},
+    {note: "Eb4", computerKey: "3"},
+    {note: "E4", computerKey: "e"},
+    {note: "F4", computerKey: "r"},
+    {note: "Gb4", computerKey: "5"},
+    {note: "G4", computerKey: "t"},
+    {note: "Ab4", computerKey: "6"},
+    {note: "A4", computerKey: "y"},
+    {note: "Bb4", computerKey: "7"},
+    {note: "B4", computerKey: "u"},
+    {note: "C5", computerKey: "i"},
 ];
 
 // Arrays of keys
@@ -73,7 +73,7 @@ document.addEventListener("keydown", e => {
 
     // Get the note from the piano list of objects
     try {
-        note = keyboard[computerKeyIndex].pianoKey;
+        note = keyboard[computerKeyIndex].note;
         playPiano(note);
     }
     catch(err) {
@@ -85,13 +85,13 @@ document.addEventListener("keydown", e => {
 
 // The master play function, takes in a note
 function playPiano(note) {
-    playNote(note);
+    playSound(note);
     changeColor(note);
     if (gameStart == true) checkGuess(note);
 }
 
 // Play key sound
-function playNote(note) {
+function playSound(note) {
     // Convert from note format to the corresponding audio tag
     const noteAudio = document.querySelector("#" + note + "-audio");
     noteAudio.currentTime = 0;
@@ -126,35 +126,64 @@ function changeColor(note) {
 //=====================================================================
 // EXPERIMENTAL
 
-const referencePlay = document.querySelector("#reference");
-const referenceNote = document.querySelector("#reference-note");
-let referenceIndex = referenceNote.value;
-const random = document.querySelector("#random");
-const randomSelect = document.querySelector("#num-of-random");
-let numOfRandom = randomSelect.value;
+const REFERENCE_PLAY = document.querySelector("#reference");
+const REFERENCE_SELECT = document.querySelector("#reference-select");
+let referenceIndex;
+let gameStart;
+
+const RANDOM = document.querySelector("#random");
+const RANDOM_SELECT = document.querySelector("#num-of-random");
+let numOfRandom = RANDOM_SELECT.value;
+
+function initGame() {
+    gameStart = false;
+
+    referenceIndex = Math.floor(Math.random() * NUM_OF_NOTES);
+    REFERENCE_SELECT.value = referenceIndex;
+}
+initGame();
+
+// Figure out the reference index user selects
+REFERENCE_SELECT.addEventListener("change", () => {
+    referenceIndex = REFERENCE_SELECT.value;
+})
+
+// Play reference note based on the reference index
+REFERENCE_PLAY.addEventListener("click", () => {
+    playPiano(keyboard[referenceIndex].note);
+})
+
+// Play the random note when clicked
+RANDOM.addEventListener("click", () => {
+    playRandom();
+})
+
+function playRandom() {
+
+    if (randomIndex == null) {
+        shuffleNoteArray();
+    }
+
+    gameStart = true;
+
+    // Play all the random notes in the array
+    for (let i = 0; i < numOfRandom; ++i)
+    {
+        let keyRandom = keys[randomArrayCopy[i]];
+        playSound(keyRandom);
+    }
+}
+
+
 const shuffle = document.querySelector("#shuffle");
 let randomIndex;
 let randomArray = [];
 let randomArrayCopy = [];
-let gameStart = false;
 let correctCount = 0;
 
-referenceIndex = parseInt((Math.random() * 100)) % NUM_OF_NOTES;
-referenceNote.value = referenceIndex;
-
-// Figure out the reference index user selects
-referenceNote.addEventListener("change", () => {
-    referenceIndex = referenceNote.value;
-})
-
-// Play reference note based on the reference index
-referencePlay.addEventListener("click", () => {
-    playNote(keys[referenceIndex]);
-})
-
 // Figure out how many random notes the user wants
-randomSelect.addEventListener("change", () => {
-    numOfRandom = randomSelect.value;
+RANDOM_SELECT.addEventListener("change", () => {
+    numOfRandom = RANDOM_SELECT.value;
     shuffleNoteArray();
     console.log(numOfRandom);
 })
@@ -175,7 +204,7 @@ function shuffleReference() {
 
     // Shuffle the reference note
     referenceIndex = parseInt((Math.random() * 100)) % NUM_OF_NOTES;
-    referenceNote.value = referenceIndex;
+    REFERENCE_SELECT.value = referenceIndex;
 }
 
 // Generate n random indexes within the range of number of notes
@@ -197,26 +226,7 @@ function shuffleNoteArray() {
     console.log(randomArrayCopy);
 }
 
-// Play the random note when clicked
-random.addEventListener("click", () => {
-    playRandom();
-})
 
-function playRandom() {
-
-    if (randomIndex == null) {
-        shuffleNoteArray();
-    }
-
-    gameStart = true;
-
-    // Play all the random notes in the array
-    for (let i = 0; i < numOfRandom; ++i)
-    {
-        let keyRandom = keys[randomArrayCopy[i]];
-        playNote(keyRandom);
-    }
-}
 
 // Show answer
 const answer = document.querySelector("#answer");
@@ -229,7 +239,7 @@ answer.addEventListener("click", () => {
     for (let i = 0; i < numOfRandom; ++i)
     {
         let keyRandom = keys[randomArrayCopy[i]];
-        playNote(keyRandom);
+        playSound(keyRandom);
         changeColor(keyRandom);
     }
 
