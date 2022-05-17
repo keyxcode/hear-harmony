@@ -9,41 +9,56 @@
 // - When a key is played, the data set stored in each key will be converted
 // to the corresponding audio ID to play
 
-let keyboard = [ 
-    {pianoKey: "C3", computerKey: "z", value: 0},
-    {pianoKey: "Db3", computerKey: "s", value: 1},
-    {pianoKey: "D3", computerKey: "x", value: 2},
-    {pianoKey: "Eb3", computerKey: "d", value:3},
-    {pianoKey: "E3", computerKey: "c", value:4},
-    {pianoKey: "F3", computerKey: "v", value:5},
-    {pianoKey: "Gb3", computerKey: "g", value:6},
-    {pianoKey: "G3", computerKey: "b", value: 7},
-    {pianoKey: "Ab3", computerKey: "h", value: 8},
-    {pianoKey: "A3", computerKey: "n", value: 9},
-    {pianoKey: "Bb3", computerKey: "j", value: 10},
-    {pianoKey: "B3", computerKey: "m", value: 11},
-    {pianoKey: "C4", computerKey: "q", value: 12},
+const keyboard = [ 
+    {pianoKey: "C3", computerKey: "z"},
+    {pianoKey: "Db3", computerKey: "s"},
+    {pianoKey: "D3", computerKey: "x"},
+    {pianoKey: "Eb3", computerKey: "d"},
+    {pianoKey: "E3", computerKey: "c"},
+    {pianoKey: "F3", computerKey: "v"},
+    {pianoKey: "Gb3", computerKey: "g"},
+    {pianoKey: "G3", computerKey: "b"},
+    {pianoKey: "Ab3", computerKey: "h"},
+    {pianoKey: "A3", computerKey: "n"},
+    {pianoKey: "Bb3", computerKey: "j"},
+    {pianoKey: "B3", computerKey: "m"},
+
+    {pianoKey: "C4", computerKey: "q"},
+    {pianoKey: "Db4", computerKey: "2"},
+    {pianoKey: "D4", computerKey: "w"},
+    {pianoKey: "Eb4", computerKey: "3"},
+    {pianoKey: "E4", computerKey: "e"},
+    {pianoKey: "F4", computerKey: "r"},
+    {pianoKey: "Gb4", computerKey: "5"},
+    {pianoKey: "G4", computerKey: "t"},
+    {pianoKey: "Ab4", computerKey: "6"},
+    {pianoKey: "A4", computerKey: "y"},
+    {pianoKey: "Bb4", computerKey: "7"},
+    {pianoKey: "B4", computerKey: "u"},
+    {pianoKey: "C5", computerKey: "i"},
 ];
 
 // Arrays of keys
 const keys = document.querySelectorAll(".key");
-const whiteKeys = document.querySelectorAll(".key.white");
-const blackKeys = document.querySelectorAll(".key.black");
-const NUM_OF_NOTES = 25;
+const NUM_OF_NOTES = keys.length;
 
 // Computer keyboard inputs
-const WHITE_KEYS = ["z", "x", "c", "v", "b", "n", "m", "q", "w", "e", "r", "t", "y", "u", "i"];
-const BLACK_KEYS = ["s", "d", "g", "h", "j", "2", "3", "5", "6", "7"];
+const COMPUTER_KEYS = ["z", "s", "x", "d", "c", "v", "g", "b", "h", "n", "j", "m", "q"];
 
 //=====================================================================
 // USER INPUT DETECTION
 
-// Mouse Input - callback playPiano()
+// Mouse Input
 keys.forEach(key => {
-    key.addEventListener("pointerdown", () => playPiano(key))
+    key.addEventListener("pointerdown", () => {
+        
+        // Translate note ID to audio ID and pass into callback
+        let note = key.id.slice(0, -4);
+        playPiano(note)
+    })
 })
 
-// Computer Keyboard Input - callback playPiano()
+// Computer Keyboard Input 
 document.addEventListener("keydown", e => {
 
     // Safety check: don't repeat note if key is still pressed
@@ -52,17 +67,17 @@ document.addEventListener("keydown", e => {
     // Get the key pressed from the computer keyboard
     const computerKey = e.key;
 
-    const whiteKeyIndex = WHITE_KEYS.indexOf(computerKey);
-    const blackKeyIndex = BLACK_KEYS.indexOf(computerKey);
+    const computerKeyIndex = COMPUTER_KEYS.indexOf(computerKey);
+    console.log(computerKeyIndex);
 
-    if (whiteKeyIndex > -1) playPiano(whiteKeys[whiteKeyIndex]);
-    if (blackKeyIndex > -1) playPiano(blackKeys[blackKeyIndex]);
+    note = keyboard[computerKeyIndex].pianoKey;
+    playPiano(note);
 })
 
 //=====================================================================
 // PIANO KEY FUNCTIONS
 
-// The master play function, takes in a key
+// The master play function, takes in a key div
 function playPiano(key) {
     playNote(key);
     changeColor(key);
@@ -70,17 +85,12 @@ function playPiano(key) {
 }
 
 // Play key sound
-function playNote(key) {
+function playNote(note) {
 
-    // Get the note name
-    const note = key.dataset.note;
-
-    // Get the note audio
-    const noteAudio = document.querySelector("#" + note);
-    
-    // Reset the current time to 0 each time the key is pressed
+    // Convert from key div name format to the corresponding audio tag
+    const noteAudio = document.querySelector("#" + note + "-audio");
     noteAudio.currentTime = 0;
-
+    
     // Play the audio
     noteAudio.play();
 
@@ -96,7 +106,10 @@ function playNote(key) {
 }
 
 // Change key color
-function changeColor(key) {
+function changeColor(note) {
+
+    // Find the key pressed
+    let key = document.querySelector("#" + note + "-key");
 
     // Add an active class to our key
     key.classList.add("active");
