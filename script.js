@@ -43,7 +43,10 @@ const keys = document.querySelectorAll(".key");
 const NUM_OF_NOTES = keys.length;
 
 // Computer keyboard inputs
-const COMPUTER_KEYS = ["z", "s", "x", "d", "c", "v", "g", "b", "h", "n", "j", "m", "q"];
+const COMPUTER_KEYS = [
+    "z", "s", "x", "d", "c", "v", "g", "b", "h", "n", "j", "m", 
+    "q", "2", "w", "3", "e", "r", "5", "t", "6", "y", "7", "u", "i"
+];
 
 //=====================================================================
 // USER INPUT DETECTION
@@ -51,7 +54,7 @@ const COMPUTER_KEYS = ["z", "s", "x", "d", "c", "v", "g", "b", "h", "n", "j", "m
 // Mouse Input
 keys.forEach(key => {
     key.addEventListener("pointerdown", () => {
-        
+
         // Translate note ID to audio ID and pass into callback
         let note = key.id.slice(0, -4);
         playPiano(note)
@@ -66,40 +69,39 @@ document.addEventListener("keydown", e => {
 
     // Get the key pressed from the computer keyboard
     const computerKey = e.key;
-
     const computerKeyIndex = COMPUTER_KEYS.indexOf(computerKey);
-    console.log(computerKeyIndex);
 
-    note = keyboard[computerKeyIndex].pianoKey;
-    playPiano(note);
+    // Get the note from the piano list of objects
+    try {
+        note = keyboard[computerKeyIndex].pianoKey;
+        playPiano(note);
+    }
+    catch(err) {
+    }
 })
 
 //=====================================================================
 // PIANO KEY FUNCTIONS
 
-// The master play function, takes in a key div
-function playPiano(key) {
-    playNote(key);
-    changeColor(key);
-    if (gameStart == true) checkGuess(key);
+// The master play function, takes in a note
+function playPiano(note) {
+    playNote(note);
+    changeColor(note);
+    if (gameStart == true) checkGuess(note);
 }
 
 // Play key sound
 function playNote(note) {
-
-    // Convert from key div name format to the corresponding audio tag
+    // Convert from note format to the corresponding audio tag
     const noteAudio = document.querySelector("#" + note + "-audio");
     noteAudio.currentTime = 0;
     
-    // Play the audio
     noteAudio.play();
 
-    // Pause audio when pointer is up
+    // Pause audio when...
     document.addEventListener("pointerup", () => {
         noteAudio.pause();
     })
-
-    // Pause audio when computer keyboard is up
     document.addEventListener("keyup", () => {
         noteAudio.pause();
     })
@@ -108,18 +110,14 @@ function playNote(note) {
 // Change key color
 function changeColor(note) {
 
-    // Find the key pressed
+    // Find the key on screen and change its class
     let key = document.querySelector("#" + note + "-key");
-
-    // Add an active class to our key
     key.classList.add("active");
     
-    // Reset key color when pointer is up
+    // Reset key color when...
     document.addEventListener("pointerup", () => {
         key.classList.remove("active");
     })
-
-    // Or reset key color when computer keyboard is up
     document.addEventListener("keyup", () => {
         key.classList.remove("active");
     })
