@@ -9,38 +9,52 @@
 // - When a key is played, the data set stored in each key will be converted
 // to the corresponding audio ID to play
 
-// Array of keys
+let keyboard = [ 
+    {pianoKey: "C3", computerKey: "z", value: 0},
+    {pianoKey: "Db3", computerKey: "s", value: 1},
+    {pianoKey: "D3", computerKey: "x", value: 2},
+    {pianoKey: "Eb3", computerKey: "d", value:3},
+    {pianoKey: "E3", computerKey: "c", value:4},
+    {pianoKey: "F3", computerKey: "v", value:5},
+    {pianoKey: "Gb3", computerKey: "g", value:6},
+    {pianoKey: "G3", computerKey: "b", value: 7},
+    {pianoKey: "Ab3", computerKey: "h", value: 8},
+    {pianoKey: "A3", computerKey: "n", value: 9},
+    {pianoKey: "Bb3", computerKey: "j", value: 10},
+    {pianoKey: "B3", computerKey: "m", value: 11},
+    {pianoKey: "C4", computerKey: "q", value: 12},
+];
+
+// Arrays of keys
 const keys = document.querySelectorAll(".key");
 const whiteKeys = document.querySelectorAll(".key.white");
 const blackKeys = document.querySelectorAll(".key.black");
 const NUM_OF_NOTES = 25;
 
-// Keyboard buttons
+// Computer keyboard inputs
 const WHITE_KEYS = ["z", "x", "c", "v", "b", "n", "m", "q", "w", "e", "r", "t", "y", "u", "i"];
 const BLACK_KEYS = ["s", "d", "g", "h", "j", "2", "3", "5", "6", "7"];
 
 //=====================================================================
 // USER INPUT DETECTION
 
-// Detect mouse mechanism
+// Mouse Input - callback playPiano()
 keys.forEach(key => {
     key.addEventListener("pointerdown", () => playPiano(key))
 })
 
-// Detect keyboard mechanism
+// Computer Keyboard Input - callback playPiano()
 document.addEventListener("keydown", e => {
 
     // Safety check: don't repeat note if key is still pressed
     if (e.repeat) return;
 
     // Get the key pressed from the computer keyboard
-    const key = e.key;
+    const computerKey = e.key;
 
-    // Get the potential index of the key
-    const whiteKeyIndex = WHITE_KEYS.indexOf(key);
-    const blackKeyIndex = BLACK_KEYS.indexOf(key);
+    const whiteKeyIndex = WHITE_KEYS.indexOf(computerKey);
+    const blackKeyIndex = BLACK_KEYS.indexOf(computerKey);
 
-    // -1 is returned when indexOf can't find anything
     if (whiteKeyIndex > -1) playPiano(whiteKeys[whiteKeyIndex]);
     if (blackKeyIndex > -1) playPiano(blackKeys[blackKeyIndex]);
 })
@@ -48,7 +62,7 @@ document.addEventListener("keydown", e => {
 //=====================================================================
 // PIANO KEY FUNCTIONS
 
-// The master key function
+// The master play function, takes in a key
 function playPiano(key) {
     playNote(key);
     changeColor(key);
