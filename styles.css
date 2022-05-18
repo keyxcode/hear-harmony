@@ -47,7 +47,6 @@ main {
     border-top-right-radius: 5px;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
-    height: 50% !important;
 }
 
 .btn-warning {
@@ -68,8 +67,6 @@ select {
     border-bottom-left-radius: 5px !important;
     border-bottom-right-radius: 5px !important;
     pointer-events: auto;
-    height: 25% !important;
-    font-size: 1rem;
 }
 
 /*=================================================================*/
@@ -172,7 +169,7 @@ select {
 /* Responsive design when screen too small*/
 @media screen and (max-width: 768px) {
     .key {
-        font-size: 16px;
+        font-size: 0.75rem;
     }
 
     /* white key is 1.75 the size of black key */
