@@ -139,17 +139,30 @@ let feedback2 = document.querySelector("#feedback2");
 function initGame() {
     shuffleReference();
     shuffleRandomNotesArray();
+    initKeyNames();
     initFeedback();
+    initReference();
+}
+initGame();
 
+function initKeyNames() {
     for (let [i, key] of KEYS.entries()) {
         key.innerHTML = KEYBOARD[i].note;
     }
 }
-initGame();
 
 function initFeedback() {
     feedback1.innerHTML = "First, \"Play reference.\"";
     feedback2.innerHTML = "Then, \"Play random\" and select what you hear on the keyboard.";
+}
+
+function initReference() {
+    for (let [i, key] of KEYBOARD.entries()) {
+        let option = document.createElement("option");
+        option.text = key.note,
+        option.value = i;
+        REFERENCE_SELECT.add(option);
+    }
 }
 
 //=====================================================================
