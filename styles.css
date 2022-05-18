@@ -37,12 +37,17 @@ main {
     width: 50%;
 }
 
+.btn-group-vertical {
+    height: 100% !important;
+}
+
 .btn {
     color: var(--white-key-color);
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
+    height: 50% !important;
 }
 
 .btn-warning {
@@ -63,6 +68,8 @@ select {
     border-bottom-left-radius: 5px !important;
     border-bottom-right-radius: 5px !important;
     pointer-events: auto;
+    height: 25% !important;
+    font-size: 1rem;
 }
 
 /*=================================================================*/
@@ -131,6 +138,12 @@ select {
 }
 
 /*=================================================================*/
+/* toggle options */
+.toggles {
+    color: var(--black-key-color);
+}
+
+/*=================================================================*/
 /* customize piano scrollbar */
 ::-webkit-scrollbar {
     height: 20px;
@@ -156,7 +169,7 @@ select {
 }
 
 /*=================================================================*/
-/* Responsive design */
+/* Responsive design when screen too small*/
 @media screen and (max-width: 768px) {
     .key {
         font-size: 16px;
@@ -164,14 +177,14 @@ select {
 
     /* white key is 1.75 the size of black key */
     .white {
-        width: 70px;
-        height: 320px;
+        width: 60px;
+        height: 270px;
     }
 
     .black {
-        width: 40px;
-        height: 182px; 
-        margin: 0 -20px; /* LR margin is half the size of width */
+        width: 36px;
+        height: 162px; 
+        margin: 0 -18px; /* LR margin is half the size of width */
     }
 
     .buttons, .feedback {
