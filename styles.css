@@ -51,6 +51,10 @@ main {
     color: var(--black-key-color);
 }
 
+#answer {
+    pointer-events: auto;
+}
+
 select {
     background-color: var(--white-key-color);
     border-top-left-radius: 0;
