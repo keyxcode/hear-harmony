@@ -137,11 +137,12 @@ let feedback1 = document.querySelector("#feedback1");
 let feedback2 = document.querySelector("#feedback2");
 
 function initGame() {
-    shuffleReference();
-    shuffleRandomNotesArray();
     initKeyNames();
     initFeedback();
     initReference();
+
+    shuffleReference();
+    shuffleRandomNotesArray();
 }
 initGame();
 
