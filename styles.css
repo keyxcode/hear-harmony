@@ -1,6 +1,5 @@
 /* global vars */
 :root {
-    --global-margin: 50px;
     --bg-color: #9A8C98;
     --white-key-color: #F2E9E4;
     --white-key-active-color: #C9ADA7;
@@ -35,7 +34,6 @@ main {
 /*=================================================================*/
 /* button and select group */
 .buttons {
-    margin: var(--global-margin) auto calc(var(--global-margin)/2);
     width: 50%;
 }
 
@@ -64,24 +62,20 @@ select {
 }
 
 #answer {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-left-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
 }
 
 /*=================================================================*/
 /* feedback area */
 .feedback {
     text-align: center;
-    margin: calc(var(--global-margin)/2) auto;
     background-color: var(--white-key-color);
     width: 50%;
     border-radius: 5px;
-}
-
-.feedback p {
-    margin-bottom: 5px;
+    border: 1px solid var(--black-key-color);
 }
 
 /*=================================================================*/
@@ -91,7 +85,6 @@ select {
     overflow: auto;
     white-space: nowrap;
     font-size: 0;
-    margin-bottom: var(--global-margin);
 }
 
 /* piano keys */
@@ -102,7 +95,6 @@ select {
     position: relative;
     text-align: center;
     display: inline-block;
-    margin-bottom: calc(var(--global-margin)/2);
     font-size: 1vw;
     box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2);
 }
@@ -145,7 +137,7 @@ select {
 /* customize piano scrollbar */
 ::-webkit-scrollbar {
     height: 20px;
-    width: 20px;
+    width: 10px;
 }
   
 ::-webkit-scrollbar-track {

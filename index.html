@@ -39,13 +39,13 @@
   <!--Main content-->
   <main>
     <!--Buttons-->
-    <div class="buttons container">
+    <div class="buttons container mx-auto mt-4 p-0">
       <div class="row gx-4">
         <div class="btn-group-vertical col">
           <!--Play Reference Button-->
-          <button type="button" class="btn btn-primary" id="reference">Play reference</button>
+          <button type="button" class="btn btn-primary p-2" id="reference">Play reference</button>
           <!--Select reference note-->
-          <select class="form-select" id="reference-note" aria-label="Default select example">
+          <select class="form-select p-2" id="reference-note" aria-label="Default select example">
             <option disabled>Select reference</option>
             <option value="0">C3</option>
             <option value="1">Db3</option>
@@ -77,9 +77,9 @@
 
         <div class="btn-group-vertical col">
           <!--Play Random Button-->
-          <button type="button" class="btn btn-success col-12" id="random">Play random</button>
+          <button type="button" class="btn btn-success col-12 p-2" id="random">Play random</button>
           <!--Choose how many random notes-->
-          <select class="form-select col" id="num-of-random" aria-label="Default select example">
+          <select class="form-select col p-2" id="num-of-random" aria-label="Default select example">
             <option disabled>How many random notes?</option>
             <option value="1" selected="selected">1</option>
             <option value="2">2</option>
@@ -91,48 +91,48 @@
         
         <div class="btn-group-vertical col">
           <!--Shuffle Button-->
-          <button type="button" class="btn btn-warning col-12" id="shuffle">Shuffle</button>
+          <button type="button" class="btn btn-warning col-12 p-2" id="shuffle">Shuffle</button>
           <!--Show Answer Button-->
-          <button type="button" class="btn btn-warning disabled btn-sm col-4" id="answer">Show answer</button>
+          <button type="button" class="btn btn-warning disabled btn-sm p-0" id="answer">Show answer</button>
         </div>
       </div> 
     </div>
   
     <!--Feedback area. Text is generated in JS-->
-    <div class="feedback p-1">
+    <div class="feedback p-1 mx-auto mt-4">
       <p id="feedback1"></p>
       <p id="feedback2"></p>
     </div>
 
-    <div class="piano">
+    <div class="piano mt-4 mb-5">
       <!--First octave-->
-      <div data-note="C3" id="C-key" class="key white"><span>C3</span></div>
-      <div data-note="Db3" id="Db-key" class="key black"><span>Db3</span></div>
-      <div data-note="D3" id="D-key" class="key white"><span>D3</span></div>
-      <div data-note="Eb3" id="Eb-key" class="key black"><span>Eb3</span></div>
-      <div data-note="E3" id="E-key" class="key white"><span>E3</span></div>
-      <div data-note="F3" id="F-key" class="key white"><span>F3</span></div>
-      <div data-note="Gb3" id="Gb-key" class="key black"><span>Gb3</span></div>
-      <div data-note="G3" id="G-key" class="key white"><span>G3</span></div>
-      <div data-note="Ab3" id="Ab-key" class="key black"><span>Ab3</span></div>
-      <div data-note="A3" id="A-key" class="key white"><span>A3</span></div>
-      <div data-note="Bb3" id="Bb-key" class="key black"><span>Bb3</span></div>
-      <div data-note="B3" id="B-key" class="key white"><span>B3</span></div>
+      <div data-note="C3" id="C-key" class="key white mb-4"><span>C3</span></div>
+      <div data-note="Db3" id="Db-key" class="key black mb-4"><span>Db3</span></div>
+      <div data-note="D3" id="D-key" class="key white mb-4"><span>D3</span></div>
+      <div data-note="Eb3" id="Eb-key" class="key black mb-4"><span>Eb3</span></div>
+      <div data-note="E3" id="E-key" class="key white mb-4"><span>E3</span></div>
+      <div data-note="F3" id="F-key" class="key white mb-4"><span>F3</span></div>
+      <div data-note="Gb3" id="Gb-key" class="key black mb-4"><span>Gb3</span></div>
+      <div data-note="G3" id="G-key" class="key white mb-4"><span>G3</span></div>
+      <div data-note="Ab3" id="Ab-key" class="key black mb-4"><span>Ab3</span></div>
+      <div data-note="A3" id="A-key" class="key white mb-4"><span>A3</span></div>
+      <div data-note="Bb3" id="Bb-key" class="key black mb-4"><span>Bb3</span></div>
+      <div data-note="B3" id="B-key" class="key white mb-4"><span>B3</span></div>
 
       <!--Second octave-->
-      <div data-note="C4" id="C-key" class="key white"><span>C4</span></div>
-      <div data-note="Db4" id="Db-key" class="key black"><span>Db4</span></div>
-      <div data-note="D4" id="D-key" class="key white"><span>D4</span></div>
-      <div data-note="Eb4" id="Eb-key" class="key black"><span>Eb4</span></div>
-      <div data-note="E4" id="E-key" class="key white"><span>E4</span></div>
-      <div data-note="F4" id="F-key" class="key white"><span>F4</span></div>
-      <div data-note="Gb4" id="Gb-key" class="key black"><span>Gb4</span></div>
-      <div data-note="G4" id="G-key" class="key white"><span>G4</span></div>
-      <div data-note="Ab4" id="Ab-key" class="key black"><span>Ab4</span></div>
-      <div data-note="A4" id="A-key" class="key white"><span>A4</span></div>
-      <div data-note="Bb4" id="Bb-key" class="key black"><span>Bb4</span></div>
-      <div data-note="B4" id="B-key" class="key white"><span>B4</span></div>
-      <div data-note="C5" id="C-key" class="key white"><span>C5</span></div>
+      <div data-note="C4" id="C-key" class="key white mb-4"><span>C4</span></div>
+      <div data-note="Db4" id="Db-key" class="key black mb-4"><span>Db4</span></div>
+      <div data-note="D4" id="D-key" class="key white mb-4"><span>D4</span></div>
+      <div data-note="Eb4" id="Eb-key" class="key black mb-4"><span>Eb4</span></div>
+      <div data-note="E4" id="E-key" class="key white mb-4"><span>E4</span></div>
+      <div data-note="F4" id="F-key" class="key white mb-4"><span>F4</span></div>
+      <div data-note="Gb4" id="Gb-key" class="key black mb-4"><span>Gb4</span></div>
+      <div data-note="G4" id="G-key" class="key white mb-4"><span>G4</span></div>
+      <div data-note="Ab4" id="Ab-key" class="key black mb-4"><span>Ab4</span></div>
+      <div data-note="A4" id="A-key" class="key white mb-4"><span>A4</span></div>
+      <div data-note="Bb4" id="Bb-key" class="key black mb-4"><span>Bb4</span></div>
+      <div data-note="B4" id="B-key" class="key white mb-4"><span>B4</span></div>
+      <div data-note="C5" id="C-key" class="key white mb-4"><span>C5</span></div>
     </div>
   </main>
 
