@@ -122,7 +122,6 @@ function changeColor(note) {
 const REFERENCE_PLAY = document.querySelector("#reference");
 const REFERENCE_SELECT = document.querySelector("#reference-select");
 
-
 const RANDOM = document.querySelector("#random");
 const RANDOM_SELECT = document.querySelector("#num-of-random");
 let numOfRandom = RANDOM_SELECT.value;
@@ -141,6 +140,10 @@ function initGame() {
     shuffleReference();
     shuffleRandomNotesArray();
     initFeedback();
+
+    for (let [i, key] of KEYS.entries()) {
+        key.innerHTML = KEYBOARD[i].note;
+    }
 }
 initGame();
 
