@@ -1,3 +1,65 @@
+//=====================================================================
+//VIEW: alters the UI based on given inputs from MODEL and CONTROLLER
+// feedback message 
+// key colors
+// key names
+
+let view = {
+    feedbackMessage: function() {
+        
+    }
+
+}
+
+//=====================================================================
+// MODEL: the backend, generates random notes and manages guess status. 
+// handles what happens when a note is played
+// sends messages to VIEW feedback
+
+let model = {
+
+}
+
+//=====================================================================
+// CONTROLLER: lets user interact with the MODEL by guessing
+// sends messages to VIEW
+
+let controller = {
+
+}
+
+//=====================================================================
+// EVENT HANDLERS & INIT
+// detects user input to send over to CONTROLLER
+// initializes page on load
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 let isReference = false;
 
 // Mapping the keyboard note to computer key
