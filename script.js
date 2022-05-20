@@ -2,12 +2,21 @@
 //VIEW: alters the UI based on given inputs from MODEL and CONTROLLER
 // feedback message 
 // key colors
+// play sound
 // key names
 
 let view = {
-    feedbackMessage: function() {
-        
+    feedbackMessage1: function(msg) {
+        let feedback1 = document.querySelector("#feedback1");
+        feedback1.innerHTML = msg;
+    },
+
+    feedbackMessage2: function(msg) {
+        let feedback2 = document.querySelector("#feedback2");
+        feedback2.innerHTML = msg;
     }
+
+
 
 }
 
@@ -195,9 +204,6 @@ let randomNoteIndexesCopy = []; // Keep a copy to show answer
 let isGuessing = false;
 let correctCount = 0;
 
-let feedback1 = document.querySelector("#feedback1");
-let feedback2 = document.querySelector("#feedback2");
-
 function initGame() {
     initKeyNames();
     initFeedback();
@@ -215,8 +221,8 @@ function initKeyNames() {
 }
 
 function initFeedback() {
-    feedback1.innerHTML = "First, \"Play reference.\"";
-    feedback2.innerHTML = "Then, \"Play random\" and select what you hear on the keyboard.";
+    view.feedbackMessage1("First, \"Play reference.\"");
+    view.feedbackMessage2 ("Then, \"Play random\" and select what you hear on the keyboard.");
 }
 
 function initReference() {
@@ -329,8 +335,8 @@ ANSWER.addEventListener("click", () => {
     correctCount = 0;
     isGuessing = false;
 
-    feedback1.innerHTML = answers;
-    feedback2.innerHTML = "Keep trying!";
+    view.feedbackMessage1(answers);
+    view.feedbackMessage2("Keep trying!");
 })
 
 //=====================================================================
@@ -352,27 +358,27 @@ function checkGuess(note) {
 
         // If that's the last guess => done
         if (correctCount == numOfRandom) {
-            feedback1.innerHTML = "Great job!!!";
-            feedback2.innerHTML = "Click \"Shuffle\" to get a new challenge."
+            view.feedbackMessage1("Great job!!!");
+            view.feedbackMessage2("Click \"Shuffle\" to get a new challenge.");
             correctCount = 0;
             isGuessing = false;
         }
         // Else, tell how many more guesses to go
         else {
-            feedback1.innerHTML = "Correct!";
-            feedback2.innerHTML = (numOfRandom - correctCount) + " more to go!"
+            view.feedbackMessage1("Correct!");
+            view.feedbackMessage2((numOfRandom - correctCount) + " more to go!");
         } 
     } 
 
     // If guess is correct, but duplicated
     else if (randomNoteIndexesCopy.includes(keyIndex) == true) {
-        feedback1.innerHTML = "Correct!";
-        feedback2.innerHTML = "But you've already guessed it."
+        view.feedbackMessage1("Correct!");
+        view.feedbackMessage2("But you've already guessed it.");
     } 
     
     // If guess is not correct
     else {
-        feedback1.innerHTML = "Incorrect!";
-        feedback2.innerHTML = "Let's try again.";
+        view.feedbackMessage1("Incorrect!");
+        view.feedbackMessage2("Let's try again.");
     }
 }
