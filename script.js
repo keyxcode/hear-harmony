@@ -14,10 +14,38 @@ let view = {
     feedbackMessage2: function(msg) {
         let feedback2 = document.querySelector("#feedback2");
         feedback2.innerHTML = msg;
+    },
+
+    playSound: function(note) {
+        // Convert from note format to the corresponding audio tag
+        const noteAudio = document.querySelector("#" + note + "-audio");
+        noteAudio.currentTime = 0;
+        
+        noteAudio.play();
+
+        // Pause audio when...
+        document.addEventListener("pointerup", () => {
+            noteAudio.pause();
+        })
+        document.addEventListener("keyup", () => {
+            noteAudio.pause();
+        })
+    },
+
+    changeColor: function (note) {
+
+        // Find the key on screen and change its class
+        let key = document.querySelector("#" + note + "-key");
+        key.classList.add("active");
+        
+        // Reset key color when...
+        document.addEventListener("pointerup", () => {
+            key.classList.remove("active");
+        })
+        document.addEventListener("keyup", () => {
+            key.classList.remove("active");
+        })
     }
-
-
-
 }
 
 //=====================================================================
@@ -150,42 +178,9 @@ document.addEventListener("keydown", e => {
 
 // The master play function, takes in a note
 function playPiano(note) {
-    playSound(note);
-    changeColor(note);
+    view.playSound(note);
+    view.changeColor(note);
     if (isGuessing == true) checkGuess(note);
-}
-
-// Play key sound
-function playSound(note) {
-    // Convert from note format to the corresponding audio tag
-    const noteAudio = document.querySelector("#" + note + "-audio");
-    noteAudio.currentTime = 0;
-    
-    noteAudio.play();
-
-    // Pause audio when...
-    document.addEventListener("pointerup", () => {
-        noteAudio.pause();
-    })
-    document.addEventListener("keyup", () => {
-        noteAudio.pause();
-    })
-}
-
-// Change key color
-function changeColor(note) {
-
-    // Find the key on screen and change its class
-    let key = document.querySelector("#" + note + "-key");
-    key.classList.add("active");
-    
-    // Reset key color when...
-    document.addEventListener("pointerup", () => {
-        key.classList.remove("active");
-    })
-    document.addEventListener("keyup", () => {
-        key.classList.remove("active");
-    })
 }
 
 //=====================================================================
@@ -262,7 +257,7 @@ function playRandom() {
     for (let i = 0; i < numOfRandom; ++i)
     {
         let keyRandom = KEYBOARD[randomNoteIndexesCopy[i]].note;
-        playSound(keyRandom);
+        view.playSound(keyRandom);
     }
 }
 
@@ -326,8 +321,8 @@ ANSWER.addEventListener("click", () => {
     for (let i = 0; i < numOfRandom; ++i)
     {
         let keyRandom = KEYBOARD[randomNoteIndexesCopy[i]].note;
-        playSound(keyRandom);
-        changeColor(keyRandom);
+        view.playSound(keyRandom);
+        view.changeColor(keyRandom);
 
         answers.push (KEYBOARD[randomNoteIndexesCopy[i]].note);
     }
