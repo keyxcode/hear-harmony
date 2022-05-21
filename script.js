@@ -9,7 +9,6 @@ const SHUFFLE = document.querySelector("#shuffle");
 const ANSWER = document.querySelector("#answer");
 
 let isGuessing = false;
-let isReference = false;
 
 const KEYBOARD = [ 
     {note: "C3", computerKey: "z"},
@@ -114,6 +113,7 @@ let model = {
     randomNoteIndexesCopy: [],
     numOfRandom: RANDOM_SELECT.value,
     correctCount: 0,
+    isKey: false,
 
     shuffleAll: function () {
         this.shuffleRandomNotesArray();
@@ -145,9 +145,9 @@ let model = {
     },
 
     checkGuess: function(note) {
-    
-        if (isReference) return false;
-        
+        console.log(this.isKey);
+        if (!this.isKey) return false;
+
         let keyIndex = KEYBOARD.findIndex(function(key) {
             return key.note === note;
         });
@@ -183,7 +183,7 @@ let model = {
             view.feedbackMessage1("Incorrect!");
             view.feedbackMessage2("Let's try again.");
         }
-    }
+    },
 }
 
 //=====================================================================
@@ -209,9 +209,9 @@ KEYS.forEach(key => {
 
         // Translate note ID to audio ID and pass into callback
         let note = key.id.slice(0, -4);
+        model.isKey = true;
         view.playPiano(note)
     })
-    isReference = false;
 })
 
 // Computer Keyboard Input Detection
@@ -231,23 +231,22 @@ document.addEventListener("keydown", e => {
     }
     catch(err) {
     }
-    isReference = false;
 })
 
 REFERENCE_PLAY.addEventListener("click", () => {
 
-    isReference = true;
     let referenceIndex = REFERENCE_SELECT.value;
     view.playPiano(KEYBOARD[referenceIndex].note);
+    model.isKey = false;
 })
 
 RANDOM_PLAY.addEventListener("click", () => {
     playRandom();
+    model.isKey = false;
 })
 
 function playRandom() {
 
-    isReference = false;
     isGuessing = true;
 
     // Play all the random notes in the array
@@ -284,6 +283,7 @@ ANSWER.addEventListener("click", () => {
     }
 
     model.correctCount = 0;
+    model.isKey = false;
     isGuessing = false;
 
     view.feedbackMessage1(answers);
