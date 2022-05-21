@@ -8,8 +8,6 @@ const RANDOM_SELECT = document.querySelector("#num-of-random");
 const SHUFFLE = document.querySelector("#shuffle");
 const ANSWER = document.querySelector("#answer");
 
-let isGuessing = false;
-
 const KEYBOARD = [ 
     {note: "C3", computerKey: "z"},
     {note: "Db3", computerKey: "s"},
@@ -68,7 +66,7 @@ let view = {
         view.changeColor(note);
 
         // this line should prob be in controller?
-        if (isGuessing == true) model.checkGuess(note);
+        model.checkGuess(note);
     },
 
     playSound: function(note) {
@@ -114,12 +112,12 @@ let model = {
     numOfRandom: RANDOM_SELECT.value,
     correctCount: 0,
     isKey: false,
+    isGuessing: false,
 
     shuffleAll: function () {
         this.shuffleRandomNotesArray();
         this.shuffleReference();
         initFeedback();
-        isGuessing = false;
     },
 
     shuffleReference: function() {
@@ -145,8 +143,7 @@ let model = {
     },
 
     checkGuess: function(note) {
-        console.log(this.isKey);
-        if (!this.isKey) return false;
+        if (!this.isKey || !this.isGuessing) return false;
 
         let keyIndex = KEYBOARD.findIndex(function(key) {
             return key.note === note;
@@ -163,7 +160,7 @@ let model = {
                 view.feedbackMessage1("Great job!!!");
                 view.feedbackMessage2("Click \"Shuffle\" to get a new challenge.");
                 this.correctCount = 0;
-                isGuessing = false;
+                this.isGuessing = false;
             }
             // Else, tell how many more guesses to go
             else {
@@ -247,7 +244,7 @@ RANDOM_PLAY.addEventListener("click", () => {
 
 function playRandom() {
 
-    isGuessing = true;
+    model.isGuessing = true;
 
     // Play all the random notes in the array
     for (let i = 0; i < model.numOfRandom; ++i)
@@ -284,7 +281,7 @@ ANSWER.addEventListener("click", () => {
 
     model.correctCount = 0;
     model.isKey = false;
-    isGuessing = false;
+    model.isGuessing = false;
 
     view.feedbackMessage1(answers);
     view.feedbackMessage2("Keep trying!");
