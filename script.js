@@ -2,17 +2,14 @@
 const REFERENCE_PLAY = document.querySelector("#reference");
 const REFERENCE_SELECT = document.querySelector("#reference-select");
 
-const RANDOM = document.querySelector("#random");
+const RANDOM_PLAY = document.querySelector("#random");
 const RANDOM_SELECT = document.querySelector("#num-of-random");
-let numOfRandom = RANDOM_SELECT.value;
 
 const SHUFFLE = document.querySelector("#shuffle");
-
 const ANSWER = document.querySelector("#answer");
 
 let isGuessing = false;
 let isReference = false;
-let correctCount = 0;
 
 const KEYBOARD = [ 
     {note: "C3", computerKey: "z"},
@@ -65,9 +62,13 @@ let view = {
         feedback2.innerHTML = msg;
     },
 
+    // ideally conversion from string "A3" -> num 
+    // should take place elsewhere
     playPiano: function(note) {
         view.playSound(note);
         view.changeColor(note);
+
+        // this line should prob be in controller?
         if (isGuessing == true) model.checkGuess(note);
     },
 
@@ -111,10 +112,12 @@ let view = {
 let model = {
     randomNoteIndexes: [],
     randomNoteIndexesCopy: [],
+    numOfRandom: RANDOM_SELECT.value,
+    correctCount: 0,
 
     shuffleAll: function () {
-        model.shuffleRandomNotesArray();
-        model.shuffleReference();
+        this.shuffleRandomNotesArray();
+        this.shuffleReference();
         initFeedback();
         isGuessing = false;
     },
@@ -126,19 +129,19 @@ let model = {
     // Generate n random indexes within the range of number of notes
     shuffleRandomNotesArray: function() {
     
-        model.randomNoteIndexes = [];
+        this.randomNoteIndexes = [];
         let randomIndex;
     
         // Randomize and assure unique numbers
-        for (let i = 0; i < numOfRandom; ++i) {
+        for (let i = 0; i < this.numOfRandom; ++i) {
             do {
                 randomIndex = Math.floor(Math.random() * NUM_OF_NOTES);
-            } while (model.randomNoteIndexes.includes(randomIndex) == true);
+            } while (this.randomNoteIndexes.includes(randomIndex) == true);
     
-            model.randomNoteIndexes.push(randomIndex);
+            this.randomNoteIndexes.push(randomIndex);
         }  
     
-        model.randomNoteIndexesCopy = model.randomNoteIndexes.slice();
+        this.randomNoteIndexesCopy = this.randomNoteIndexes.slice();
     },
 
     checkGuess: function(note) {
@@ -150,27 +153,27 @@ let model = {
         });
     
         // If guess is correct
-        if (model.randomNoteIndexes.includes(keyIndex) == true) {
-            correctCount += 1;
-            let removeIndex = model.randomNoteIndexes.indexOf(keyIndex);
-            model.randomNoteIndexes.splice(removeIndex, 1);
+        if (this.randomNoteIndexes.includes(keyIndex) == true) {
+            this.correctCount += 1;
+            let removeIndex = this.randomNoteIndexes.indexOf(keyIndex);
+            this.randomNoteIndexes.splice(removeIndex, 1);
     
             // If that's the last guess => done
-            if (correctCount == numOfRandom) {
+            if (this.correctCount == this.numOfRandom) {
                 view.feedbackMessage1("Great job!!!");
                 view.feedbackMessage2("Click \"Shuffle\" to get a new challenge.");
-                correctCount = 0;
+                this.correctCount = 0;
                 isGuessing = false;
             }
             // Else, tell how many more guesses to go
             else {
                 view.feedbackMessage1("Correct!");
-                view.feedbackMessage2((numOfRandom - correctCount) + " more to go!");
+                view.feedbackMessage2((this.numOfRandom - this.correctCount) + " more to go!");
             } 
         } 
     
         // If guess is correct, but duplicated
-        else if (model.randomNoteIndexesCopy.includes(keyIndex) == true) {
+        else if (this.randomNoteIndexesCopy.includes(keyIndex) == true) {
             view.feedbackMessage1("Correct!");
             view.feedbackMessage2("But you've already guessed it.");
         } 
@@ -238,7 +241,7 @@ REFERENCE_PLAY.addEventListener("click", () => {
     view.playPiano(KEYBOARD[referenceIndex].note);
 })
 
-RANDOM.addEventListener("click", () => {
+RANDOM_PLAY.addEventListener("click", () => {
     playRandom();
 })
 
@@ -248,7 +251,7 @@ function playRandom() {
     isGuessing = true;
 
     // Play all the random notes in the array
-    for (let i = 0; i < numOfRandom; ++i)
+    for (let i = 0; i < model.numOfRandom; ++i)
     {
         let keyRandom = KEYBOARD[model.randomNoteIndexesCopy[i]].note;
         view.playSound(keyRandom);
@@ -257,7 +260,7 @@ function playRandom() {
 
 RANDOM_SELECT.addEventListener("change", () => {
 
-    numOfRandom = RANDOM_SELECT.value;
+    model.numOfRandom = RANDOM_SELECT.value;
     model.shuffleRandomNotesArray();
 })
 
@@ -271,7 +274,7 @@ ANSWER.addEventListener("click", () => {
     model.randomNoteIndexesCopy.sort((a,b) => a - b);
 
     // Play all the random notes in the array
-    for (let i = 0; i < numOfRandom; ++i)
+    for (let i = 0; i < model.numOfRandom; ++i)
     {
         let keyRandom = KEYBOARD[model.randomNoteIndexesCopy[i]].note;
         view.playSound(keyRandom);
@@ -280,7 +283,7 @@ ANSWER.addEventListener("click", () => {
         answers.push (KEYBOARD[model.randomNoteIndexesCopy[i]].note);
     }
 
-    correctCount = 0;
+    model.correctCount = 0;
     isGuessing = false;
 
     view.feedbackMessage1(answers);
