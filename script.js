@@ -74,9 +74,6 @@ let view = {
     playPiano: function(id) {
         this.playNote(id);
         this.changeNoteColor(id);
-
-        // this line should prob be in controller?
-        model.checkGuess(id);
     },
 
     playNote: function(id) {
@@ -183,7 +180,25 @@ let model = {
 // Process key and mouse input and turn them into integers 0->27
 
 let controller = {
+    parseMouseInput: function(e) {
+        let id = (Array.from(KEYS)).indexOf(e.target);
+        model.isKey = true;
+        model.checkGuess(id);
+        view.playPiano(id);
+    },
 
+    parseKeyInput: function(e) {
+        // Safety check: don't repeat note if key is still pressed
+        if (e.repeat) return;
+
+        // Get the key pressed from the computer keyboard
+        const computerKey = e.key;
+        let id = COMPUTER_KEYS.indexOf(computerKey);
+        if (id === -1) return false;
+
+        model.checkGuess(id);
+        view.playPiano(id);
+    },
 }
 
 //=====================================================================
@@ -192,44 +207,24 @@ let controller = {
 
 // Mouse Input Detection
 KEYS.forEach(key => {
-    key.addEventListener("pointerdown", () => {
-
-        let id = Array.from(KEYS).indexOf(key);
-
-        model.isKey = true;
-        view.playPiano(id);
-    })
-})
+    key.addEventListener("pointerdown", (e) => controller.parseMouseInput(e))
+});
 
 document.addEventListener("pointerup", () => view.stopAudioVisual());
 
 // Computer Keyboard Input Detection
-document.addEventListener("keydown", e => {
+document.addEventListener("keydown", (e) => controller.parseKeyInput(e));
 
-    // Safety check: don't repeat note if key is still pressed
-    if (e.repeat) return;
-
-    // Get the key pressed from the computer keyboard
-    const computerKey = e.key;
-    let id = COMPUTER_KEYS.indexOf(computerKey);
-
-    // Get the note from the piano list of objects
-    try {
-        view.playPiano(id);
-    }
-    catch(err) {
-    }
-})
-
-document.addEventListener("keyup", e => {
+document.addEventListener("keyup", () => {
     view.stopAudioVisual();
 })
 
+// Utility buttons
 REFERENCE_PLAY.addEventListener("click", () => {
 
     let id = REFERENCE_SELECT.value;
-    view.playPiano(id);
     model.isKey = false;
+    view.playPiano(id);
 })
 
 RANDOM_PLAY.addEventListener("click", () => {
