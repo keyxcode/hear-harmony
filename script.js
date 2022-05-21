@@ -62,42 +62,44 @@ let view = {
     // ideally conversion from string "A3" -> num 
     // should take place elsewhere
     playPiano: function(note) {
-        view.playSound(note);
-        view.changeColor(note);
+        this.playNote(note);
+        this.changeNoteColor(note);
 
         // this line should prob be in controller?
         model.checkGuess(note);
     },
 
-    playSound: function(note) {
+    playNote: function(note) {
         // Convert from note format to the corresponding audio tag
+        // the conversion should prob be in controller
         const noteAudio = document.querySelector("#" + note + "-audio");
         noteAudio.currentTime = 0;
         
         noteAudio.play();
-
-        // Pause audio when...
-        document.addEventListener("pointerup", () => {
-            noteAudio.pause();
-        })
-        document.addEventListener("keyup", () => {
-            noteAudio.pause();
-        })
     },
 
-    changeColor: function (note) {
+    changeNoteColor: function (note) {
 
         // Find the key on screen and change its class
         let key = document.querySelector("#" + note + "-key");
         key.classList.add("active");
-        
-        // Reset key color when...
-        document.addEventListener("pointerup", () => {
-            key.classList.remove("active");
-        })
-        document.addEventListener("keyup", () => {
-            key.classList.remove("active");
-        })
+    },
+
+    // Master pause function
+    pausePiano: function(note) {
+        this.pauseNote(note);
+        this.resetNoteColor(note);
+    },
+
+    pauseNote: function(note) {
+        const noteAudio = document.querySelector("#" + note + "-audio");
+        noteAudio.currentTime = 0;
+        noteAudio.pause();
+    },
+
+    resetNoteColor: function(note) {
+        let key = document.querySelector("#" + note + "-key");
+        key.classList.remove("active");
     }
 }
 
@@ -207,7 +209,12 @@ KEYS.forEach(key => {
         // Translate note ID to audio ID and pass into callback
         let note = key.id.slice(0, -4);
         model.isKey = true;
-        view.playPiano(note)
+        view.playPiano(note);
+    })
+
+    key.addEventListener("pointerup", () => {
+        let note = key.id.slice(0, -4);
+        view.pausePiano(note);
     })
 })
 
@@ -225,6 +232,18 @@ document.addEventListener("keydown", e => {
     try {
         note = KEYBOARD[computerKeyIndex].note;
         view.playPiano(note);
+    }
+    catch(err) {
+    }
+})
+
+document.addEventListener("keyup", e => {
+    // Get the key pressed from the computer keyboard
+    const computerKey = e.key;
+    const computerKeyIndex = COMPUTER_KEYS.indexOf(computerKey);
+    try {
+        note = KEYBOARD[computerKeyIndex].note;
+        view.pausePiano(note);
     }
     catch(err) {
     }
@@ -250,7 +269,7 @@ function playRandom() {
     for (let i = 0; i < model.numOfRandom; ++i)
     {
         let keyRandom = KEYBOARD[model.randomNoteIndexesCopy[i]].note;
-        view.playSound(keyRandom);
+        view.playNote(keyRandom);
     }
 }
 
@@ -273,8 +292,8 @@ ANSWER.addEventListener("click", () => {
     for (let i = 0; i < model.numOfRandom; ++i)
     {
         let keyRandom = KEYBOARD[model.randomNoteIndexesCopy[i]].note;
-        view.playSound(keyRandom);
-        view.changeColor(keyRandom);
+        view.playNote(keyRandom);
+        view.changeNoteColor(keyRandom);
 
         answers.push (KEYBOARD[model.randomNoteIndexesCopy[i]].note);
     }
