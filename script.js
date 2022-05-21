@@ -84,7 +84,7 @@ let view = {
         let key = document.querySelector("#" + note + "-key");
         key.classList.add("active");
     },
-    
+
     // Pause everything
     pauseEverything: function() {
         document.querySelectorAll("audio").forEach(el => el.pause());
@@ -94,6 +94,7 @@ let view = {
 
 //=====================================================================
 // MODEL: the backend, generates random notes and manages guess status. 
+// Processes note as number indexes (0 -> 25)
 // handles what happens when a note is played
 // sends messages to VIEW feedback
 
@@ -133,6 +134,7 @@ let model = {
         this.randomNoteIndexesCopy = this.randomNoteIndexes.slice();
     },
 
+    // refactor this to take in number instead
     checkGuess: function(note) {
         if (!this.isKey || !this.isGuessing) return false;
 
@@ -177,6 +179,7 @@ let model = {
 //=====================================================================
 // CONTROLLER: lets user interact with the MODEL by guessing
 // sends messages to VIEW
+// Process key and mouse input and turn them into integers 0->27
 
 let controller = {
 
