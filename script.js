@@ -84,22 +84,11 @@ let view = {
         let key = document.querySelector("#" + note + "-key");
         key.classList.add("active");
     },
-
-    // Master pause function
-    pausePiano: function(note) {
-        this.pauseNote(note);
-        this.resetNoteColor(note);
-    },
-
-    pauseNote: function(note) {
-        const noteAudio = document.querySelector("#" + note + "-audio");
-        noteAudio.currentTime = 0;
-        noteAudio.pause();
-    },
-
-    resetNoteColor: function(note) {
-        let key = document.querySelector("#" + note + "-key");
-        key.classList.remove("active");
+    
+    // Pause everything
+    pauseEverything: function() {
+        document.querySelectorAll("audio").forEach(el => el.pause());
+        document.querySelectorAll(".active").forEach(el => el.classList.remove("active"));
     }
 }
 
@@ -211,12 +200,9 @@ KEYS.forEach(key => {
         model.isKey = true;
         view.playPiano(note);
     })
-
-    key.addEventListener("pointerup", () => {
-        let note = key.id.slice(0, -4);
-        view.pausePiano(note);
-    })
 })
+
+document.addEventListener("pointerup", () => view.pauseEverything());
 
 // Computer Keyboard Input Detection
 document.addEventListener("keydown", e => {
@@ -238,12 +224,13 @@ document.addEventListener("keydown", e => {
 })
 
 document.addEventListener("keyup", e => {
+    
     // Get the key pressed from the computer keyboard
     const computerKey = e.key;
     const computerKeyIndex = COMPUTER_KEYS.indexOf(computerKey);
     try {
         note = KEYBOARD[computerKeyIndex].note;
-        view.pausePiano(note);
+        view.pauseEverything();
     }
     catch(err) {
     }
