@@ -8,35 +8,38 @@ const RANDOM_SELECT = document.querySelector("#num-of-random");
 const SHUFFLE = document.querySelector("#shuffle");
 const ANSWER = document.querySelector("#answer");
 
+const SHARP_SWITCH = document.querySelector("#sharp-switch");
+const STATIC_REF_SWITCH = document.querySelector("#static-ref-switch");
+
 // 4 arrays below are correlated by indexes
 // Keyboard notes model array
 const PIANO_KEYS = [ 
-    {note: "C3", computerKey: "z"},
-    {note: "Db3", computerKey: "s"},
-    {note: "D3", computerKey: "x"},
-    {note: "Eb3", computerKey: "d"},
-    {note: "E3", computerKey: "c"},
-    {note: "F3", computerKey: "v"},
-    {note: "Gb3", computerKey: "g"},
-    {note: "G3", computerKey: "b"},
-    {note: "Ab3", computerKey: "h"},
-    {note: "A3", computerKey: "n"},
-    {note: "Bb3", computerKey: "j"},
-    {note: "B3", computerKey: "m"},
+    {note: "C3", noteSharp: "C3", computerKey: "z"},
+    {note: "Db3", noteSharp: "C#3", computerKey: "s"},
+    {note: "D3", noteSharp: "D3", computerKey: "x"},
+    {note: "Eb3", noteSharp: "D#3", computerKey: "d"},
+    {note: "E3", noteSharp: "E3", computerKey: "c"},
+    {note: "F3", noteSharp: "F3", computerKey: "v"},
+    {note: "Gb3", noteSharp: "F#3", computerKey: "g"},
+    {note: "G3", noteSharp: "G3", computerKey: "b"},
+    {note: "Ab3", noteSharp: "G#3", computerKey: "h"},
+    {note: "A3", noteSharp: "A3", computerKey: "n"},
+    {note: "Bb3", noteSharp: "A#3", computerKey: "j"},
+    {note: "B3", noteSharp: "B3", computerKey: "m"},
 
-    {note: "C4", computerKey: "q"},
-    {note: "Db4", computerKey: "2"},
-    {note: "D4", computerKey: "w"},
-    {note: "Eb4", computerKey: "3"},
-    {note: "E4", computerKey: "e"},
-    {note: "F4", computerKey: "r"},
-    {note: "Gb4", computerKey: "5"},
-    {note: "G4", computerKey: "t"},
-    {note: "Ab4", computerKey: "6"},
-    {note: "A4", computerKey: "y"},
-    {note: "Bb4", computerKey: "7"},
-    {note: "B4", computerKey: "u"},
-    {note: "C5", computerKey: "i"}
+    {note: "C4", noteSharp: "C3", computerKey: "q"},
+    {note: "Db4", noteSharp: "C#3", computerKey: "2"},
+    {note: "D4", noteSharp: "D3", computerKey: "w"},
+    {note: "Eb4", noteSharp: "D#3", computerKey: "3"},
+    {note: "E4", noteSharp: "E3", computerKey: "e"},
+    {note: "F4", noteSharp: "F3", computerKey: "r"},
+    {note: "Gb4", noteSharp: "F#3", computerKey: "5"},
+    {note: "G4", noteSharp: "G3", computerKey: "t"},
+    {note: "Ab4", noteSharp: "G#3", computerKey: "6"},
+    {note: "A4", noteSharp: "A3", computerKey: "y"},
+    {note: "Bb4", noteSharp: "A#3", computerKey: "7"},
+    {note: "B4", noteSharp: "B3", computerKey: "u"},
+    {note: "C5", noteSharp: "C3", computerKey: "i"}
 ];
 
 // Arrays of keys on screen (aka key divs)
@@ -101,7 +104,11 @@ let view = {
 
     initKeyNames: function() {
         for (let [i, key] of KEY_DIVS.entries()) {
-            key.innerHTML = PIANO_KEYS[i].note;
+            if (model.isPreferSharps) {
+                key.innerHTML = PIANO_KEYS[i].noteSharp
+            } else {
+                key.innerHTML = PIANO_KEYS[i].note;
+            }
         }
     },
     
@@ -128,9 +135,20 @@ let model = {
     numOfRandom: parseInt(RANDOM_SELECT.value),
     correctCount: 0,
     isGuessing: false,
+    isPreferSharps: false,
+    isStaticRef: false,
+
+    switchSharpFlat: function() {
+        this.isPreferSharps = (this.isPreferSharps === true) ? false : true;
+        view.initKeyNames();
+    },
+
+    switchRefState: function() {
+        this.isStaticRef = (this.isStaticRef === true) ? false : true;
+    },
 
     shuffleAll: function () {
-        this.shuffleReference();
+        if (!this.isStaticRef) this.shuffleReference();
         this.shuffleRandomNotesArray();
         view.initFeedback();
     },
@@ -289,6 +307,10 @@ RANDOM_PLAY.addEventListener("click", () => controller.playRandom());
 RANDOM_SELECT.addEventListener("change", () => controller.selectNumRandom());
 SHUFFLE.addEventListener("click", () => model.shuffleAll());
 ANSWER.addEventListener("click", () => controller.showAnswer());
+
+// Toggle Switches
+SHARP_SWITCH.addEventListener("click", () => model.switchSharpFlat());
+STATIC_REF_SWITCH.addEventListener("click", () => model.switchRefState());
 
 //=====================================================================
 // INIT
