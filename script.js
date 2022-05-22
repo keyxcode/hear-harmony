@@ -1,6 +1,6 @@
 // GLOBAL VARS:
 const REFERENCE_PLAY = document.querySelector("#reference");
-const REFERENCE_SELECT = document.querySelector("#reference-select");
+const REFERENCE_SELECT = document.querySelector("#reference-note");
 
 const RANDOM_PLAY = document.querySelector("#random");
 const RANDOM_SELECT = document.querySelector("#num-of-random");
