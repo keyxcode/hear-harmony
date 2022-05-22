@@ -77,11 +77,11 @@ let view = {
     // ideally conversion from string "A3" -> num 
     // should take place elsewhere
     playPiano: function(id) {
-        this.playNote(id);
+        this.playNoteSound(id);
         this.changeNoteColor(id);
     },
 
-    playNote: function(id) {
+    playNoteSound: function(id) {
         let noteAudio = KEYS_AUDIOS[id];
         noteAudio.currentTime = 0;
         noteAudio.play();
@@ -237,7 +237,7 @@ let controller = {
         for (let i = 0; i < model.numOfRandom; ++i)
         {
             let id = model.randomNoteIndexesCopy[i];
-            view.playNote(id);
+            view.playNoteSound(id);
         }
         model.isKey = false;
         model.isGuessing = true;    
@@ -258,7 +258,7 @@ let controller = {
         {
             let id = model.randomNoteIndexesCopy[i];
             // Play each note in the sorted random array, 
-            view.playNote(id);
+            view.playNoteSound(id);
             view.changeNoteColor(id);
             // and push each of those in the answers array
             answers.push (KEYBOARD[id].note);
@@ -277,13 +277,13 @@ let controller = {
 // EVENT HANDLERS
 // detects user input to send over to CONTROLLER
 
-// Piano Mouse Input Handler
+// Piano Mouse Input handler
 KEYS.forEach(key => {
     key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e))
 });
 document.addEventListener("pointerup", () => view.stopAudioVisual());
 
-// Piano Computer Keyboard Input Handlers
+// Piano Computer Keyboard Input handlers
 document.addEventListener("keydown", e => controller.parsePianoKeyInput(e));
 document.addEventListener("keyup", () => view.stopAudioVisual());
 
