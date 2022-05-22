@@ -180,103 +180,98 @@ let model = {
 // Process key and mouse input and turn them into integers 0->27
 
 let controller = {
-    parseMouseInput: function(e) {
-        let id = (Array.from(KEYS)).indexOf(e.target);
+    processPianoNote(id) {
         model.isKey = true;
         model.checkGuess(id);
         view.playPiano(id);
     },
 
-    parseKeyInput: function(e) {
+    parsePianoMouseInput: function(e) {
+        // Get the note id from the key div id
+        let id = (Array.from(KEYS)).indexOf(e.target);
+
+        this.processPianoNote(id);
+    },
+
+    parsePianoKeyInput: function(e) {
         // Safety check: don't repeat note if key is still pressed
         if (e.repeat) return;
 
-        // Get the key pressed from the computer keyboard
+        // Get the note id from the computer key id
         const computerKey = e.key;
         let id = COMPUTER_KEYS.indexOf(computerKey);
         if (id === -1) return false;
 
-        model.checkGuess(id);
+        this.processPianoNote(id);
+    },
+
+    playReference: function() {
+        let id = REFERENCE_SELECT.value;
+        model.isKey = false;
         view.playPiano(id);
     },
+
+    playRandom: function() {
+        // Play all the random notes in the array
+        for (let i = 0; i < model.numOfRandom; ++i)
+        {
+            let id = model.randomNoteIndexesCopy[i];
+            view.playNote(id);
+        }
+        model.isKey = false;
+        model.isGuessing = true;    
+    },
+
+    selectNumRandom: function() {
+        model.numOfRandom = parseInt(RANDOM_SELECT.value);
+        // shuffle the random array everytime the number of random notes is changed
+        model.shuffleRandomNotesArray(); 
+    },
+
+    showAnswer: function() {
+        let answers = [];
+        model.randomNoteIndexesCopy.sort((a,b) => a - b);
+
+        // Play all the random notes in the array
+        for (let i = 0; i < model.numOfRandom; ++i)
+        {
+            let id = model.randomNoteIndexesCopy[i];
+            // Play each note in the sorted random array, 
+            view.playNote(id);
+            view.changeNoteColor(id);
+            // and push each of those in the answers array
+            answers.push (KEYBOARD[id].note);
+        }
+    
+        model.correctCount = 0;
+        model.isKey = false;
+        model.isGuessing = false;
+    
+        view.feedbackMessage1(answers);
+        view.feedbackMessage2("Keep trying!");
+    }
 }
 
 //=====================================================================
 // EVENT HANDLERS
 // detects user input to send over to CONTROLLER
 
-// Mouse Input Detection
+// Piano Mouse Input Handler
 KEYS.forEach(key => {
-    key.addEventListener("pointerdown", (e) => controller.parseMouseInput(e))
+    key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e))
 });
-
 document.addEventListener("pointerup", () => view.stopAudioVisual());
 
-// Computer Keyboard Input Detection
-document.addEventListener("keydown", (e) => controller.parseKeyInput(e));
+// Piano Computer Keyboard Input Handlers
+document.addEventListener("keydown", e => controller.parsePianoKeyInput(e));
+document.addEventListener("keyup", () => view.stopAudioVisual());
 
-document.addEventListener("keyup", () => {
-    view.stopAudioVisual();
-})
-
-// Utility buttons
-REFERENCE_PLAY.addEventListener("click", () => {
-
-    let id = REFERENCE_SELECT.value;
-    model.isKey = false;
-    view.playPiano(id);
-})
-
-RANDOM_PLAY.addEventListener("click", () => {
-    playRandom();
-    model.isKey = false;
-})
-
-function playRandom() {
-
-    model.isGuessing = true;
-
-    // Play all the random notes in the array
-    for (let i = 0; i < model.numOfRandom; ++i)
-    {
-        let id = model.randomNoteIndexesCopy[i];
-        view.playNote(id);
-    }
-}
-
-RANDOM_SELECT.addEventListener("change", () => {
-
-    model.numOfRandom = RANDOM_SELECT.value;
-    model.shuffleRandomNotesArray();
-    model.numOfRandom = parseInt(RANDOM_SELECT.value);
-})
-
-SHUFFLE.addEventListener("click", () => {
-    model.shuffleAll();
-})
-
-ANSWER.addEventListener("click", () => {
-
-    let answers = [];
-    model.randomNoteIndexesCopy.sort((a,b) => a - b);
-
-    // Play all the random notes in the array
-    for (let i = 0; i < model.numOfRandom; ++i)
-    {
-        let id = model.randomNoteIndexesCopy[i];
-        view.playNote(id);
-        view.changeNoteColor(id);
-
-        answers.push (KEYBOARD[id].note);
-    }
-
-    model.correctCount = 0;
-    model.isKey = false;
-    model.isGuessing = false;
-
-    view.feedbackMessage1(answers);
-    view.feedbackMessage2("Keep trying!");
-})
+// Utility buttons handlers
+REFERENCE_PLAY.addEventListener("click", () => controller.playReference());
+RANDOM_PLAY.addEventListener("click", () => controller.playRandom());
+RANDOM_SELECT.addEventListener("change", () => controller.selectNumRandom());
+SHUFFLE.addEventListener("click", () => model.shuffleAll());
+ANSWER.addEventListener("click", () => controller.showAnswer());
 
 //=====================================================================
 // INIT
