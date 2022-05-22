@@ -69,6 +69,11 @@ let view = {
         feedback2.innerHTML = msg;
     },
 
+    initFeedback: function() {
+        this.feedbackMessage1("First, \"Play reference.\"");
+        this.feedbackMessage2 ("Then, \"Play random\" and select what you hear on the keyboard.");
+    },
+
     // ideally conversion from string "A3" -> num 
     // should take place elsewhere
     playPiano: function(id) {
@@ -91,6 +96,22 @@ let view = {
     stopAudioVisual: function() {
         document.querySelectorAll("audio").forEach(el => el.pause());
         document.querySelectorAll(".active").forEach(el => el.classList.remove("active"));
+    },
+
+    initKeyNames: function() {
+        for (let [i, key] of KEYS.entries()) {
+            key.innerHTML = KEYBOARD[i].note;
+        }
+    },
+    
+    // Initialize all options for reference note
+    initReference: function() {
+        for (let [i, key] of KEYBOARD.entries()) {
+            let option = document.createElement("option");
+            option.text = key.note,
+            option.value = i;
+            REFERENCE_SELECT.add(option);
+        }
     }
 }
 
@@ -111,7 +132,7 @@ let model = {
     shuffleAll: function () {
         this.shuffleRandomNotesArray();
         this.shuffleReference();
-        initFeedback();
+        view.initFeedback();
     },
 
     shuffleReference: function() {
@@ -279,30 +300,10 @@ ANSWER.addEventListener("click", () => controller.showAnswer());
 
 window.addEventListener("load", initGame);
 function initGame() {
-    initKeyNames();
-    initFeedback();
-    initReference();
+    view.initKeyNames();
+    view.initFeedback();
+    view.initReference();
 
     model.shuffleReference();
     model.shuffleRandomNotesArray();
-}
-
-function initKeyNames() {
-    for (let [i, key] of KEYS.entries()) {
-        key.innerHTML = KEYBOARD[i].note;
-    }
-}
-
-function initFeedback() {
-    view.feedbackMessage1("First, \"Play reference.\"");
-    view.feedbackMessage2 ("Then, \"Play random\" and select what you hear on the keyboard.");
-}
-
-function initReference() {
-    for (let [i, key] of KEYBOARD.entries()) {
-        let option = document.createElement("option");
-        option.text = key.note,
-        option.value = i;
-        REFERENCE_SELECT.add(option);
-    }
 }
