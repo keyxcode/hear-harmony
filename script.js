@@ -126,12 +126,11 @@ let model = {
     randomNoteIndexesCopy: [],
     numOfRandom: parseInt(RANDOM_SELECT.value),
     correctCount: 0,
-    isKey: false,
     isGuessing: false,
 
     shuffleAll: function () {
-        this.shuffleRandomNotesArray();
         this.shuffleReference();
+        this.shuffleRandomNotesArray();
         view.initFeedback();
     },
 
@@ -159,7 +158,7 @@ let model = {
 
     // refactor this to take in number instead
     checkGuess: function(id) {
-        if (!this.isKey || !this.isGuessing) return false;
+        if (!this.isGuessing) return false;
     
         // If guess is correct
         if (this.randomNoteIndexes.includes(id) === true) {
@@ -202,7 +201,6 @@ let model = {
 
 let controller = {
     processPianoNote(id) {
-        model.isKey = true;
         model.checkGuess(id);
         view.playPiano(id);
     },
@@ -228,7 +226,6 @@ let controller = {
 
     playReference: function() {
         let id = REFERENCE_SELECT.value;
-        model.isKey = false;
         view.playPiano(id);
     },
 
@@ -239,7 +236,6 @@ let controller = {
             let id = model.randomNoteIndexesCopy[i];
             view.playNoteSound(id);
         }
-        model.isKey = false;
         model.isGuessing = true;    
     },
 
@@ -265,7 +261,6 @@ let controller = {
         }
     
         model.correctCount = 0;
-        model.isKey = false;
         model.isGuessing = false;
     
         view.feedbackMessage1(answers);
