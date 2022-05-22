@@ -1,6 +1,6 @@
 // GLOBAL VARS:
 const REFERENCE_PLAY = document.querySelector("#reference");
-const REFERENCE_SELECT = document.querySelector("#reference-note");
+const REFERENCE_SELECT = document.querySelector("#reference-select");
 
 const RANDOM_PLAY = document.querySelector("#random");
 const RANDOM_SELECT = document.querySelector("#num-of-random");
@@ -27,19 +27,19 @@ const PIANO_KEYS = [
     {note: "Bb3", noteSharp: "A#3", computerKey: "j"},
     {note: "B3", noteSharp: "B3", computerKey: "m"},
 
-    {note: "C4", noteSharp: "C3", computerKey: "q"},
-    {note: "Db4", noteSharp: "C#3", computerKey: "2"},
-    {note: "D4", noteSharp: "D3", computerKey: "w"},
-    {note: "Eb4", noteSharp: "D#3", computerKey: "3"},
-    {note: "E4", noteSharp: "E3", computerKey: "e"},
-    {note: "F4", noteSharp: "F3", computerKey: "r"},
-    {note: "Gb4", noteSharp: "F#3", computerKey: "5"},
-    {note: "G4", noteSharp: "G3", computerKey: "t"},
-    {note: "Ab4", noteSharp: "G#3", computerKey: "6"},
-    {note: "A4", noteSharp: "A3", computerKey: "y"},
-    {note: "Bb4", noteSharp: "A#3", computerKey: "7"},
-    {note: "B4", noteSharp: "B3", computerKey: "u"},
-    {note: "C5", noteSharp: "C3", computerKey: "i"}
+    {note: "C4", noteSharp: "C4", computerKey: "q"},
+    {note: "Db4", noteSharp: "C#4", computerKey: "2"},
+    {note: "D4", noteSharp: "D4", computerKey: "w"},
+    {note: "Eb4", noteSharp: "D#4", computerKey: "3"},
+    {note: "E4", noteSharp: "E4", computerKey: "e"},
+    {note: "F4", noteSharp: "F4", computerKey: "r"},
+    {note: "Gb4", noteSharp: "F#4", computerKey: "5"},
+    {note: "G4", noteSharp: "G4", computerKey: "t"},
+    {note: "Ab4", noteSharp: "G#4", computerKey: "6"},
+    {note: "A4", noteSharp: "A4", computerKey: "y"},
+    {note: "Bb4", noteSharp: "A#4", computerKey: "7"},
+    {note: "B4", noteSharp: "B4", computerKey: "u"},
+    {note: "C5", noteSharp: "C5", computerKey: "i"}
 ];
 
 // Arrays of keys on screen (aka key divs)
@@ -104,11 +104,7 @@ let view = {
 
     initKeyNames: function() {
         for (let [i, key] of KEY_DIVS.entries()) {
-            if (model.isPreferSharps) {
-                key.innerHTML = PIANO_KEYS[i].noteSharp
-            } else {
                 key.innerHTML = PIANO_KEYS[i].note;
-            }
         }
     },
     
@@ -116,9 +112,22 @@ let view = {
     initReference: function() {
         for (let [i, key] of PIANO_KEYS.entries()) {
             let option = document.createElement("option");
-            option.text = key.note,
+            option.text = key.note;
             option.value = i;
+            option.id = "referenceNote"
+
             REFERENCE_SELECT.add(option);
+        }
+    },
+
+    updateSharpFlat: function() {
+        for (let [i, key] of KEY_DIVS.entries()) {
+            key.innerHTML = PIANO_KEYS[i][model.note];
+        }
+
+        let referenceNotes = document.querySelectorAll("#referenceNote");
+        for (let [i, ref] of referenceNotes.entries()) {
+            ref.text = PIANO_KEYS[i][model.note];
         }
     }
 }
@@ -135,12 +144,12 @@ let model = {
     numOfRandom: parseInt(RANDOM_SELECT.value),
     correctCount: 0,
     isGuessing: false,
-    isPreferSharps: false,
+    note: "note",
     isStaticRef: false,
 
     switchSharpFlat: function() {
-        this.isPreferSharps = (this.isPreferSharps === true) ? false : true;
-        view.initKeyNames();
+        this.note = (this.note === "note") ? "noteSharp" : "note";
+        view.updateSharpFlat();
     },
 
     switchRefState: function() {
@@ -264,8 +273,9 @@ let controller = {
         model.shuffleRandomNotesArray(); 
     },
 
+    answers: [],
     showAnswer: function() {
-        let answers = [];
+        this.answers = [];
         model.randomNoteIndexesCopy.sort((a,b) => a - b);
 
         // Play all the random notes in the array
@@ -276,13 +286,14 @@ let controller = {
             view.playNoteSound(id);
             view.changeNoteColor(id);
             // and push each of those in the answers array
-            answers.push (PIANO_KEYS[id].note);
+            let note = view.note;
+            this.answers.push (PIANO_KEYS[id][model.note]);
         }
     
         model.correctCount = 0;
         model.isGuessing = false;
     
-        view.feedbackMessage1(answers);
+        view.feedbackMessage1(this.answers);
         view.feedbackMessage2("Keep trying!");
     }
 }
