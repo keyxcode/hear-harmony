@@ -8,8 +8,9 @@ const RANDOM_SELECT = document.querySelector("#num-of-random");
 const SHUFFLE = document.querySelector("#shuffle");
 const ANSWER = document.querySelector("#answer");
 
-// Array of note name conventions
-const KEYBOARD = [ 
+// 4 arrays below are correlated by indexes
+// Keyboard notes model array
+const PIANO_KEYS = [ 
     {note: "C3", computerKey: "z"},
     {note: "Db3", computerKey: "s"},
     {note: "D3", computerKey: "x"},
@@ -39,11 +40,11 @@ const KEYBOARD = [
 ];
 
 // Arrays of keys on screen (aka key divs)
-const KEYS = document.querySelectorAll(".key");
-const NUM_OF_NOTES = KEYS.length;
+const KEY_DIVS = document.querySelectorAll(".key");
+const NUM_OF_KEYS = KEY_DIVS.length;
 
 // Array of HTML audios
-const KEYS_AUDIOS = document.querySelectorAll("audio");
+const KEY_AUDIOS = document.querySelectorAll("audio");
 
 // Array of Computer keys
 const COMPUTER_KEYS = [
@@ -82,13 +83,13 @@ let view = {
     },
 
     playNoteSound: function(id) {
-        let noteAudio = KEYS_AUDIOS[id];
+        let noteAudio = KEY_AUDIOS[id];
         noteAudio.currentTime = 0;
         noteAudio.play();
     },
 
     changeNoteColor: function(id) {
-        let key = KEYS[id];
+        let key = KEY_DIVS[id];
         key.classList.add("active");
     },
 
@@ -99,14 +100,14 @@ let view = {
     },
 
     initKeyNames: function() {
-        for (let [i, key] of KEYS.entries()) {
-            key.innerHTML = KEYBOARD[i].note;
+        for (let [i, key] of KEY_DIVS.entries()) {
+            key.innerHTML = PIANO_KEYS[i].note;
         }
     },
     
     // Initialize all options for reference note
     initReference: function() {
-        for (let [i, key] of KEYBOARD.entries()) {
+        for (let [i, key] of PIANO_KEYS.entries()) {
             let option = document.createElement("option");
             option.text = key.note,
             option.value = i;
@@ -135,7 +136,7 @@ let model = {
     },
 
     shuffleReference: function() {
-        REFERENCE_SELECT.value = Math.floor(Math.random() * NUM_OF_NOTES);
+        REFERENCE_SELECT.value = Math.floor(Math.random() * NUM_OF_KEYS);
     },
     
     // Generate n random indexes within the range of number of notes
@@ -147,7 +148,7 @@ let model = {
         // Randomize and assure unique numbers
         for (let i = 0; i < this.numOfRandom; ++i) {
             do {
-                randomIndex = Math.floor(Math.random() * NUM_OF_NOTES);
+                randomIndex = Math.floor(Math.random() * NUM_OF_KEYS);
             } while (this.randomNoteIndexes.includes(randomIndex) === true);
     
             this.randomNoteIndexes.push(randomIndex);
@@ -207,7 +208,7 @@ let controller = {
 
     parsePianoMouseInput: function(e) {
         // Get the note id from the key div id
-        let id = (Array.from(KEYS)).indexOf(e.target);
+        let id = (Array.from(KEY_DIVS)).indexOf(e.target);
 
         this.processPianoNote(id);
     },
@@ -257,7 +258,7 @@ let controller = {
             view.playNoteSound(id);
             view.changeNoteColor(id);
             // and push each of those in the answers array
-            answers.push (KEYBOARD[id].note);
+            answers.push (PIANO_KEYS[id].note);
         }
     
         model.correctCount = 0;
@@ -273,7 +274,7 @@ let controller = {
 // detects user input to send over to CONTROLLER
 
 // Piano Mouse Input handler
-KEYS.forEach(key => {
+KEY_DIVS.forEach(key => {
     key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e))
 });
 document.addEventListener("pointerup", () => view.stopAudioVisual());
