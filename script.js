@@ -1,261 +1,305 @@
-// Playing mechanism:
-// - All of the HTML keys div in .piano are stored in a keys array
-// - These keys will thus be indexed automatically from 0 (C3) to 24 (C5)
-// - These indexes are be used to pick random notes and reference note
+// GLOBAL VARS:
+const REFERENCE_PLAY = document.querySelector("#reference");
+const REFERENCE_SELECT = document.querySelector("#reference-select");
 
-// - White keys and Black keys are also stored in each individual array
-// - They will correspond to the computer keyboard White keys and Black keys array
+const RANDOM_PLAY = document.querySelector("#random");
+const RANDOM_SELECT = document.querySelector("#num-of-random");
 
-// - When a key is played, the data set stored in each key will be converted
-// to the corresponding audio ID to play
+const SHUFFLE = document.querySelector("#shuffle");
+const ANSWER = document.querySelector("#answer");
 
-// Array of keys
-const keys = document.querySelectorAll(".key");
-const whiteKeys = document.querySelectorAll(".key.white");
-const blackKeys = document.querySelectorAll(".key.black");
-const NUM_OF_NOTES = 25;
+// 4 arrays below are correlated by indexes
+// Keyboard notes model array
+const PIANO_KEYS = [ 
+    {note: "C3", computerKey: "z"},
+    {note: "Db3", computerKey: "s"},
+    {note: "D3", computerKey: "x"},
+    {note: "Eb3", computerKey: "d"},
+    {note: "E3", computerKey: "c"},
+    {note: "F3", computerKey: "v"},
+    {note: "Gb3", computerKey: "g"},
+    {note: "G3", computerKey: "b"},
+    {note: "Ab3", computerKey: "h"},
+    {note: "A3", computerKey: "n"},
+    {note: "Bb3", computerKey: "j"},
+    {note: "B3", computerKey: "m"},
 
-// Keyboard buttons
-const WHITE_KEYS = ["z", "x", "c", "v", "b", "n", "m", "q", "w", "e", "r", "t", "y", "u", "i"];
-const BLACK_KEYS = ["s", "d", "g", "h", "j", "2", "3", "5", "6", "7"];
+    {note: "C4", computerKey: "q"},
+    {note: "Db4", computerKey: "2"},
+    {note: "D4", computerKey: "w"},
+    {note: "Eb4", computerKey: "3"},
+    {note: "E4", computerKey: "e"},
+    {note: "F4", computerKey: "r"},
+    {note: "Gb4", computerKey: "5"},
+    {note: "G4", computerKey: "t"},
+    {note: "Ab4", computerKey: "6"},
+    {note: "A4", computerKey: "y"},
+    {note: "Bb4", computerKey: "7"},
+    {note: "B4", computerKey: "u"},
+    {note: "C5", computerKey: "i"}
+];
 
-//=====================================================================
-// USER INPUT DETECTION
+// Arrays of keys on screen (aka key divs)
+const KEY_DIVS = document.querySelectorAll(".key");
+const NUM_OF_KEYS = KEY_DIVS.length;
 
-// Detect mouse mechanism
-keys.forEach(key => {
-    key.addEventListener("pointerdown", () => playPiano(key))
-})
+// Array of HTML audios
+const KEY_AUDIOS = document.querySelectorAll("audio");
 
-// Detect keyboard mechanism
-document.addEventListener("keydown", e => {
-
-    // Safety check: don't repeat note if key is still pressed
-    if (e.repeat) return;
-
-    // Get the key pressed from the computer keyboard
-    const key = e.key;
-
-    // Get the potential index of the key
-    const whiteKeyIndex = WHITE_KEYS.indexOf(key);
-    const blackKeyIndex = BLACK_KEYS.indexOf(key);
-
-    // -1 is returned when indexOf can't find anything
-    if (whiteKeyIndex > -1) playPiano(whiteKeys[whiteKeyIndex]);
-    if (blackKeyIndex > -1) playPiano(blackKeys[blackKeyIndex]);
-})
-
-//=====================================================================
-// PIANO KEY FUNCTIONS
-
-// The master key function
-function playPiano(key) {
-    playNote(key);
-    changeColor(key);
-    if (gameStart == true) checkGuess(key);
-}
-
-// Play key sound
-function playNote(key) {
-
-    // Get the note name
-    const note = key.dataset.note;
-
-    // Get the note audio
-    const noteAudio = document.querySelector("#" + note);
-    
-    // Reset the current time to 0 each time the key is pressed
-    noteAudio.currentTime = 0;
-
-    // Play the audio
-    noteAudio.play();
-
-    // Pause audio when pointer is up
-    document.addEventListener("pointerup", () => {
-        noteAudio.pause();
-    })
-
-    // Pause audio when computer keyboard is up
-    document.addEventListener("keyup", () => {
-        noteAudio.pause();
-    })
-}
-
-// Change key color
-function changeColor(key) {
-
-    // Add an active class to our key
-    key.classList.add("active");
-    
-    // Reset key color when pointer is up
-    document.addEventListener("pointerup", () => {
-        key.classList.remove("active");
-    })
-
-    // Or reset key color when computer keyboard is up
-    document.addEventListener("keyup", () => {
-        key.classList.remove("active");
-    })
-}
+// Array of Computer keys
+const COMPUTER_KEYS = [
+    "z", "s", "x", "d", "c", "v", "g", "b", "h", "n", "j", "m", 
+    "q", "2", "w", "3", "e", "r", "5", "t", "6", "y", "7", "u", "i"
+];
 
 //=====================================================================
-// EXPERIMENTAL
+//VIEW: alters the UI based on given inputs from MODEL and CONTROLLER
+// feedback message 
+// key colors
+// play sound
+// key names
 
-const referencePlay = document.querySelector("#reference");
-const referenceNote = document.querySelector("#reference-note");
-let referenceIndex = referenceNote.value;
-const random = document.querySelector("#random");
-const randomSelect = document.querySelector("#num-of-random");
-let numOfRandom = randomSelect.value;
-const shuffle = document.querySelector("#shuffle");
-let randomIndex;
-let randomArray = [];
-let randomArrayCopy = [];
-let gameStart = false;
-let correctCount = 0;
+let view = {
+    feedbackMessage1: function(msg) {
+        let feedback1 = document.querySelector("#feedback1");
+        feedback1.innerHTML = msg;
+    },
 
-referenceIndex = parseInt((Math.random() * 100)) % NUM_OF_NOTES;
-referenceNote.value = referenceIndex;
+    feedbackMessage2: function(msg) {
+        let feedback2 = document.querySelector("#feedback2");
+        feedback2.innerHTML = msg;
+    },
 
-// Figure out the reference index user selects
-referenceNote.addEventListener("change", () => {
-    referenceIndex = referenceNote.value;
-})
+    initFeedback: function() {
+        this.feedbackMessage1("First, \"Play reference.\"");
+        this.feedbackMessage2 ("Then, \"Play random\" and select what you hear on the keyboard.");
+    },
 
-// Play reference note based on the reference index
-referencePlay.addEventListener("click", () => {
-    playNote(keys[referenceIndex]);
-})
+    // ideally conversion from string "A3" -> num 
+    // should take place elsewhere
+    playPiano: function(id) {
+        this.playNoteSound(id);
+        this.changeNoteColor(id);
+    },
 
-// Figure out how many random notes the user wants
-randomSelect.addEventListener("change", () => {
-    numOfRandom = randomSelect.value;
-    shuffleNoteArray();
-    console.log(numOfRandom);
-})
+    playNoteSound: function(id) {
+        let noteAudio = KEY_AUDIOS[id];
+        noteAudio.currentTime = 0;
+        noteAudio.play();
+    },
 
-// Shuffle the random index
-shuffle.addEventListener("click", () => {
-    shuffleEverything();
-})
+    changeNoteColor: function(id) {
+        let key = KEY_DIVS[id];
+        key.classList.add("active");
+    },
 
-function shuffleEverything() {
-    shuffleNoteArray();
-    shuffleReference();
-    initFeedback();
-    gameStart = true;
-}
+    // Pause everything
+    stopAudioVisual: function() {
+        document.querySelectorAll("audio").forEach(el => el.pause());
+        document.querySelectorAll(".active").forEach(el => el.classList.remove("active"));
+    },
 
-function shuffleReference() {
-
-    // Shuffle the reference note
-    referenceIndex = parseInt((Math.random() * 100)) % NUM_OF_NOTES;
-    referenceNote.value = referenceIndex;
-}
-
-// Generate n random indexes within the range of number of notes
-function shuffleNoteArray() {
-    
-    // Clear the random array
-    randomArray = [];
-
-    for (let i = 0; i < numOfRandom; ++i) {
-        do { // assures unique numbers
-            randomIndex = parseInt((Math.random() * 100)) % NUM_OF_NOTES;
-        } while (randomArray.includes(randomIndex) == true);
-
-        randomArray.push(randomIndex);
-    }  
-
-    randomArrayCopy = randomArray.slice();
-    console.log(randomArray);
-    console.log(randomArrayCopy);
-}
-
-// Play the random note when clicked
-random.addEventListener("click", () => {
-    playRandom();
-})
-
-function playRandom() {
-
-    if (randomIndex == null) {
-        shuffleNoteArray();
-    }
-
-    gameStart = true;
-
-    // Play all the random notes in the array
-    for (let i = 0; i < numOfRandom; ++i)
-    {
-        let keyRandom = keys[randomArrayCopy[i]];
-        playNote(keyRandom);
-    }
-}
-
-// Show answer
-const answer = document.querySelector("#answer");
-answer.addEventListener("click", () => {
-    var answers = randomArrayCopy.map((index) => {
-        return keys[index].dataset.note;
-    })
-
-    // Play all the random notes in the array
-    for (let i = 0; i < numOfRandom; ++i)
-    {
-        let keyRandom = keys[randomArrayCopy[i]];
-        playNote(keyRandom);
-        changeColor(keyRandom);
-    }
-
-    correctCount = 0;
-
-    gameStart = false;
-
-    feedback1.innerHTML = answers;
-    feedback2.innerHTML = "Keep trying!";
-})
-
-let feedback1 = document.querySelector("#feedback1");
-let feedback2 = document.querySelector("#feedback2");
-
-function initFeedback() {
-    feedback1.innerHTML = "First, \"Play reference.\"";
-    feedback2.innerHTML = "Then, \"Play random\" and select what you hear on the keyboard.";
-}
-
-initFeedback();
-
-// Check guess mechanism
-function checkGuess(key) {
-        
-    let keyIndex = (Array.from(keys)).indexOf(key);
-
-    if (randomArray.includes(keyIndex) == true) {
-        correctCount += 1;
-        let removeIndex = randomArray.indexOf(keyIndex);
-        randomArray.splice(removeIndex, 1);
-
-        if (correctCount == numOfRandom) {
-            feedback1.innerHTML = "Great job!!!";
-            feedback2.innerHTML = "Click \"Shuffle\" to get a new challenge."
-            correctCount = 0;
-            gameStart = false;
+    initKeyNames: function() {
+        for (let [i, key] of KEY_DIVS.entries()) {
+            key.innerHTML = PIANO_KEYS[i].note;
         }
-        else {
-            feedback1.innerHTML = "Correct!";
-            feedback2.innerHTML = (numOfRandom - correctCount) + " more to go!"
-        } 
-    } 
-
-    else if (randomArrayCopy.includes(keyIndex) == true) {
-        feedback1.innerHTML = "Correct!";
-        feedback2.innerHTML = "But you've already guessed it."
-    } 
+    },
     
-    else {
-        feedback1.innerHTML = "Incorrect!";
-        feedback2.innerHTML = "Let's try again.";
+    // Initialize all options for reference note
+    initReference: function() {
+        for (let [i, key] of PIANO_KEYS.entries()) {
+            let option = document.createElement("option");
+            option.text = key.note,
+            option.value = i;
+            REFERENCE_SELECT.add(option);
+        }
     }
+}
 
+//=====================================================================
+// MODEL: the backend, generates random notes and manages guess status. 
+// Processes note as number indexes (0 -> 25)
+// handles what happens when a note is played
+// sends messages to VIEW feedback
+
+let model = {
+    randomNoteIndexes: [],
+    randomNoteIndexesCopy: [],
+    numOfRandom: parseInt(RANDOM_SELECT.value),
+    correctCount: 0,
+    isGuessing: false,
+
+    shuffleAll: function () {
+        this.shuffleReference();
+        this.shuffleRandomNotesArray();
+        view.initFeedback();
+    },
+
+    shuffleReference: function() {
+        REFERENCE_SELECT.value = Math.floor(Math.random() * NUM_OF_KEYS);
+    },
+    
+    // Generate n random indexes within the range of number of notes
+    shuffleRandomNotesArray: function() {
+    
+        this.randomNoteIndexes = [];
+        let randomIndex;
+    
+        // Randomize and assure unique numbers
+        for (let i = 0; i < this.numOfRandom; ++i) {
+            do {
+                randomIndex = Math.floor(Math.random() * NUM_OF_KEYS);
+            } while (this.randomNoteIndexes.includes(randomIndex) === true);
+    
+            this.randomNoteIndexes.push(randomIndex);
+        }  
+    
+        this.randomNoteIndexesCopy = this.randomNoteIndexes.slice();
+    },
+
+    // refactor this to take in number instead
+    checkGuess: function(id) {
+        if (!this.isGuessing) return false;
+    
+        // If guess is correct
+        if (this.randomNoteIndexes.includes(id) === true) {
+            this.correctCount += 1;
+            let removeIndex = this.randomNoteIndexes.indexOf(id);
+            this.randomNoteIndexes.splice(removeIndex, 1);
+    
+            // If that's the last guess => done
+            if (this.correctCount === this.numOfRandom) {
+                view.feedbackMessage1("Great job!!!");
+                view.feedbackMessage2("Click \"Shuffle\" to get a new challenge.");
+                this.correctCount = 0;
+                this.isGuessing = false;
+            }
+            // Else, tell how many more guesses to go
+            else {
+                view.feedbackMessage1("Correct!");
+                view.feedbackMessage2((this.numOfRandom - this.correctCount) + " more to go!");
+            } 
+        } 
+    
+        // If guess is correct, but duplicated
+        else if (this.randomNoteIndexesCopy.includes(id) === true) {
+            view.feedbackMessage1("Correct!");
+            view.feedbackMessage2("But you've already guessed it.");
+        } 
+        
+        // If guess is not correct
+        else {
+            view.feedbackMessage1("Incorrect!");
+            view.feedbackMessage2("Let's try again.");
+        }
+    },
+}
+
+//=====================================================================
+// CONTROLLER: lets user interact with the MODEL by guessing
+// sends messages to VIEW
+// Process key and mouse input and turn them into integers 0->27
+
+let controller = {
+    processPianoNote(id) {
+        model.checkGuess(id);
+        view.playPiano(id);
+    },
+
+    parsePianoMouseInput: function(e) {
+        // Get the note id from the key div id
+        let id = (Array.from(KEY_DIVS)).indexOf(e.target);
+
+        this.processPianoNote(id);
+    },
+
+    parsePianoKeyInput: function(e) {
+        // Safety check: don't repeat note if key is still pressed
+        if (e.repeat) return;
+
+        // Get the note id from the computer key id
+        const computerKey = e.key;
+        let id = COMPUTER_KEYS.indexOf(computerKey);
+        if (id === -1) return false;
+
+        this.processPianoNote(id);
+    },
+
+    playReference: function() {
+        let id = REFERENCE_SELECT.value;
+        view.playPiano(id);
+    },
+
+    playRandom: function() {
+        // Play all the random notes in the array
+        for (let i = 0; i < model.numOfRandom; ++i)
+        {
+            let id = model.randomNoteIndexesCopy[i];
+            view.playNoteSound(id);
+        }
+        model.isGuessing = true;    
+    },
+
+    selectNumRandom: function() {
+        model.numOfRandom = parseInt(RANDOM_SELECT.value);
+        // shuffle the random array everytime the number of random notes is changed
+        model.shuffleRandomNotesArray(); 
+    },
+
+    showAnswer: function() {
+        let answers = [];
+        model.randomNoteIndexesCopy.sort((a,b) => a - b);
+
+        // Play all the random notes in the array
+        for (let i = 0; i < model.numOfRandom; ++i)
+        {
+            let id = model.randomNoteIndexesCopy[i];
+            // Play each note in the sorted random array, 
+            view.playNoteSound(id);
+            view.changeNoteColor(id);
+            // and push each of those in the answers array
+            answers.push (PIANO_KEYS[id].note);
+        }
+    
+        model.correctCount = 0;
+        model.isGuessing = false;
+    
+        view.feedbackMessage1(answers);
+        view.feedbackMessage2("Keep trying!");
+    }
+}
+
+//=====================================================================
+// EVENT HANDLERS
+// detects user input to send over to CONTROLLER
+
+// Piano Mouse Input handler
+KEY_DIVS.forEach(key => {
+    key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e))
+});
+document.addEventListener("pointerup", () => view.stopAudioVisual());
+
+// Piano Computer Keyboard Input handlers
+document.addEventListener("keydown", e => controller.parsePianoKeyInput(e));
+document.addEventListener("keyup", () => view.stopAudioVisual());
+
+// Utility buttons handlers
+REFERENCE_PLAY.addEventListener("click", () => controller.playReference());
+RANDOM_PLAY.addEventListener("click", () => controller.playRandom());
+RANDOM_SELECT.addEventListener("change", () => controller.selectNumRandom());
+SHUFFLE.addEventListener("click", () => model.shuffleAll());
+ANSWER.addEventListener("click", () => controller.showAnswer());
+
+//=====================================================================
+// INIT
+// initializes page on load
+
+window.addEventListener("load", initGame);
+function initGame() {
+    view.initKeyNames();
+    view.initFeedback();
+    view.initReference();
+
+    model.shuffleReference();
+    model.shuffleRandomNotesArray();
 }
