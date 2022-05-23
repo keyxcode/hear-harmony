@@ -11,7 +11,7 @@ const ANSWER = document.querySelector("#answer");
 const SHARP_SWITCH = document.querySelector("#sharp-switch");
 const STATIC_REF_SWITCH = document.querySelector("#static-ref-switch");
 
-const ctx = new (window.AudioContext || window.webkitAudioContext)();
+const CTX = new (window.AudioContext || window.webkitAudioContext)();
 
 // 4 arrays below are correlated by indexes
 // Keyboard notes model array
@@ -88,10 +88,12 @@ let view = {
     },
 
     playNoteSound: function(id) {
-        const playSound = ctx.createBufferSource();
-        playSound.buffer = model.fetchedSamples[id];
-        playSound.connect(ctx.destination);
-        playSound.start(ctx.currentTime);
+        let audioNode = CTX.createBufferSource();
+        audioNode.buffer = model.fetchedSamples[id];
+        audioNode.connect(CTX.destination);
+        audioNode.start(CTX.currentTime);
+
+        model.activeAudioNodes.push(audioNode);
     },
 
     changeNoteColor: function(id) {
@@ -102,6 +104,13 @@ let view = {
     // Pause everything
     stopAudioVisual: function() {
         document.querySelectorAll(".active").forEach(el => el.classList.remove("active"));
+        //this.stopPianoSound();
+    },
+
+    stopPianoSound: function() {
+        for (let i = 0; i < model.activeAudioNodes.length; i++) {
+            model.activeAudioNodes[i].stop();
+        }
     },
 
     initKeyNames: function() {
@@ -144,6 +153,7 @@ let model = {
     randomNoteIndexes: [],
     randomNoteIndexesCopy: [],
     fetchedSamples: [],
+    activeAudioNodes: [],
     numOfRandom: parseInt(RANDOM_SELECT.value),
     correctCount: 0,
     isGuessing: false,
@@ -231,7 +241,7 @@ let model = {
 // Process key and mouse input and turn them into integers 0->27
 
 let controller = {
-    processPianoNote(id) {
+    processActiveNote(id) {
         model.checkGuess(id);
         view.playPiano(id);
     },
@@ -239,8 +249,8 @@ let controller = {
     parsePianoMouseInput: function(e) {
         // Get the note id from the key div id
         let id = (Array.from(KEY_DIVS)).indexOf(e.target);
-
-        this.processPianoNote(id);
+        if (e.type === "pointerdown") this.processActiveNote(id)
+        else if (e.type === "pointerup") view.stopAudioVisual();
     },
 
     parsePianoKeyInput: function(e) {
@@ -252,7 +262,7 @@ let controller = {
         let id = COMPUTER_KEYS.indexOf(computerKey);
         if (id === -1) return false;
 
-        this.processPianoNote(id);
+        this.processActiveNote(id);
     },
 
     playReference: function() {
@@ -307,9 +317,9 @@ let controller = {
 
 // Piano Mouse Input handler
 KEY_DIVS.forEach(key => {
-    key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e))
+    key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e));
+    key.addEventListener("pointerup", e => controller.parsePianoMouseInput(e));
 });
-document.addEventListener("pointerup", () => view.stopAudioVisual());
 
 // Piano Computer Keyboard Input handlers
 document.addEventListener("keydown", e => controller.parsePianoKeyInput(e));
@@ -344,7 +354,7 @@ function initGame() {
         let audio;
         fetch(`Weber Baby Grand keyxcode/${noteName}.mp3`)
         .then(data => data.arrayBuffer())
-        .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
+        .then(arrayBuffer => CTX.decodeAudioData(arrayBuffer))
         .then(decodedAudio => {
             audio = decodedAudio;
             model.fetchedSamples[i] = audio;
