@@ -11,6 +11,8 @@ const ANSWER = document.querySelector("#answer");
 const SHARP_SWITCH = document.querySelector("#sharp-switch");
 const STATIC_REF_SWITCH = document.querySelector("#static-ref-switch");
 
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
 // 4 arrays below are correlated by indexes
 // Keyboard notes model array
 const PIANO_KEYS = [ 
@@ -41,10 +43,10 @@ const PIANO_KEYS = [
     {note: "B4", noteSharp: "B4", computerKey: "u"},
     {note: "C5", noteSharp: "C5", computerKey: "i"}
 ];
+const NUM_OF_KEYS = PIANO_KEYS.length;
 
 // Arrays of keys on screen (aka key divs)
 const KEY_DIVS = document.querySelectorAll(".key");
-const NUM_OF_KEYS = KEY_DIVS.length;
 
 // Array of HTML audios
 const KEY_AUDIOS = document.querySelectorAll("audio");
@@ -86,9 +88,10 @@ let view = {
     },
 
     playNoteSound: function(id) {
-        let noteAudio = KEY_AUDIOS[id];
-        noteAudio.currentTime = 0;
-        noteAudio.play();
+        const playSound = ctx.createBufferSource();
+        playSound.buffer = model.fetchedSamples[id];
+        playSound.connect(ctx.destination);
+        playSound.start(ctx.currentTime);
     },
 
     changeNoteColor: function(id) {
@@ -98,7 +101,6 @@ let view = {
 
     // Pause everything
     stopAudioVisual: function() {
-        document.querySelectorAll("audio").forEach(el => el.pause());
         document.querySelectorAll(".active").forEach(el => el.classList.remove("active"));
     },
 
@@ -141,6 +143,7 @@ let view = {
 let model = {
     randomNoteIndexes: [],
     randomNoteIndexesCopy: [],
+    fetchedSamples: [],
     numOfRandom: parseInt(RANDOM_SELECT.value),
     correctCount: 0,
     isGuessing: false,
@@ -326,7 +329,6 @@ STATIC_REF_SWITCH.addEventListener("click", () => model.switchRefState());
 //=====================================================================
 // INIT
 // initializes page on load
-
 window.addEventListener("load", initGame);
 function initGame() {
     view.initKeyNames();
@@ -335,30 +337,17 @@ function initGame() {
 
     model.shuffleReference();
     model.shuffleRandomNotesArray();
-}
 
-// EXPERIMENTAL
-
-// Create global audio context
-const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-const FETCH_PIANO_SAMPLES = [];
-
-for (let i = 0; i < NUM_OF_KEYS; i++) {
-    let noteName = PIANO_KEYS[i].note;
-    let audio;
-    fetch(`Weber Baby Grand keyxcode/${noteName}.mp3`)
-    .then(data => data.arrayBuffer())
-    .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
-    .then(decodedAudio => {
-        audio = decodedAudio;
-        FETCH_PIANO_SAMPLES.push(audio);
-    })  
-}
-
-function playback(buffer) {
-    const playSound = ctx.createBufferSource();
-    playSound.buffer = buffer;
-    playSound.connect(ctx.destination);
-    playSound.start(ctx.currentTime);
+    // Init piano samples
+    for (let i = 0; i < NUM_OF_KEYS; i++) {
+        let noteName = PIANO_KEYS[i].note;
+        let audio;
+        fetch(`Weber Baby Grand keyxcode/${noteName}.mp3`)
+        .then(data => data.arrayBuffer())
+        .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
+        .then(decodedAudio => {
+            audio = decodedAudio;
+            model.fetchedSamples[i] = audio;
+        })  
+    }
 }
