@@ -336,3 +336,29 @@ function initGame() {
     model.shuffleReference();
     model.shuffleRandomNotesArray();
 }
+
+// EXPERIMENTAL
+
+// Create global audio context
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+const FETCH_PIANO_SAMPLES = [];
+
+for (let i = 0; i < NUM_OF_KEYS; i++) {
+    let noteName = PIANO_KEYS[i].note;
+    let audio;
+    fetch(`Weber Baby Grand keyxcode/${noteName}.mp3`)
+    .then(data => data.arrayBuffer())
+    .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
+    .then(decodedAudio => {
+        audio = decodedAudio;
+        FETCH_PIANO_SAMPLES.push(audio);
+    })  
+}
+
+function playback(buffer) {
+    const playSound = ctx.createBufferSource();
+    playSound.buffer = buffer;
+    playSound.connect(ctx.destination);
+    playSound.start(ctx.currentTime);
+}
