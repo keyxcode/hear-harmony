@@ -3,6 +3,7 @@
 * ### Version 0.7.0
     * Implemented local storage to keep track of number of random notes, sharp/ flat preference and whether reference is static.
     * Emoji.
+    * Edited about.
 
 * ### Version 0.6.0
     * Upgraded to a more robust and responsive audio engine using the Web Audio API.

@@ -118,22 +118,21 @@ let view = {
                 model.pianoVoices[i].gainFader.gain.exponentialRampToValueAtTime(0.0001, currentTime + 1);
                 //model.pianoVoices[i].node.stop();
                 model.pianoVoices[i].isActive = false;
-                //console.log(model.pianoVoices[i].voiceID, model.pianoVoices[i].gainFader.gain.value);
             }
         }
     },
 
-    initKeyNames: function() {
+    initKeyNames: function(noteState) {
         for (let [i, key] of KEY_DIVS.entries()) {
-                key.innerHTML = PIANO_KEYS[i].note;
+                key.innerHTML = PIANO_KEYS[i][noteState];
         }
     },
     
     // Initialize all options for reference note
-    initReference: function() {
+    initReference: function(noteState) {
         for (let [i, key] of PIANO_KEYS.entries()) {
             let option = document.createElement("option");
-            option.text = key.note;
+            option.text = key[noteState];
             option.value = i;
             option.id = "referenceNote"
 
@@ -141,14 +140,14 @@ let view = {
         }
     },
 
-    updateSharpFlat: function() {
+    updateSharpFlat: function(noteState) {
         for (let [i, key] of KEY_DIVS.entries()) {
-            key.innerHTML = PIANO_KEYS[i][model.noteState];
+            key.innerHTML = PIANO_KEYS[i][noteState];
         }
 
         let referenceNotes = document.querySelectorAll("#referenceNote");
         for (let [i, ref] of referenceNotes.entries()) {
-            ref.text = PIANO_KEYS[i][model.noteState];
+            ref.text = PIANO_KEYS[i][noteState];
         }
     }
 }
@@ -169,24 +168,24 @@ let model = {
     numOfRandom: parseInt(localStorage.getItem("numOfRandom")),
     correctCount: 0,
     isGuessing: false,
-    isPreferSharp: JSON.parse(localStorage.getItem("isPreferSharp")),
-    noteState: "note",
-    isStaticRef: JSON.parse(localStorage.getItem("isStaticRef")),
+    isPreferSharp: localStorage.getItem("isPreferSharp"),
+    isStaticRef: localStorage.getItem("isStaticRef"),
 
     switchSharpFlat: function() {
-        if (this.isPreferSharp === false) {
+        let noteState;
+        if (JSON.parse(this.isPreferSharp) === false) {
             this.isPreferSharp = true;
-            this.noteState = "noteSharp";
-        } else if (this.isPreferSharp === true) {
+            noteState = "noteSharp";
+        } else if (JSON.parse(this.isPreferSharp) === true) {
             this.isPreferSharp = false;
-            this.noteState = "note";
+            noteState = "note";
         }
         localStorage.setItem("isPreferSharp", this.isPreferSharp);
-        view.updateSharpFlat();
+        view.updateSharpFlat(noteState);
     },
 
     switchRefState: function() {
-        this.isStaticRef = ((this.isStaticRef) === true) ? false : true;
+        this.isStaticRef = (JSON.parse(this.isStaticRef) === true) ? false : true;
         localStorage.setItem("isStaticRef", this.isStaticRef);
     },
 
@@ -313,6 +312,7 @@ let controller = {
         this.answers = [];
         model.randomNoteIndexesCopy.sort((a,b) => a - b);
 
+        let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note";
         // Play all the random notes in the array
         for (let i = 0; i < model.numOfRandom; ++i)
         {
@@ -321,8 +321,7 @@ let controller = {
             view.playNoteSound(id);
             view.changeNoteColor(id);
             // and push each of those in the answers array
-            let note = view.note;
-            this.answers.push (PIANO_KEYS[id][model.noteState]);
+            this.answers.push (PIANO_KEYS[id][noteState]);
         }
     
         model.correctCount = 0;
@@ -364,13 +363,6 @@ STATIC_REF_SWITCH.addEventListener("click", () => model.switchRefState());
 // initializes page on load
 window.addEventListener("load", initGame);
 function initGame() {
-    view.initKeyNames();
-    view.initFeedback();
-    view.initReference();
-
-    model.shuffleReference();
-    model.shuffleRandomNotesArray();
-
     // Init piano samples
     for (let i = 0; i < NUM_OF_KEYS; i++) {
         let noteName = PIANO_KEYS[i].note;
@@ -394,12 +386,14 @@ function initGame() {
     // Init sharp flat switch
     if (!localStorage.getItem("isPreferSharp")) {
         localStorage.setItem("isPreferSharp", false);
+        console.log(localStorage.getItem("isPreferSharp"));
     }
     SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
 
     // Init static reference switch
     if (!localStorage.getItem("isStaticRef")) {
         localStorage.setItem("isStaticRef", false);
+        console.log(localStorage.getItem("isStaticRef"));
     }
     STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
 
@@ -408,4 +402,12 @@ function initGame() {
         localStorage.setItem("numOfRandom", 1);
     }
     RANDOM_SELECT.value = parseInt(localStorage.getItem("numOfRandom"));
+
+    let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
+    view.initKeyNames(noteState);
+    view.initFeedback();
+    view.initReference(noteState);
+
+    model.shuffleReference();
+    model.shuffleRandomNotesArray();
 }
