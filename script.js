@@ -56,6 +56,11 @@ const COMPUTER_KEYS = [
     "q", "2", "w", "3", "e", "r", "5", "t", "6", "y", "7", "u", "i"
 ];
 
+// Voice manager
+let voiceManager = [
+    {voiceID: 0, isActive: false}
+]
+
 //=====================================================================
 //VIEW: alters the UI based on given inputs from MODEL and CONTROLLER
 // feedback message 
