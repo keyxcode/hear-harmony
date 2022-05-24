@@ -194,6 +194,6 @@ select {
 
 /*=================================================================*/
 #about {
-    text-align: justify;
+    text-align: justify !important;
     width: 75%;
 }
