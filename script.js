@@ -16,7 +16,7 @@ const MASTER_GAIN = CTX.createGain();
 MASTER_GAIN.gain.value = 0.7;
 MASTER_GAIN.connect(CTX.destination);
 
-// 4 arrays below are correlated by indexes
+// The arrays below are correlated by indexes
 // Keyboard notes model array
 const PIANO_KEYS = [ 
     {note: "C3", noteSharp: "C3", computerKey: "z"},
@@ -115,7 +115,7 @@ let view = {
             if (model.pianoVoices[i].isActive === true) {
                 currentTime = CTX.currentTime;
                 model.pianoVoices[i].gainFader.gain.setValueAtTime(1, currentTime);
-                model.pianoVoices[i].gainFader.gain.exponentialRampToValueAtTime(0.005, currentTime + 1);
+                model.pianoVoices[i].gainFader.gain.exponentialRampToValueAtTime(0.0001, currentTime + 1);
                 //model.pianoVoices[i].node.stop();
                 model.pianoVoices[i].isActive = false;
                 //console.log(model.pianoVoices[i].voiceID, model.pianoVoices[i].gainFader.gain.value);
