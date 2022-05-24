@@ -166,18 +166,18 @@ let model = {
     pianoVoices: [],
     numPianoVoices: 48,
     activeVoiceID: 0,
-    numOfRandom: parseInt(RANDOM_SELECT.value),
+    numOfRandom: parseInt(localStorage.getItem("numOfRandom")),
     correctCount: 0,
     isGuessing: false,
-    isPreferSharp: localStorage.getItem("isPreferSharp"),
+    isPreferSharp: JSON.parse(localStorage.getItem("isPreferSharp")),
     noteState: "note",
-    isStaticRef: localStorage.getItem("isStaticRef"),
+    isStaticRef: JSON.parse(localStorage.getItem("isStaticRef")),
 
     switchSharpFlat: function() {
-        if (JSON.parse(this.isPreferSharp) === false) {
+        if (this.isPreferSharp === false) {
             this.isPreferSharp = true;
             this.noteState = "noteSharp";
-        } else if (JSON.parse(this.isPreferSharp) === true) {
+        } else if (this.isPreferSharp === true) {
             this.isPreferSharp = false;
             this.noteState = "note";
         }
@@ -186,7 +186,7 @@ let model = {
     },
 
     switchRefState: function() {
-        this.isStaticRef = (JSON.parse(this.isStaticRef) === true) ? false : true;
+        this.isStaticRef = ((this.isStaticRef) === true) ? false : true;
         localStorage.setItem("isStaticRef", this.isStaticRef);
     },
 
@@ -302,7 +302,8 @@ let controller = {
     },
 
     selectNumRandom: function() {
-        model.numOfRandom = parseInt(RANDOM_SELECT.value);
+        localStorage.setItem("numOfRandom", RANDOM_SELECT.value);
+        model.numOfRandom = parseInt(localStorage.getItem("numOfRandom"));
         // shuffle the random array everytime the number of random notes is changed
         model.shuffleRandomNotesArray(); 
     },
@@ -403,7 +404,8 @@ function initGame() {
     STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
 
     // Init number of random notes
-    if (!localStorage.getItem("numOfRandomNotes")) {
-        localStorage.setItem("numOfRandomNotes", 1);
+    if (!localStorage.getItem("numOfRandom")) {
+        localStorage.setItem("numOfRandom", 1);
     }
+    RANDOM_SELECT.value = parseInt(localStorage.getItem("numOfRandom"));
 }
