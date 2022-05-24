@@ -1,5 +1,8 @@
 # Change Log
 
+* ### Version 0.7.1
+    * Fixed local storage bug.
+
 * ### Version 0.7.0
     * Implemented local storage to keep track of number of random notes, sharp/ flat preference and whether reference is static.
     * Emoji.

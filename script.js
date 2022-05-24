@@ -16,6 +16,17 @@ const MASTER_GAIN = CTX.createGain();
 MASTER_GAIN.gain.value = 0.7;
 MASTER_GAIN.connect(CTX.destination);
 
+if (!localStorage.getItem("isPreferSharp")) {
+    localStorage.setItem("isPreferSharp", false);
+}
+if (!localStorage.getItem("isStaticRef")) {
+    localStorage.setItem("isStaticRef", false);
+}
+if (!localStorage.getItem("numOfRandom")) {
+    localStorage.setItem("numOfRandom", 1);
+}
+
+
 // The arrays below are correlated by indexes
 // Keyboard notes model array
 const PIANO_KEYS = [ 
@@ -384,23 +395,12 @@ function initGame() {
     }
 
     // Init sharp flat switch
-    if (!localStorage.getItem("isPreferSharp")) {
-        localStorage.setItem("isPreferSharp", false);
-        console.log(localStorage.getItem("isPreferSharp"));
-    }
     SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
 
     // Init static reference switch
-    if (!localStorage.getItem("isStaticRef")) {
-        localStorage.setItem("isStaticRef", false);
-        console.log(localStorage.getItem("isStaticRef"));
-    }
     STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
 
     // Init number of random notes
-    if (!localStorage.getItem("numOfRandom")) {
-        localStorage.setItem("numOfRandom", 1);
-    }
     RANDOM_SELECT.value = parseInt(localStorage.getItem("numOfRandom"));
 
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
