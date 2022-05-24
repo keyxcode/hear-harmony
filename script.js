@@ -13,6 +13,7 @@ const STATIC_REF_SWITCH = document.querySelector("#static-ref-switch");
 
 const CTX = new (window.AudioContext || window.webkitAudioContext)();
 const MASTER_GAIN = CTX.createGain();
+MASTER_GAIN.gain.value = 0.7;
 MASTER_GAIN.connect(CTX.destination);
 
 // 4 arrays below are correlated by indexes
@@ -56,11 +57,6 @@ const COMPUTER_KEYS = [
     "q", "2", "w", "3", "e", "r", "5", "t", "6", "y", "7", "u", "i"
 ];
 
-// Voice manager
-let voiceManager = [
-    {voiceID: 0, isActive: false}
-]
-
 //=====================================================================
 //VIEW: alters the UI based on given inputs from MODEL and CONTROLLER
 // feedback message 
@@ -92,14 +88,15 @@ let view = {
     },
 
     playNoteSound: function(id) {
-        MASTER_GAIN.gain.value = 1;
-        let nodeID = model.activeAudioNodes.length;
-        model.activeAudioNodes[nodeID] = CTX.createBufferSource();
-        model.activeAudioNodes[nodeID].buffer = model.fetchedSamples[id];
-        model.activeAudioNodes[nodeID].connect(MASTER_GAIN);
-        model.activeAudioNodes[nodeID].start(CTX.currentTime);
+        let voiceID = model.activeVoiceID;
+        model.pianoVoices[voiceID].node = CTX.createBufferSource();
+        model.pianoVoices[voiceID].node.buffer = model.fetchedSamples[id];
+        model.pianoVoices[voiceID].gainFader.gain.value = 1;
+        model.pianoVoices[voiceID].node.connect(model.pianoVoices[voiceID].gainFader);
+        model.pianoVoices[voiceID].node.start(CTX.currentTime);
+        model.pianoVoices[voiceID].isActive = true;
 
-        console.log(model.activeAudioNodes);
+        model.activeVoiceID = (model.activeVoiceID + 1) % model.numPianoVoices;
     },
 
     changeNoteColor: function(id) {
@@ -114,11 +111,16 @@ let view = {
     },
 
     stopPianoSound: function() {
-        //MASTER_GAIN.gain.linearRampToValueAtTime(0.01, 5);
-        for (let i = 0; i < model.activeAudioNodes.length; i++) {
-            model.activeAudioNodes[i].stop();
+        for (let i = 0; i < model.numPianoVoices; i++) {
+            if (model.pianoVoices[i].isActive === true) {
+                currentTime = CTX.currentTime;
+                model.pianoVoices[i].gainFader.gain.setValueAtTime(1, currentTime);
+                model.pianoVoices[i].gainFader.gain.exponentialRampToValueAtTime(0.005, currentTime + 1);
+                //model.pianoVoices[i].node.stop();
+                model.pianoVoices[i].isActive = false;
+                //console.log(model.pianoVoices[i].voiceID, model.pianoVoices[i].gainFader.gain.value);
+            }
         }
-        model.activeAudioNodes = [];
     },
 
     initKeyNames: function() {
@@ -161,7 +163,9 @@ let model = {
     randomNoteIndexes: [],
     randomNoteIndexesCopy: [],
     fetchedSamples: [],
-    activeAudioNodes: [],
+    pianoVoices: [],
+    numPianoVoices: 48,
+    activeVoiceID: 0,
     numOfRandom: parseInt(RANDOM_SELECT.value),
     correctCount: 0,
     isGuessing: false,
@@ -346,6 +350,7 @@ STATIC_REF_SWITCH.addEventListener("click", () => model.switchRefState());
 
 //=====================================================================
 // INIT
+
 // initializes page on load
 window.addEventListener("load", initGame);
 function initGame() {
@@ -368,4 +373,12 @@ function initGame() {
             model.fetchedSamples[i] = audio;
         })  
     }
+
+    // Init voice manager
+    for (let i = 0; i < model.numPianoVoices; i ++) {
+        let gainFader = CTX.createGain();
+        gainFader.connect(MASTER_GAIN);
+        model.pianoVoices.push({voiceID: `${i}`, isActive: false, node: null, gainFader: gainFader});
+    }
+
 }
