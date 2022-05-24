@@ -50,9 +50,6 @@ const NUM_OF_KEYS = PIANO_KEYS.length;
 // Arrays of keys on screen (aka key divs)
 const KEY_DIVS = document.querySelectorAll(".key");
 
-// Array of HTML audios
-const KEY_AUDIOS = document.querySelectorAll("audio");
-
 // Array of Computer keys
 const COMPUTER_KEYS = [
     "z", "s", "x", "d", "c", "v", "g", "b", "h", "n", "j", "m", 
@@ -179,6 +176,7 @@ let model = {
         if (!this.isStaticRef) this.shuffleReference();
         this.shuffleRandomNotesArray();
         view.initFeedback();
+        this.correctCount = 0;
     },
 
     shuffleReference: function() {
