@@ -76,8 +76,8 @@ let view = {
     },
 
     initFeedback: function() {
-        this.feedbackMessage1("First, \"Play reference.\"");
-        this.feedbackMessage2 ("Then, \"Play random\" and select what you hear on the keyboard.");
+        this.feedbackMessage1("First, listen to the \"Reference.\"");
+        this.feedbackMessage2 ("Then, \"Play\" and press the note(s) you hear.");
     },
 
     // ideally conversion from string "A3" -> num 
@@ -231,7 +231,7 @@ let model = {
     
             // If that's the last guess => done
             if (this.correctCount === this.numOfRandom) {
-                view.feedbackMessage1("Great job!!!");
+                view.feedbackMessage1("Great job! 🏆");
                 view.feedbackMessage2("Click \"Shuffle\" to get a new challenge.");
                 this.correctCount = 0;
                 this.isGuessing = false;
@@ -239,7 +239,7 @@ let model = {
             // Else, tell how many more guesses to go
             else {
                 view.feedbackMessage1("Correct!");
-                view.feedbackMessage2((this.numOfRandom - this.correctCount) + " more to go!");
+                view.feedbackMessage2((this.numOfRandom - this.correctCount) + " more to go.");
             } 
         } 
     
@@ -401,4 +401,9 @@ function initGame() {
         localStorage.setItem("isStaticRef", false);
     }
     STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
+
+    // Init number of random notes
+    if (!localStorage.getItem("numOfRandomNotes")) {
+        localStorage.setItem("numOfRandomNotes", 1);
+    }
 }
