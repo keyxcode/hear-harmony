@@ -143,12 +143,12 @@ let view = {
 
     updateSharpFlat: function() {
         for (let [i, key] of KEY_DIVS.entries()) {
-            key.innerHTML = PIANO_KEYS[i][model.note];
+            key.innerHTML = PIANO_KEYS[i][model.noteState];
         }
 
         let referenceNotes = document.querySelectorAll("#referenceNote");
         for (let [i, ref] of referenceNotes.entries()) {
-            ref.text = PIANO_KEYS[i][model.note];
+            ref.text = PIANO_KEYS[i][model.noteState];
         }
     }
 }
@@ -169,16 +169,25 @@ let model = {
     numOfRandom: parseInt(RANDOM_SELECT.value),
     correctCount: 0,
     isGuessing: false,
-    note: "note",
-    isStaticRef: false,
+    isPreferSharp: localStorage.getItem("isPreferSharp"),
+    noteState: "note",
+    isStaticRef: localStorage.getItem("isStaticRef"),
 
     switchSharpFlat: function() {
-        this.note = (this.note === "note") ? "noteSharp" : "note";
+        if (JSON.parse(this.isPreferSharp) === false) {
+            this.isPreferSharp = true;
+            this.noteState = "noteSharp";
+        } else if (JSON.parse(this.isPreferSharp) === true) {
+            this.isPreferSharp = false;
+            this.noteState = "note";
+        }
+        localStorage.setItem("isPreferSharp", this.isPreferSharp);
         view.updateSharpFlat();
     },
 
     switchRefState: function() {
-        this.isStaticRef = (this.isStaticRef === true) ? false : true;
+        this.isStaticRef = (JSON.parse(this.isStaticRef) === true) ? false : true;
+        localStorage.setItem("isStaticRef", this.isStaticRef);
     },
 
     shuffleAll: function () {
@@ -312,7 +321,7 @@ let controller = {
             view.changeNoteColor(id);
             // and push each of those in the answers array
             let note = view.note;
-            this.answers.push (PIANO_KEYS[id][model.note]);
+            this.answers.push (PIANO_KEYS[id][model.noteState]);
         }
     
         model.correctCount = 0;
@@ -381,4 +390,15 @@ function initGame() {
         model.pianoVoices.push({voiceID: `${i}`, isActive: false, node: null, gainFader: gainFader});
     }
 
+    // Init sharp flat switch
+    if (!localStorage.getItem("isPreferSharp")) {
+        localStorage.setItem("isPreferSharp", false);
+    }
+    SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
+
+    // Init static reference switch
+    if (!localStorage.getItem("isStaticRef")) {
+        localStorage.setItem("isStaticRef", false);
+    }
+    STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
 }
