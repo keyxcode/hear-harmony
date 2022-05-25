@@ -69,10 +69,10 @@ const COMPUTER_KEYS = [
 ];
 
 //=====================================================================
-// MODEL: the backend, generates random notes, plays notes and manages guess status. 
-// Processes note as number indexes (0 -> 25)
+// MODEL: the backend, generates random notes, plays samples and manages game state. 
+// Processes notes as number indexes (0 -> 25)
 // handles what happens when a note is played
-// sends messages to VIEW feedback
+// communicates with CONTROLLER
 
 let model = {
     // game states for reference
@@ -93,20 +93,12 @@ let model = {
     isPreferSharp: localStorage.getItem("isPreferSharp"),
     isStaticRef: localStorage.getItem("isStaticRef"),
 
-    shuffleAll: function () {
-        if (!JSON.parse(model.isStaticRef)) this.shuffleReference();
-        this.shuffleRandomNotesArray();
-        this.correctCount = 0;
-        controller.gameStateChanged(0); // init
-    },
-
     shuffleReference: function() {
         REFERENCE_SELECT.value = Math.floor(Math.random() * NUM_OF_KEYS);
     },
     
     // Generate n random indexes within the range of number of notes
     shuffleRandomNotesArray: function() {
-    
         this.randomNoteIndexes = [];
         let randomIndex;
     
@@ -119,36 +111,43 @@ let model = {
             this.randomNoteIndexes.push(randomIndex);
         }  
     
+        // Save and sort this random array into a copy for later use
         this.randomNoteIndexesCopy = this.randomNoteIndexes.slice().sort((a,b) => a - b);
     },
 
     playNoteSound: function(id) {
         let voiceID = this.activeVoiceID;
-        this.pianoVoices[voiceID].node = CTX.createBufferSource();
-        this.pianoVoices[voiceID].node.buffer = this.fetchedSamples[id];
-        this.pianoVoices[voiceID].gainFader.gain.value = 1;
-        this.pianoVoices[voiceID].node.connect(this.pianoVoices[voiceID].gainFader);
-        this.pianoVoices[voiceID].node.start(CTX.currentTime);
-        this.pianoVoices[voiceID].isActive = true;
+        let pianoVoices = this.pianoVoices;
 
+        // Load sample into the voice slot
+        pianoVoices[voiceID].node = CTX.createBufferSource();
+        pianoVoices[voiceID].node.buffer = this.fetchedSamples[id];
+        // Initialize gain fader
+        pianoVoices[voiceID].gainFader.gain.value = 1;
+        pianoVoices[voiceID].node.connect(this.pianoVoices[voiceID].gainFader);
+        // Play note and set active
+        pianoVoices[voiceID].node.start(CTX.currentTime);
+        pianoVoices[voiceID].isActive = true;
+        // Get the next active voice ID to stream the next sample
         this.activeVoiceID = (this.activeVoiceID + 1) % this.numPianoVoices;
     },
 
     stopPianoSound: function() {
-        for (let i = 0; i < this.numPianoVoices; i++) {
-            if (this.pianoVoices[i].isActive === true) {
+        this.pianoVoices.forEach(voice => {
+            if (voice.isActive == true) {
+                // Fade out
                 currentTime = CTX.currentTime;
-                this.pianoVoices[i].gainFader.gain.setValueAtTime(1, currentTime);
-                this.pianoVoices[i].gainFader.gain.exponentialRampToValueAtTime(0.0001, currentTime + 1);
-                //this.pianoVoices[i].node.stop();
-                this.pianoVoices[i].isActive = false;
+                voice.gainFader.gain.setValueAtTime(1, currentTime);
+                voice.gainFader.gain.exponentialRampToValueAtTime(0.001, currentTime + 1);
+                // voice.stop();
+                voice.isActive = false;
             }
-        }
+        });
     },
 
     // refactor this to take in number instead
     checkGuess: function(id) {
-        // If guess is correct
+        // If guess is found in the original random array
         if (this.randomNoteIndexes.includes(id) === true) {
             this.correctCount += 1;
             let removeIndex = this.randomNoteIndexes.indexOf(id);
@@ -160,6 +159,7 @@ let model = {
                 this.isGuessing = false;
                 controller.gameStateChanged(1); // won
             }
+
             // Else, tell how many more guesses to go
             else {
                 let notesLeft = this.numOfRandom - this.correctCount;
@@ -167,33 +167,16 @@ let model = {
             } 
         } 
     
-        // If guess is correct, but duplicated
+        // If guess is not found in the original spliced array, 
+        // but is found in the copied array, it is duplicated
         else if (this.randomNoteIndexesCopy.includes(id) === true) {
             controller.gameStateChanged(4); // duplicated
         } 
         
-        // If guess is not correct
+        // If guess is not found anywhere
         else {
             controller.gameStateChanged(3); // incorrect
         }
-    },
-
-    updateNoteState: function() {
-        let noteState;
-        if (JSON.parse(this.isPreferSharp) === false) {
-            this.isPreferSharp = true;
-            noteState = "noteSharp";
-        } else if (JSON.parse(this.isPreferSharp) === true) {
-            this.isPreferSharp = false;
-            noteState = "note";
-        }
-        localStorage.setItem("isPreferSharp", this.isPreferSharp);
-        controller.noteStateChanged(noteState);
-    },
-
-    updateRefState: function() {
-        this.isStaticRef = (JSON.parse(this.isStaticRef) === true) ? false : true;
-        localStorage.setItem("isStaticRef", this.isStaticRef);
     },
 }
 
@@ -274,12 +257,12 @@ document.addEventListener("keyup", () => controller.stopAudioVisual());
 REFERENCE_PLAY.addEventListener("click", () => controller.playReference());
 RANDOM_PLAY.addEventListener("click", () => controller.playRandom());
 RANDOM_SELECT.addEventListener("change", () => controller.selectNumRandom());
-SHUFFLE.addEventListener("click", () => model.shuffleAll());
+SHUFFLE.addEventListener("click", () => controller.shuffleAll());
 ANSWER.addEventListener("click", () => controller.showAnswer());
 
 // Toggle Switches
-SHARP_SWITCH.addEventListener("click", () => model.updateNoteState());
-STATIC_REF_SWITCH.addEventListener("click", () => model.updateRefState());
+SHARP_SWITCH.addEventListener("click", () => controller.updateNoteState());
+STATIC_REF_SWITCH.addEventListener("click", () => controller.updateRefState());
 
 //=====================================================================
 // CONTROLLER: lets user interact with the MODEL by guessing
@@ -327,13 +310,7 @@ let controller = {
 
     playRandom: function() {
         // Play all the random notes in the array
-        for (let i = 0; i < model.numOfRandom; ++i)
-        {
-            let id = model.randomNoteIndexesCopy[i];
-            model.playNoteSound(id);
-        }
-        
-        // Once the user hits play, game starts
+        model.randomNoteIndexesCopy.forEach((id) => model.playNoteSound(id));
         model.isGuessing = true;    
     },
 
@@ -344,6 +321,15 @@ let controller = {
 
         // shuffle the random array everytime the number of random notes is changed
         model.shuffleRandomNotesArray(); 
+    },
+
+    shuffleAll: function () {
+        if (!JSON.parse(model.isStaticRef)) model.shuffleReference();
+
+        model.shuffleRandomNotesArray();
+        model.correctCount = 0;
+        this.gameStateChanged(0); // init
+        this.isShowingAnswer = false;
     },
 
     processRandomIndexes: function() {
@@ -363,6 +349,7 @@ let controller = {
         return answerString;
     },
 
+    isShowingAnswer: false,
     showAnswer: function() {
         // Play all the random notes in the array
         model.randomNoteIndexesCopy.forEach((id) => this.playPiano(id));
@@ -373,6 +360,7 @@ let controller = {
         let answerString = this.processRandomIndexes();
         view.feedbackMessage1(answerString);
         view.feedbackMessage2("Keep trying!");
+        this.isShowingAnswer = true;
     },
 
     gameStateChanged: function(gameState, notesLeft) {
@@ -402,10 +390,25 @@ let controller = {
         }
     },
 
-    noteStateChanged: function(noteState) {
+    updateNoteState: function() {
+        let noteState;
+        if (JSON.parse(model.isPreferSharp) === false) {
+            model.isPreferSharp = true;
+            noteState = "noteSharp";
+        } else if (JSON.parse(model.isPreferSharp) === true) {
+            model.isPreferSharp = false;
+            noteState = "note";
+        }
+        localStorage.setItem("isPreferSharp", model.isPreferSharp);
+        
         view.updateSharpFlat(noteState);
-        this.showAnswer();
-    }
+        if (JSON.parse(this.isShowingAnswer) === true) this.showAnswer();
+    },
+
+    updateRefState: function() {
+        model.isStaticRef = (JSON.parse(model.isStaticRef) === true) ? false : true;
+        localStorage.setItem("isStaticRef", model.isStaticRef);
+    },
 }
 
 //=====================================================================
@@ -444,5 +447,5 @@ function initGame() {
     view.initFeedback();
 
     // Can only call this after initReference above
-    model.shuffleAll();
+    controller.shuffleAll();
 }
