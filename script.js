@@ -16,6 +16,7 @@ const MASTER_GAIN = CTX.createGain();
 MASTER_GAIN.gain.value = 0.7;
 MASTER_GAIN.connect(CTX.destination);
 
+// LOCAL STORAGE VARS
 if (!localStorage.getItem("isPreferSharp")) {
     localStorage.setItem("isPreferSharp", false);
 }
@@ -25,7 +26,6 @@ if (!localStorage.getItem("isStaticRef")) {
 if (!localStorage.getItem("numOfRandom")) {
     localStorage.setItem("numOfRandom", 1);
 }
-
 
 // The arrays below are correlated by indexes
 // Keyboard notes model array
@@ -59,112 +59,17 @@ const PIANO_KEYS = [
 ];
 const NUM_OF_KEYS = PIANO_KEYS.length;
 
-// Arrays of keys on screen (aka key divs)
+// Arrays of key divs on screen to look up touch input
 const KEY_DIVS = document.querySelectorAll(".key");
 
-// Array of Computer keys
+// Array of computer keys to look up key input
 const COMPUTER_KEYS = [
     "z", "s", "x", "d", "c", "v", "g", "b", "h", "n", "j", "m", 
     "q", "2", "w", "3", "e", "r", "5", "t", "6", "y", "7", "u", "i"
 ];
 
 //=====================================================================
-//VIEW: alters the UI based on given inputs from MODEL and CONTROLLER
-// feedback message 
-// key colors
-// play sound
-// key names
-
-let view = {
-    feedbackMessage1: function(msg) {
-        let feedback1 = document.querySelector("#feedback1");
-        feedback1.innerHTML = msg;
-    },
-
-    feedbackMessage2: function(msg) {
-        let feedback2 = document.querySelector("#feedback2");
-        feedback2.innerHTML = msg;
-    },
-
-    initFeedback: function() {
-        this.feedbackMessage1("First, listen to the \"Reference.\"");
-        this.feedbackMessage2 ("Then, \"Play\" and press the note(s) you hear.");
-    },
-
-    // ideally conversion from string "A3" -> num 
-    // should take place elsewhere
-    playPiano: function(id) {
-        this.playNoteSound(id);
-        this.changeNoteColor(id);
-    },
-
-    playNoteSound: function(id) {
-        let voiceID = model.activeVoiceID;
-        model.pianoVoices[voiceID].node = CTX.createBufferSource();
-        model.pianoVoices[voiceID].node.buffer = model.fetchedSamples[id];
-        model.pianoVoices[voiceID].gainFader.gain.value = 1;
-        model.pianoVoices[voiceID].node.connect(model.pianoVoices[voiceID].gainFader);
-        model.pianoVoices[voiceID].node.start(CTX.currentTime);
-        model.pianoVoices[voiceID].isActive = true;
-
-        model.activeVoiceID = (model.activeVoiceID + 1) % model.numPianoVoices;
-    },
-
-    changeNoteColor: function(id) {
-        let key = KEY_DIVS[id];
-        key.classList.add("active");
-    },
-
-    // Pause everything
-    stopAudioVisual: function() {
-        document.querySelectorAll(".active").forEach(el => el.classList.remove("active"));
-        this.stopPianoSound();
-    },
-
-    stopPianoSound: function() {
-        for (let i = 0; i < model.numPianoVoices; i++) {
-            if (model.pianoVoices[i].isActive === true) {
-                currentTime = CTX.currentTime;
-                model.pianoVoices[i].gainFader.gain.setValueAtTime(1, currentTime);
-                model.pianoVoices[i].gainFader.gain.exponentialRampToValueAtTime(0.0001, currentTime + 1);
-                //model.pianoVoices[i].node.stop();
-                model.pianoVoices[i].isActive = false;
-            }
-        }
-    },
-
-    initKeyNames: function(noteState) {
-        for (let [i, key] of KEY_DIVS.entries()) {
-                key.innerHTML = PIANO_KEYS[i][noteState];
-        }
-    },
-    
-    // Initialize all options for reference note
-    initReference: function(noteState) {
-        for (let [i, key] of PIANO_KEYS.entries()) {
-            let option = document.createElement("option");
-            option.text = key[noteState];
-            option.value = i;
-            option.id = "referenceNote"
-
-            REFERENCE_SELECT.add(option);
-        }
-    },
-
-    updateSharpFlat: function(noteState) {
-        for (let [i, key] of KEY_DIVS.entries()) {
-            key.innerHTML = PIANO_KEYS[i][noteState];
-        }
-
-        let referenceNotes = document.querySelectorAll("#referenceNote");
-        for (let [i, ref] of referenceNotes.entries()) {
-            ref.text = PIANO_KEYS[i][noteState];
-        }
-    }
-}
-
-//=====================================================================
-// MODEL: the backend, generates random notes and manages guess status. 
+// MODEL: the backend, generates random notes, plays notes and manages guess status. 
 // Processes note as number indexes (0 -> 25)
 // handles what happens when a note is played
 // sends messages to VIEW feedback
@@ -172,13 +77,16 @@ let view = {
 let model = {
     randomNoteIndexes: [],
     randomNoteIndexesCopy: [],
+
     fetchedSamples: [],
     pianoVoices: [],
     numPianoVoices: 48,
     activeVoiceID: 0,
+
     numOfRandom: parseInt(localStorage.getItem("numOfRandom")),
     correctCount: 0,
     isGuessing: false,
+
     isPreferSharp: localStorage.getItem("isPreferSharp"),
     isStaticRef: localStorage.getItem("isStaticRef"),
 
@@ -265,6 +173,97 @@ let model = {
             view.feedbackMessage2("Let's try again.");
         }
     },
+}
+
+//=====================================================================
+//VIEW: alters the UI based on given inputs from MODEL and CONTROLLER
+// feedback message 
+// key colors
+// play sound
+// key names
+
+let view = {
+    feedbackMessage1: function(msg) {
+        let feedback1 = document.querySelector("#feedback1");
+        feedback1.innerHTML = msg;
+    },
+
+    feedbackMessage2: function(msg) {
+        let feedback2 = document.querySelector("#feedback2");
+        feedback2.innerHTML = msg;
+    },
+
+    initFeedback: function() {
+        this.feedbackMessage1("First, listen to the \"Reference.\"");
+        this.feedbackMessage2 ("Then, \"Play\" and press the note(s) you hear.");
+    },
+
+    // ideally conversion from string "A3" -> num 
+    // should take place elsewhere
+    playPiano: function(id) {
+        this.playNoteSound(id);
+        this.changeNoteColor(id);
+    },
+
+    playNoteSound: function(id) {
+        let voiceID = model.activeVoiceID;
+        model.pianoVoices[voiceID].node = CTX.createBufferSource();
+        model.pianoVoices[voiceID].node.buffer = model.fetchedSamples[id];
+        model.pianoVoices[voiceID].gainFader.gain.value = 1;
+        model.pianoVoices[voiceID].node.connect(model.pianoVoices[voiceID].gainFader);
+        model.pianoVoices[voiceID].node.start(CTX.currentTime);
+        model.pianoVoices[voiceID].isActive = true;
+
+        model.activeVoiceID = (model.activeVoiceID + 1) % model.numPianoVoices;
+    },
+
+    changeNoteColor: function(id) {
+        let key = KEY_DIVS[id];
+        key.classList.add("active");
+    },
+
+    stopAudioVisual: function() {
+        document.querySelectorAll(".active").forEach(el => el.classList.remove("active"));
+        this.stopPianoSound();
+    },
+
+    stopPianoSound: function() {
+        for (let i = 0; i < model.numPianoVoices; i++) {
+            if (model.pianoVoices[i].isActive === true) {
+                currentTime = CTX.currentTime;
+                model.pianoVoices[i].gainFader.gain.setValueAtTime(1, currentTime);
+                model.pianoVoices[i].gainFader.gain.exponentialRampToValueAtTime(0.0001, currentTime + 1);
+                //model.pianoVoices[i].node.stop();
+                model.pianoVoices[i].isActive = false;
+            }
+        }
+    },
+
+    initKeyNames: function(noteState) {
+        for (let [i, key] of KEY_DIVS.entries()) {
+                key.innerHTML = PIANO_KEYS[i][noteState];
+        }
+    },
+    
+    initReference: function(noteState) {
+        for (let [i, key] of PIANO_KEYS.entries()) {
+            let option = document.createElement("option");
+            option.text = key[noteState];
+            option.value = i;
+            option.id = "referenceNote"
+
+            REFERENCE_SELECT.add(option);
+        }
+    },
+
+    updateSharpFlat: function(noteState) {
+        this.initKeyNames(noteState);
+
+        let referenceNotes = document.querySelectorAll("#referenceNote");
+        for (let [i, ref] of referenceNotes.entries()) {
+            ref.text = PIANO_KEYS[i][noteState];
+        }
+    }
 }
 
 //=====================================================================
@@ -374,40 +373,35 @@ STATIC_REF_SWITCH.addEventListener("click", () => model.switchRefState());
 // initializes page on load
 window.addEventListener("load", initGame);
 function initGame() {
-    // Init piano samples
+    // Fetch piano samples
     for (let i = 0; i < NUM_OF_KEYS; i++) {
         let noteName = PIANO_KEYS[i].note;
-        let audio;
         fetch(`Weber Baby Grand keyxcode/${noteName}.mp3`)
         .then(data => data.arrayBuffer())
         .then(arrayBuffer => CTX.decodeAudioData(arrayBuffer))
         .then(decodedAudio => {
-            audio = decodedAudio;
+            let audio = decodedAudio;
             model.fetchedSamples[i] = audio;
         })  
     }
 
-    // Init voice manager
+    // Init the voice manager/ mixer in model
     for (let i = 0; i < model.numPianoVoices; i ++) {
         let gainFader = CTX.createGain();
         gainFader.connect(MASTER_GAIN);
         model.pianoVoices.push({voiceID: `${i}`, isActive: false, node: null, gainFader: gainFader});
     }
 
-    // Init sharp flat switch
+    // Init GUI
     SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
-
-    // Init static reference switch
     STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
-
-    // Init number of random notes
     RANDOM_SELECT.value = parseInt(localStorage.getItem("numOfRandom"));
 
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
     view.initKeyNames(noteState);
-    view.initFeedback();
     view.initReference(noteState);
+    view.initFeedback();
 
-    model.shuffleReference();
-    model.shuffleRandomNotesArray();
+    // Can only call this after initReference above
+    model.shuffleAll();
 }
