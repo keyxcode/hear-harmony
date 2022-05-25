@@ -144,33 +144,17 @@ select {
 }
 
 /*=================================================================*/
-/* customize piano scrollbar */
-::-webkit-scrollbar {
-    height: 20px;
-    width: 10px;
-}
-  
-::-webkit-scrollbar-track {
-    background-color: var(--white-key-color); 
-    border-radius: 5px;
-}
-   
-::-webkit-scrollbar-thumb {
-    background-color: var(--black-key-color); 
-    border-radius: 5px;
-}
-  
-::-webkit-scrollbar-thumb:hover {
-    background-color: #363852; /* blend between normal and active */
-}
 
-::-webkit-scrollbar-thumb:active {
-    background-color: var(--black-key-active-color);  
-}
 
 /*=================================================================*/
 /* Responsive design when screen too small*/
 @media screen and (max-width: 768px) {
+    .piano {
+        border-radius: 10px;
+        border: 7px solid var(--white-key-color);
+        background-color: var(--black-key-active-color);
+    }
+
     .key {
         font-size: 0.75rem;
     }
@@ -185,6 +169,16 @@ select {
         width: 36px;
         height: 162px; 
         margin: 0 -18px; /* LR margin is half the size of width */
+    }
+
+    #scroll {
+        display: block;
+        text-align: center;
+        font-size: 1rem;
+        color: var(--bg-color);
+        position: sticky;
+        position: -webkit-sticky;
+        left: 0;
     }
 
     .buttons, .feedback {
