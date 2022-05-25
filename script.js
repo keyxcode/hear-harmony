@@ -75,6 +75,8 @@ const COMPUTER_KEYS = [
 // sends messages to VIEW feedback
 
 let model = {
+    gameState: ["init", "won", "correct", "incorrect", "duplicated"],
+
     randomNoteIndexes: [],
     randomNoteIndexesCopy: [],
 
@@ -89,24 +91,6 @@ let model = {
 
     isPreferSharp: localStorage.getItem("isPreferSharp"),
     isStaticRef: localStorage.getItem("isStaticRef"),
-
-    switchSharpFlat: function() {
-        let noteState;
-        if (JSON.parse(this.isPreferSharp) === false) {
-            this.isPreferSharp = true;
-            noteState = "noteSharp";
-        } else if (JSON.parse(this.isPreferSharp) === true) {
-            this.isPreferSharp = false;
-            noteState = "note";
-        }
-        localStorage.setItem("isPreferSharp", this.isPreferSharp);
-        view.updateSharpFlat(noteState);
-    },
-
-    switchRefState: function() {
-        this.isStaticRef = (JSON.parse(this.isStaticRef) === true) ? false : true;
-        localStorage.setItem("isStaticRef", this.isStaticRef);
-    },
 
     shuffleAll: function () {
         if (!JSON.parse(model.isStaticRef)) this.shuffleReference();
@@ -172,6 +156,24 @@ let model = {
             view.feedbackMessage1("Incorrect!");
             view.feedbackMessage2("Let's try again.");
         }
+    },
+
+    updateNoteState: function() {
+        let noteState;
+        if (JSON.parse(this.isPreferSharp) === false) {
+            this.isPreferSharp = true;
+            noteState = "noteSharp";
+        } else if (JSON.parse(this.isPreferSharp) === true) {
+            this.isPreferSharp = false;
+            noteState = "note";
+        }
+        localStorage.setItem("isPreferSharp", this.isPreferSharp);
+        controller.noteStateChanged(noteState);
+    },
+
+    updateRefState: function() {
+        this.isStaticRef = (JSON.parse(this.isStaticRef) === true) ? false : true;
+        localStorage.setItem("isStaticRef", this.isStaticRef);
     },
 }
 
@@ -267,6 +269,31 @@ let view = {
 }
 
 //=====================================================================
+// EVENT HANDLERS
+// detects user input to send over to CONTROLLER
+
+// Piano Mouse Input handler
+KEY_DIVS.forEach(key => {
+    key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e));
+});
+document.addEventListener("pointerup", () => view.stopAudioVisual());
+
+// Piano Computer Keyboard Input handlers
+document.addEventListener("keydown", e => controller.parsePianoKeyInput(e));
+document.addEventListener("keyup", () => view.stopAudioVisual());
+
+// Utility buttons handlers
+REFERENCE_PLAY.addEventListener("click", () => controller.playReference());
+RANDOM_PLAY.addEventListener("click", () => controller.playRandom());
+RANDOM_SELECT.addEventListener("change", () => controller.selectNumRandom());
+SHUFFLE.addEventListener("click", () => model.shuffleAll());
+ANSWER.addEventListener("click", () => controller.showAnswer());
+
+// Toggle Switches
+SHARP_SWITCH.addEventListener("click", () => model.updateNoteState());
+STATIC_REF_SWITCH.addEventListener("click", () => model.updateRefState());
+
+//=====================================================================
 // CONTROLLER: lets user interact with the MODEL by guessing
 // sends messages to VIEW
 // Process key and mouse input and turn them into integers 0->27
@@ -339,38 +366,16 @@ let controller = {
     
         view.feedbackMessage1(this.answers);
         view.feedbackMessage2("Keep trying!");
+    },
+
+    noteStateChanged: function(noteState) {
+        view.updateSharpFlat(noteState);
     }
 }
 
 //=====================================================================
-// EVENT HANDLERS
-// detects user input to send over to CONTROLLER
-
-// Piano Mouse Input handler
-KEY_DIVS.forEach(key => {
-    key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e));
-});
-document.addEventListener("pointerup", () => view.stopAudioVisual());
-
-// Piano Computer Keyboard Input handlers
-document.addEventListener("keydown", e => controller.parsePianoKeyInput(e));
-document.addEventListener("keyup", () => view.stopAudioVisual());
-
-// Utility buttons handlers
-REFERENCE_PLAY.addEventListener("click", () => controller.playReference());
-RANDOM_PLAY.addEventListener("click", () => controller.playRandom());
-RANDOM_SELECT.addEventListener("change", () => controller.selectNumRandom());
-SHUFFLE.addEventListener("click", () => model.shuffleAll());
-ANSWER.addEventListener("click", () => controller.showAnswer());
-
-// Toggle Switches
-SHARP_SWITCH.addEventListener("click", () => model.switchSharpFlat());
-STATIC_REF_SWITCH.addEventListener("click", () => model.switchRefState());
-
-//=====================================================================
 // INIT
 
-// initializes page on load
 window.addEventListener("load", initGame);
 function initGame() {
     // Fetch piano samples
