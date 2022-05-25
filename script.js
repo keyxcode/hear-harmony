@@ -119,7 +119,7 @@ let model = {
             this.randomNoteIndexes.push(randomIndex);
         }  
     
-        this.randomNoteIndexesCopy = this.randomNoteIndexes.slice();
+        this.randomNoteIndexesCopy = this.randomNoteIndexes.slice().sort((a,b) => a - b);
     },
 
     playNoteSound: function(id) {
@@ -346,31 +346,32 @@ let controller = {
         model.shuffleRandomNotesArray(); 
     },
 
-    processAnswers: function() {
+    processRandomIndexes: function(randomNoteIndexesCopy) {
+        // Determine note state based on sharp/ flat preference
+        let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note";
+        let answerArray = model.randomNoteIndexesCopy.map(id => { 
+            return PIANO_KEYS[id][noteState] 
+        });
 
+        // Format the answer string
+        let answerString = "";
+        let lastIndex = model.numOfRandom - 1;
+        for (let i in answerArray) {
+            answerString += answerArray[i];
+            if (i < lastIndex) answerString += " - ";
+        }
+        return answerString;
     },
 
     showAnswer: function() {
-        let answers = [];
-        model.randomNoteIndexesCopy.sort((a,b) => a - b);
-
-        // Print the answer according to sharp/ flat preference
-        let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note";
         // Play all the random notes in the array
-        for (let i = 0; i < model.numOfRandom; ++i)
-        {
-            let id = model.randomNoteIndexesCopy[i];
-            // Play each note in the sorted random array, 
-            this.playPiano(id);
-            // and push each of those in the answers array
-            answers.push (PIANO_KEYS[id][noteState]);
-        }
+        model.randomNoteIndexesCopy.forEach((id) => this.playPiano(id));
     
         model.correctCount = 0;
         model.isGuessing = false;
-    
-        console.log(answers);
-        view.feedbackMessage1(answers);
+
+        let answerString = this.processRandomIndexes(model.randomNoteIndexesCopy);
+        view.feedbackMessage1(answerString);
         view.feedbackMessage2("Keep trying!");
     },
 
