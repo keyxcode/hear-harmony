@@ -332,28 +332,36 @@ let controller = {
             let id = model.randomNoteIndexesCopy[i];
             model.playNoteSound(id);
         }
+        
+        // Once the user hits play, game starts
         model.isGuessing = true;    
     },
 
     selectNumRandom: function() {
+        // Write the new num of random to local storage and update model
         localStorage.setItem("numOfRandom", RANDOM_SELECT.value);
         model.numOfRandom = parseInt(localStorage.getItem("numOfRandom"));
+
         // shuffle the random array everytime the number of random notes is changed
         model.shuffleRandomNotesArray(); 
+    },
+
+    processAnswers: function() {
+
     },
 
     showAnswer: function() {
         let answers = [];
         model.randomNoteIndexesCopy.sort((a,b) => a - b);
 
+        // Print the answer according to sharp/ flat preference
         let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note";
         // Play all the random notes in the array
         for (let i = 0; i < model.numOfRandom; ++i)
         {
             let id = model.randomNoteIndexesCopy[i];
             // Play each note in the sorted random array, 
-            model.playNoteSound(id);
-            view.changeNoteColor(id);
+            this.playPiano(id);
             // and push each of those in the answers array
             answers.push (PIANO_KEYS[id][noteState]);
         }
@@ -361,6 +369,7 @@ let controller = {
         model.correctCount = 0;
         model.isGuessing = false;
     
+        console.log(answers);
         view.feedbackMessage1(answers);
         view.feedbackMessage2("Keep trying!");
     },
