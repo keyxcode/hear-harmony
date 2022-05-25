@@ -181,7 +181,6 @@ select {
         color: var(--bg-color);
         position: sticky;
         left: 0;
-        font-style: italic;
     }
 
     .buttons, .feedback {
