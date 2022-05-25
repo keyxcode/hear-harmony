@@ -1,16 +1,14 @@
-// GLOBAL VARS:
+// GLOBAL VARS (HTML BUTTONS & UTILS)
 const REFERENCE_PLAY = document.querySelector("#reference");
 const REFERENCE_SELECT = document.querySelector("#reference-select");
-
 const RANDOM_PLAY = document.querySelector("#random");
 const RANDOM_SELECT = document.querySelector("#num-of-random");
-
 const SHUFFLE = document.querySelector("#shuffle");
 const ANSWER = document.querySelector("#answer");
-
 const SHARP_SWITCH = document.querySelector("#sharp-switch");
 const STATIC_REF_SWITCH = document.querySelector("#static-ref-switch");
 
+// AUDIO CONTEXT
 const CTX = new (window.AudioContext || window.webkitAudioContext)();
 const MASTER_GAIN = CTX.createGain();
 MASTER_GAIN.gain.value = 0.7;
@@ -27,10 +25,9 @@ if (!localStorage.getItem("numOfRandom")) {
     localStorage.setItem("numOfRandom", 1);
 }
 
-// The arrays below are correlated by indexes
+// LOOK-UP ARRAYS
 // Arrays of key divs on screen to look up touch input
 const KEY_DIVS = document.querySelectorAll(".key");
-
 // Array of computer keys to look up key input
 const COMPUTER_KEYS = [
     "z", "s", "x", "d", "c", "v", "g", "b", "h", "n", "j", "m", 
@@ -39,7 +36,7 @@ const COMPUTER_KEYS = [
 
 //=====================================================================
 // MODEL: the backend, generates random notes, plays samples and manages game state. 
-// Processes notes as number indexes (0 -> 25)
+// Processes notes as number indexes (0 -> NUM_OF_KEYS)
 // handles what happens when a note is played
 // communicates with CONTROLLER
 
@@ -154,11 +151,9 @@ let model = {
 }
 
 //=====================================================================
-//VIEW: alters the UI based on given inputs from MODEL and CONTROLLER
-// feedback message 
-// key colors
-// play sound
-// key names
+//VIEW: alters the UI based on given inputs from CONTROLLER
+// feedback message, key colors, key names, key states (sharp flat), init options
+// does read-only operation on model
 
 let view = {
     feedbackMessage1: function(msg) {
@@ -239,8 +234,8 @@ STATIC_REF_SWITCH.addEventListener("click", () => controller.updateRefState());
 
 //=====================================================================
 // CONTROLLER: lets user interact with the MODEL by guessing
-// sends messages to VIEW
-// Process key and mouse input and turn them into integers 0->27
+// sends messages to VIEW calls VIEW methods upon changes
+// Process key and mouse input and turn them into integers 0 -> NUM_OF_KEYS
 
 let controller = {
     parsePianoMouseInput: function(e) {
