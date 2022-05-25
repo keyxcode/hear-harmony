@@ -346,8 +346,8 @@ let controller = {
         model.shuffleRandomNotesArray(); 
     },
 
-    processRandomIndexes: function(randomNoteIndexesCopy) {
-        // Determine note state based on sharp/ flat preference
+    processRandomIndexes: function() {
+        // Determine sharp/ flat preference and push notes to an array
         let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note";
         let answerArray = model.randomNoteIndexesCopy.map(id => { 
             return PIANO_KEYS[id][noteState] 
@@ -370,7 +370,7 @@ let controller = {
         model.correctCount = 0;
         model.isGuessing = false;
 
-        let answerString = this.processRandomIndexes(model.randomNoteIndexesCopy);
+        let answerString = this.processRandomIndexes();
         view.feedbackMessage1(answerString);
         view.feedbackMessage2("Keep trying!");
     },
@@ -404,6 +404,7 @@ let controller = {
 
     noteStateChanged: function(noteState) {
         view.updateSharpFlat(noteState);
+        this.showAnswer();
     }
 }
 
