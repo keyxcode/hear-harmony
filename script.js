@@ -201,7 +201,7 @@ let model = {
     },
 
     shuffleAll: function () {
-        if (!this.isStaticRef) this.shuffleReference();
+        if (!JSON.parse(model.isStaticRef)) this.shuffleReference();
         this.shuffleRandomNotesArray();
         view.initFeedback();
         this.correctCount = 0;
