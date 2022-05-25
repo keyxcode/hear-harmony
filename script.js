@@ -122,10 +122,32 @@ let model = {
         this.randomNoteIndexesCopy = this.randomNoteIndexes.slice();
     },
 
+    playNoteSound: function(id) {
+        let voiceID = this.activeVoiceID;
+        this.pianoVoices[voiceID].node = CTX.createBufferSource();
+        this.pianoVoices[voiceID].node.buffer = this.fetchedSamples[id];
+        this.pianoVoices[voiceID].gainFader.gain.value = 1;
+        this.pianoVoices[voiceID].node.connect(this.pianoVoices[voiceID].gainFader);
+        this.pianoVoices[voiceID].node.start(CTX.currentTime);
+        this.pianoVoices[voiceID].isActive = true;
+
+        this.activeVoiceID = (this.activeVoiceID + 1) % this.numPianoVoices;
+    },
+
+    stopPianoSound: function() {
+        for (let i = 0; i < this.numPianoVoices; i++) {
+            if (this.pianoVoices[i].isActive === true) {
+                currentTime = CTX.currentTime;
+                this.pianoVoices[i].gainFader.gain.setValueAtTime(1, currentTime);
+                this.pianoVoices[i].gainFader.gain.exponentialRampToValueAtTime(0.0001, currentTime + 1);
+                //this.pianoVoices[i].node.stop();
+                this.pianoVoices[i].isActive = false;
+            }
+        }
+    },
+
     // refactor this to take in number instead
     checkGuess: function(id) {
-        if (!this.isGuessing) return false;
-
         // If guess is correct
         if (this.randomNoteIndexes.includes(id) === true) {
             this.correctCount += 1;
@@ -198,45 +220,9 @@ let view = {
         this.feedbackMessage2 ("Then, \"Play\" and press the note(s) you hear.");
     },
 
-    // ideally conversion from string "A3" -> num 
-    // should take place elsewhere
-    playPiano: function(id) {
-        this.playNoteSound(id);
-        this.changeNoteColor(id);
-    },
-
-    playNoteSound: function(id) {
-        let voiceID = model.activeVoiceID;
-        model.pianoVoices[voiceID].node = CTX.createBufferSource();
-        model.pianoVoices[voiceID].node.buffer = model.fetchedSamples[id];
-        model.pianoVoices[voiceID].gainFader.gain.value = 1;
-        model.pianoVoices[voiceID].node.connect(model.pianoVoices[voiceID].gainFader);
-        model.pianoVoices[voiceID].node.start(CTX.currentTime);
-        model.pianoVoices[voiceID].isActive = true;
-
-        model.activeVoiceID = (model.activeVoiceID + 1) % model.numPianoVoices;
-    },
-
     changeNoteColor: function(id) {
         let key = KEY_DIVS[id];
         key.classList.add("active");
-    },
-
-    stopAudioVisual: function() {
-        document.querySelectorAll(".active").forEach(el => el.classList.remove("active"));
-        this.stopPianoSound();
-    },
-
-    stopPianoSound: function() {
-        for (let i = 0; i < model.numPianoVoices; i++) {
-            if (model.pianoVoices[i].isActive === true) {
-                currentTime = CTX.currentTime;
-                model.pianoVoices[i].gainFader.gain.setValueAtTime(1, currentTime);
-                model.pianoVoices[i].gainFader.gain.exponentialRampToValueAtTime(0.0001, currentTime + 1);
-                //model.pianoVoices[i].node.stop();
-                model.pianoVoices[i].isActive = false;
-            }
-        }
     },
 
     initKeyNames: function(noteState) {
@@ -245,24 +231,28 @@ let view = {
         }
     },
     
-    initReference: function(noteState) {
-        for (let [i, key] of PIANO_KEYS.entries()) {
-            let option = document.createElement("option");
-            option.text = key[noteState];
-            option.value = i;
-            option.id = "referenceNote"
-
-            REFERENCE_SELECT.add(option);
+    initReferenceList: function(noteState) {
+        // Init the options
+        let referenceNotes = Array.from(document.querySelectorAll("#referenceNote"));
+        if (referenceNotes.length === 0) {
+            for (let i = 0; i < NUM_OF_KEYS; ++i) {
+                let option = document.createElement("option");
+                option.value = i;
+                option.id = "referenceNote"
+                referenceNotes.push(option);
+                REFERENCE_SELECT.add(option);
+            }
+        }
+        
+        // Name them. Separated to support sharp-flat toggle
+        for (let [i, option] of referenceNotes.entries()) {
+            option.text = PIANO_KEYS[i][noteState];
         }
     },
 
     updateSharpFlat: function(noteState) {
         this.initKeyNames(noteState);
-
-        let referenceNotes = document.querySelectorAll("#referenceNote");
-        for (let [i, ref] of referenceNotes.entries()) {
-            ref.text = PIANO_KEYS[i][noteState];
-        }
+        this.initReferenceList(noteState);
     }
 }
 
@@ -274,11 +264,11 @@ let view = {
 KEY_DIVS.forEach(key => {
     key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e));
 });
-document.addEventListener("pointerup", () => view.stopAudioVisual());
+document.addEventListener("pointerup", () => controller.stopAudioVisual());
 
 // Piano Computer Keyboard Input handlers
 document.addEventListener("keydown", e => controller.parsePianoKeyInput(e));
-document.addEventListener("keyup", () => view.stopAudioVisual());
+document.addEventListener("keyup", () => controller.stopAudioVisual());
 
 // Utility buttons handlers
 REFERENCE_PLAY.addEventListener("click", () => controller.playReference());
@@ -300,12 +290,7 @@ let controller = {
     parsePianoMouseInput: function(e) {
         // Get the note id from the key div id
         let id = (Array.from(KEY_DIVS)).indexOf(e.target);
-        this.processActiveNote(id);
-    },
-
-    processActiveNote(id) {
-        model.checkGuess(id);
-        view.playPiano(id);
+        this.processNote(id);
     },
 
     parsePianoKeyInput: function(e) {
@@ -317,12 +302,27 @@ let controller = {
         let id = COMPUTER_KEYS.indexOf(computerKey);
         if (id === -1) return false;
 
-        this.processActiveNote(id);
+        this.processNote(id);
+    },
+
+    processNote(id) {
+        this.playPiano(id);
+        if (model.isGuessing) model.checkGuess(id);
+    },
+
+    playPiano: function(id) {
+        model.playNoteSound(id);
+        view.changeNoteColor(id);
+    },
+
+    stopAudioVisual: function() {
+        document.querySelectorAll(".active").forEach(el => el.classList.remove("active"));
+        model.stopPianoSound();
     },
 
     playReference: function() {
-        let id = REFERENCE_SELECT.value;
-        view.playPiano(id);
+        let id = parseInt(REFERENCE_SELECT.value);
+        this.playPiano(id);
     },
 
     playRandom: function() {
@@ -330,7 +330,7 @@ let controller = {
         for (let i = 0; i < model.numOfRandom; ++i)
         {
             let id = model.randomNoteIndexesCopy[i];
-            view.playNoteSound(id);
+            model.playNoteSound(id);
         }
         model.isGuessing = true;    
     },
@@ -342,9 +342,8 @@ let controller = {
         model.shuffleRandomNotesArray(); 
     },
 
-    answers: [],
     showAnswer: function() {
-        this.answers = [];
+        let answers = [];
         model.randomNoteIndexesCopy.sort((a,b) => a - b);
 
         let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note";
@@ -353,16 +352,16 @@ let controller = {
         {
             let id = model.randomNoteIndexesCopy[i];
             // Play each note in the sorted random array, 
-            view.playNoteSound(id);
+            model.playNoteSound(id);
             view.changeNoteColor(id);
             // and push each of those in the answers array
-            this.answers.push (PIANO_KEYS[id][noteState]);
+            answers.push (PIANO_KEYS[id][noteState]);
         }
     
         model.correctCount = 0;
         model.isGuessing = false;
     
-        view.feedbackMessage1(this.answers);
+        view.feedbackMessage1(answers);
         view.feedbackMessage2("Keep trying!");
     },
 
@@ -429,7 +428,8 @@ function initGame() {
 
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
     view.initKeyNames(noteState);
-    view.initReference(noteState);
+    view.initReferenceList(noteState);
+
     view.initFeedback();
 
     // Can only call this after initReference above
