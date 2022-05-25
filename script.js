@@ -75,7 +75,8 @@ const COMPUTER_KEYS = [
 // sends messages to VIEW feedback
 
 let model = {
-    gameState: ["init", "won", "correct", "incorrect", "duplicated"],
+    // game states for reference
+    // gameState: {0: "init", 1: "won", 2: "correct", 3: "incorrect", 4: "duplicated"},
 
     randomNoteIndexes: [],
     randomNoteIndexesCopy: [],
@@ -95,8 +96,8 @@ let model = {
     shuffleAll: function () {
         if (!JSON.parse(model.isStaticRef)) this.shuffleReference();
         this.shuffleRandomNotesArray();
-        view.initFeedback();
         this.correctCount = 0;
+        controller.gameStateChanged(0); // init
     },
 
     shuffleReference: function() {
@@ -124,7 +125,7 @@ let model = {
     // refactor this to take in number instead
     checkGuess: function(id) {
         if (!this.isGuessing) return false;
-    
+
         // If guess is correct
         if (this.randomNoteIndexes.includes(id) === true) {
             this.correctCount += 1;
@@ -133,28 +134,25 @@ let model = {
     
             // If that's the last guess => done
             if (this.correctCount === this.numOfRandom) {
-                view.feedbackMessage1("Great job! 🏆");
-                view.feedbackMessage2("Click \"Shuffle\" to get a new challenge.");
                 this.correctCount = 0;
                 this.isGuessing = false;
+                controller.gameStateChanged(1); // won
             }
             // Else, tell how many more guesses to go
             else {
-                view.feedbackMessage1("Correct!");
-                view.feedbackMessage2((this.numOfRandom - this.correctCount) + " more to go.");
+                let notesLeft = this.numOfRandom - this.correctCount;
+                controller.gameStateChanged(2, notesLeft); // correct
             } 
         } 
     
         // If guess is correct, but duplicated
         else if (this.randomNoteIndexesCopy.includes(id) === true) {
-            view.feedbackMessage1("Correct!");
-            view.feedbackMessage2("But you've already guessed it.");
+            controller.gameStateChanged(4); // duplicated
         } 
         
         // If guess is not correct
         else {
-            view.feedbackMessage1("Incorrect!");
-            view.feedbackMessage2("Let's try again.");
+            controller.gameStateChanged(3); // incorrect
         }
     },
 
@@ -366,6 +364,33 @@ let controller = {
     
         view.feedbackMessage1(this.answers);
         view.feedbackMessage2("Keep trying!");
+    },
+
+    gameStateChanged: function(gameState, notesLeft) {
+        switch (gameState) {
+            case 0: // init
+                view.initFeedback();
+                break;
+            case 1: // won
+                view.feedbackMessage1("Great job! 🏆");
+                view.feedbackMessage2("Click \"Shuffle\" to get a new challenge.");
+                break;
+            case 2: // correct
+                view.feedbackMessage1("Correct!");
+                view.feedbackMessage2((notesLeft) + " more to go.");
+                break;
+            case 3: // incorrect
+                view.feedbackMessage1("Incorrect!");
+                view.feedbackMessage2("Let's try again.");
+                break;
+            case 4: // duplicated
+                view.feedbackMessage1("Correct!");
+                view.feedbackMessage2("But you've already guessed it.");
+                break;
+            default:
+                view.feedbackMessage1("Something is wrong 😿");
+                view.feedbackMessage2("Please reload the page.");
+        }
     },
 
     noteStateChanged: function(noteState) {
