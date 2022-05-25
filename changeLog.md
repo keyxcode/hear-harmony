@@ -1,5 +1,10 @@
 # Change Log
 
+* ### Version 0.8.0
+    * Implemented new, cross-platform scroll area.
+    * Improved responsive design.
+    * Fixed reference note not shuffle bug.
+
 * ### Version 0.7.1
     * Fixed local storage bug.
 
