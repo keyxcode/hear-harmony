@@ -7,6 +7,7 @@ const SHUFFLE = document.querySelector("#shuffle");
 const ANSWER = document.querySelector("#answer");
 const SHARP_SWITCH = document.querySelector("#sharp-switch");
 const STATIC_REF_SWITCH = document.querySelector("#static-ref-switch");
+const DARK_SWITCH = document.querySelector("#dark-switch");
 
 // AUDIO CONTEXT
 const CTX = new (window.AudioContext || window.webkitAudioContext)();
@@ -23,6 +24,9 @@ if (!localStorage.getItem("isStaticRef")) {
 }
 if (!localStorage.getItem("numOfRandom")) {
     localStorage.setItem("numOfRandom", 1);
+}
+if (!localStorage.getItem("isDarkMode")) {
+    localStorage.setItem("isDarkMode", false);
 }
 
 // LOOK-UP ARRAYS
@@ -62,6 +66,7 @@ let model = {
 
     isPreferSharp: localStorage.getItem("isPreferSharp"),
     isStaticRef: localStorage.getItem("isStaticRef"),
+    isDarkMode: localStorage.getItem("isDarkMode"),
 
     shuffleReference: function() {
         REFERENCE_SELECT.value = Math.floor(Math.random() * model.NUM_OF_KEYS);
@@ -204,6 +209,50 @@ let view = {
     updateSharpFlat: function(noteState) {
         this.initKeyNames(noteState);
         this.initReferenceList(noteState);
+    },
+
+    updateDarkMode: function(isDarkMode) {
+        let body = document.querySelector("body");
+
+        let navbar = document.querySelector(".navbar");
+        let footer = document.querySelector("footer");
+
+        let navBarBrand = document.querySelector(".navbar-brand");
+        let footerDiv = document.querySelector("footer div");
+        let footerA = document.querySelector("footer a"); 
+
+        let toggles = document.querySelector(".toggles");
+
+        let bgColor = getComputedStyle(document.documentElement).getPropertyValue("--bg-color");
+        let whiteKeyColor = getComputedStyle(document.documentElement).getPropertyValue("--white-key-color");
+        let whiteKeyActiveColor = getComputedStyle(document.documentElement).getPropertyValue("--white-key-active-color");
+        let blackKeyColor = getComputedStyle(document.documentElement).getPropertyValue("--black-key-color");
+        let blackKeyActiveColor = getComputedStyle(document.documentElement).getPropertyValue("--black-key-active-color");
+
+        if (isDarkMode === true) {
+            body.style.backgroundColor = blackKeyColor;
+
+            navbar.style.backgroundColor = blackKeyActiveColor;
+            footer.style.backgroundColor = blackKeyActiveColor;
+
+            navBarBrand.style.color = whiteKeyActiveColor;
+            footerDiv.style.color = whiteKeyActiveColor;
+            footerA.style.color = whiteKeyActiveColor;
+
+            toggles.style.color = whiteKeyColor;
+
+        } else {
+            body.style.backgroundColor = bgColor;
+
+            navbar.style.backgroundColor = blackKeyColor;
+            footer.style.backgroundColor = blackKeyColor;
+
+            navBarBrand.style.color = whiteKeyColor;
+            footerDiv.style.color = whiteKeyColor;
+            footerA.style.color = whiteKeyColor; 
+
+            toggles.style.color = blackKeyColor;
+        }
     }
 }
 
@@ -231,6 +280,7 @@ ANSWER.addEventListener("click", () => controller.showAnswer());
 // Toggle Switches
 SHARP_SWITCH.addEventListener("click", () => controller.updateNoteState());
 STATIC_REF_SWITCH.addEventListener("click", () => controller.updateRefState());
+DARK_SWITCH.addEventListener("click", () => controller.updateDarkMode());
 
 //=====================================================================
 // CONTROLLER: lets user interact with the MODEL by guessing
@@ -377,6 +427,12 @@ let controller = {
         model.isStaticRef = (JSON.parse(model.isStaticRef) === true) ? false : true;
         localStorage.setItem("isStaticRef", model.isStaticRef);
     },
+
+    updateDarkMode: function() {
+        model.isDarkMode = (JSON.parse(model.isDarkMode) === true) ? false : true;
+        localStorage.setItem("isDarkMode", model.isDarkMode);
+        view.updateDarkMode(model.isDarkMode)
+    }
 }
 
 //=====================================================================
@@ -436,12 +492,13 @@ function initGame() {
     // Init GUI
     SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
     STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
+    DARK_SWITCH.checked = JSON.parse(model.isDarkMode);
     RANDOM_SELECT.value = parseInt(localStorage.getItem("numOfRandom"));
 
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
     view.initKeyNames(noteState);
     view.initReferenceList(noteState);
-
+    view.updateDarkMode(JSON.parse(localStorage.getItem("isDarkMode")));
     view.initFeedback();
 
     // Can only call this after initReference above

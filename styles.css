@@ -12,17 +12,17 @@
 /*=================================================================*/
 /* main page background color */
 body {
-    background-color: var(--black-key-color);
+    background-color: var(--bg-color);
 }
 
 /*=================================================================*/
 /* navbar and footer stuff*/
 .navbar, footer {
-    background-color: var(--black-key-active-color) !important;
+    background-color: var(--black-key-color);
 }
 
 .navbar-brand, footer div, footer a {
-    color: var(--white-key-active-color) !important;
+    color: var(--white-key-color);
 }
 
 /*=================================================================*/
@@ -140,7 +140,7 @@ select {
 /*=================================================================*/
 /* toggle options */
 .toggles {
-    color: var(--white-key-color);
+    color: var(--black-key-color);
 }
 
 /*=================================================================*/
