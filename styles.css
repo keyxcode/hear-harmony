@@ -179,6 +179,7 @@ select {
         position: sticky;
         position: -webkit-sticky;
         left: 0;
+        font-style: italic;
     }
 
     .buttons, .feedback {
