@@ -28,37 +28,6 @@ if (!localStorage.getItem("numOfRandom")) {
 }
 
 // The arrays below are correlated by indexes
-// Keyboard notes model array
-const PIANO_KEYS = [ 
-    {note: "C3", noteSharp: "C3", computerKey: "z"},
-    {note: "Db3", noteSharp: "C#3", computerKey: "s"},
-    {note: "D3", noteSharp: "D3", computerKey: "x"},
-    {note: "Eb3", noteSharp: "D#3", computerKey: "d"},
-    {note: "E3", noteSharp: "E3", computerKey: "c"},
-    {note: "F3", noteSharp: "F3", computerKey: "v"},
-    {note: "Gb3", noteSharp: "F#3", computerKey: "g"},
-    {note: "G3", noteSharp: "G3", computerKey: "b"},
-    {note: "Ab3", noteSharp: "G#3", computerKey: "h"},
-    {note: "A3", noteSharp: "A3", computerKey: "n"},
-    {note: "Bb3", noteSharp: "A#3", computerKey: "j"},
-    {note: "B3", noteSharp: "B3", computerKey: "m"},
-
-    {note: "C4", noteSharp: "C4", computerKey: "q"},
-    {note: "Db4", noteSharp: "C#4", computerKey: "2"},
-    {note: "D4", noteSharp: "D4", computerKey: "w"},
-    {note: "Eb4", noteSharp: "D#4", computerKey: "3"},
-    {note: "E4", noteSharp: "E4", computerKey: "e"},
-    {note: "F4", noteSharp: "F4", computerKey: "r"},
-    {note: "Gb4", noteSharp: "F#4", computerKey: "5"},
-    {note: "G4", noteSharp: "G4", computerKey: "t"},
-    {note: "Ab4", noteSharp: "G#4", computerKey: "6"},
-    {note: "A4", noteSharp: "A4", computerKey: "y"},
-    {note: "Bb4", noteSharp: "A#4", computerKey: "7"},
-    {note: "B4", noteSharp: "B4", computerKey: "u"},
-    {note: "C5", noteSharp: "C5", computerKey: "i"}
-];
-const NUM_OF_KEYS = PIANO_KEYS.length;
-
 // Arrays of key divs on screen to look up touch input
 const KEY_DIVS = document.querySelectorAll(".key");
 
@@ -78,6 +47,10 @@ let model = {
     // game states for reference
     // gameState: {0: "init", 1: "won", 2: "correct", 3: "incorrect", 4: "duplicated"},
 
+    // The piano model will be initialized on load
+    PIANO_KEYS: [],
+    NUM_OF_KEYS: 0,
+
     randomNoteIndexes: [],
     randomNoteIndexesCopy: [],
 
@@ -94,7 +67,7 @@ let model = {
     isStaticRef: localStorage.getItem("isStaticRef"),
 
     shuffleReference: function() {
-        REFERENCE_SELECT.value = Math.floor(Math.random() * NUM_OF_KEYS);
+        REFERENCE_SELECT.value = Math.floor(Math.random() * model.NUM_OF_KEYS);
     },
     
     // Generate n random indexes within the range of number of notes
@@ -105,7 +78,7 @@ let model = {
         // Randomize and assure unique numbers
         for (let i = 0; i < this.numOfRandom; ++i) {
             do {
-                randomIndex = Math.floor(Math.random() * NUM_OF_KEYS);
+                randomIndex = Math.floor(Math.random() * model.NUM_OF_KEYS);
             } while (this.randomNoteIndexes.includes(randomIndex) === true);
     
             this.randomNoteIndexes.push(randomIndex);
@@ -210,7 +183,7 @@ let view = {
 
     initKeyNames: function(noteState) {
         for (let [i, key] of KEY_DIVS.entries()) {
-                key.innerHTML = PIANO_KEYS[i][noteState];
+                key.innerHTML = model.PIANO_KEYS[i][noteState];
         }
     },
     
@@ -218,7 +191,7 @@ let view = {
         // Init the options
         let referenceNotes = Array.from(document.querySelectorAll("#referenceNote"));
         if (referenceNotes.length === 0) {
-            for (let i = 0; i < NUM_OF_KEYS; ++i) {
+            for (let i = 0; i < model.NUM_OF_KEYS; ++i) {
                 let option = document.createElement("option");
                 option.value = i;
                 option.id = "referenceNote"
@@ -229,7 +202,7 @@ let view = {
         
         // Name them. Separated to support sharp-flat toggle
         for (let [i, option] of referenceNotes.entries()) {
-            option.text = PIANO_KEYS[i][noteState];
+            option.text = model.PIANO_KEYS[i][noteState];
         }
     },
 
@@ -336,7 +309,7 @@ let controller = {
         // Determine sharp/ flat preference and push notes to an array
         let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note";
         let answerArray = model.randomNoteIndexesCopy.map(id => { 
-            return PIANO_KEYS[id][noteState] 
+            return model.PIANO_KEYS[id][noteState] 
         });
 
         // Format the answer string
@@ -416,9 +389,39 @@ let controller = {
 
 window.addEventListener("load", initGame);
 function initGame() {
+    model.PIANO_KEYS = [ 
+        {note: "C3", noteSharp: "C3", computerKey: "z"},
+        {note: "Db3", noteSharp: "C#3", computerKey: "s"},
+        {note: "D3", noteSharp: "D3", computerKey: "x"},
+        {note: "Eb3", noteSharp: "D#3", computerKey: "d"},
+        {note: "E3", noteSharp: "E3", computerKey: "c"},
+        {note: "F3", noteSharp: "F3", computerKey: "v"},
+        {note: "Gb3", noteSharp: "F#3", computerKey: "g"},
+        {note: "G3", noteSharp: "G3", computerKey: "b"},
+        {note: "Ab3", noteSharp: "G#3", computerKey: "h"},
+        {note: "A3", noteSharp: "A3", computerKey: "n"},
+        {note: "Bb3", noteSharp: "A#3", computerKey: "j"},
+        {note: "B3", noteSharp: "B3", computerKey: "m"},
+    
+        {note: "C4", noteSharp: "C4", computerKey: "q"},
+        {note: "Db4", noteSharp: "C#4", computerKey: "2"},
+        {note: "D4", noteSharp: "D4", computerKey: "w"},
+        {note: "Eb4", noteSharp: "D#4", computerKey: "3"},
+        {note: "E4", noteSharp: "E4", computerKey: "e"},
+        {note: "F4", noteSharp: "F4", computerKey: "r"},
+        {note: "Gb4", noteSharp: "F#4", computerKey: "5"},
+        {note: "G4", noteSharp: "G4", computerKey: "t"},
+        {note: "Ab4", noteSharp: "G#4", computerKey: "6"},
+        {note: "A4", noteSharp: "A4", computerKey: "y"},
+        {note: "Bb4", noteSharp: "A#4", computerKey: "7"},
+        {note: "B4", noteSharp: "B4", computerKey: "u"},
+        {note: "C5", noteSharp: "C5", computerKey: "i"}
+    ];
+    model.NUM_OF_KEYS = model.PIANO_KEYS.length;
+
     // Fetch piano samples
-    for (let i = 0; i < NUM_OF_KEYS; i++) {
-        let noteName = PIANO_KEYS[i].note;
+    for (let i = 0; i < model.NUM_OF_KEYS; i++) {
+        let noteName = model.PIANO_KEYS[i].note;
         fetch(`Weber Baby Grand keyxcode/${noteName}.mp3`)
         .then(data => data.arrayBuffer())
         .then(arrayBuffer => CTX.decodeAudioData(arrayBuffer))
