@@ -12,17 +12,17 @@
 /*=================================================================*/
 /* main page background color */
 body {
-    background-color: var(--bg-color);
+    background-color: var(--black-key-color);
 }
 
 /*=================================================================*/
 /* navbar and footer stuff*/
 .navbar, footer {
-    background-color: var(--black-key-color) !important;
+    background-color: var(--black-key-active-color) !important;
 }
 
 .navbar-brand, footer div, footer a {
-    color: var(--white-key-color) !important;
+    color: var(--white-key-active-color) !important;
 }
 
 /*=================================================================*/
@@ -140,7 +140,13 @@ select {
 /*=================================================================*/
 /* toggle options */
 .toggles {
-    color: var(--black-key-color);
+    color: var(--white-key-color);
+}
+
+/*=================================================================*/
+#about {
+    text-align: justify !important;
+    width: 75%;
 }
 
 /*=================================================================*/
@@ -181,10 +187,9 @@ select {
     .buttons, .feedback {
         width: 100%;
     }
+
+    #about {
+        width: 100%;
+    }
 }
 
-/*=================================================================*/
-#about {
-    text-align: justify !important;
-    width: 75%;
-}
