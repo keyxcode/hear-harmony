@@ -1,5 +1,11 @@
 # Change Log
 
+* ### Version 0.9.0
+    * Improved internal MVC model.
+    * "Show answers" now shows a better-formatted answer.
+    * Implemented dark mode. 
+    * Improved overall design.
+
 * ### Version 0.8.0
     * Implemented new, cross-platform scroll area.
     * Improved responsive design.

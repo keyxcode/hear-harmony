@@ -462,8 +462,8 @@ let controller = {
 //=====================================================================
 // INIT
 
-window.addEventListener("load", initCommon);
-function initCommon() {    
+window.addEventListener("load", initGlobal);
+function initGlobal() {    
     if (document.querySelector("body").dataset.title === "train-page") {
         initGame();
         return;
