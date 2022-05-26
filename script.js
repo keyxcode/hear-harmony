@@ -1,14 +1,3 @@
-// GLOBAL VARS (HTML BUTTONS & UTILS)
-const REFERENCE_PLAY = document.querySelector("#reference");
-const REFERENCE_SELECT = document.querySelector("#reference-select");
-const RANDOM_PLAY = document.querySelector("#random");
-const RANDOM_SELECT = document.querySelector("#num-of-random");
-const SHUFFLE = document.querySelector("#shuffle");
-const ANSWER = document.querySelector("#answer");
-const SHARP_SWITCH = document.querySelector("#sharp-switch");
-const STATIC_REF_SWITCH = document.querySelector("#static-ref-switch");
-const DARK_SWITCH = document.querySelector("#dark-switch");
-
 // AUDIO CONTEXT
 const CTX = new (window.AudioContext || window.webkitAudioContext)();
 const MASTER_GAIN = CTX.createGain();
@@ -166,6 +155,16 @@ let model = {
 // does read-only operation on model
 
 let view = {
+    REFERENCE_PLAY: document.querySelector("#reference"),
+    REFERENCE_SELECT: document.querySelector("#reference-select"),
+    RANDOM_PLAY: document.querySelector("#random"),
+    RANDOM_SELECT: document.querySelector("#num-of-random"),
+    SHUFFLE: document.querySelector("#shuffle"),
+    ANSWER: document.querySelector("#answer"),
+    SHARP_SWITCH: document.querySelector("#sharp-switch"),
+    STATIC_REF_SWITCH: document.querySelector("#static-ref-switch"),
+    DARK_SWITCH: document.querySelector("#dark-switch"),
+
     feedbackMessage1: function(msg) {
         let feedback1 = document.querySelector("#feedback1");
         feedback1.innerHTML = msg;
@@ -201,7 +200,7 @@ let view = {
                 option.value = i;
                 option.id = "referenceNote"
                 referenceNotes.push(option);
-                REFERENCE_SELECT.add(option);
+                this.REFERENCE_SELECT.add(option);
             }
         }
         
@@ -279,17 +278,17 @@ document.addEventListener("keydown", e => controller.parsePianoKeyInput(e));
 document.addEventListener("keyup", () => controller.stopAudioVisual());
 
 // Utility buttons handlers
-REFERENCE_PLAY.addEventListener("click", () => controller.playReference());
-REFERENCE_SELECT.addEventListener("change", e => controller.updateRefID(e.target.value));
-RANDOM_PLAY.addEventListener("click", () => controller.playRandom());
-RANDOM_SELECT.addEventListener("change", () => controller.selectNumRandom());
-SHUFFLE.addEventListener("click", () => controller.shuffleAll());
-ANSWER.addEventListener("click", () => controller.showAnswer());
+view.REFERENCE_PLAY.addEventListener("click", () => controller.playReference());
+view.REFERENCE_SELECT.addEventListener("change", e => controller.updateRefID(e.target.value));
+view.RANDOM_PLAY.addEventListener("click", () => controller.playRandom());
+view.RANDOM_SELECT.addEventListener("change", () => controller.selectNumRandom());
+view.SHUFFLE.addEventListener("click", () => controller.shuffleAll());
+view.ANSWER.addEventListener("click", () => controller.showAnswer());
 
 // Toggle Switches
-SHARP_SWITCH.addEventListener("click", () => controller.updateNoteState());
-STATIC_REF_SWITCH.addEventListener("click", () => controller.updateRefState());
-DARK_SWITCH.addEventListener("click", () => controller.updateDarkMode());
+view.SHARP_SWITCH.addEventListener("click", () => controller.updateNoteState());
+view.STATIC_REF_SWITCH.addEventListener("click", () => controller.updateRefState());
+view.DARK_SWITCH.addEventListener("click", () => controller.updateDarkMode());
 
 // Responsive Piano
 view.mediaQuery.addEventListener("change", () => view.renderPianoBG());
@@ -334,13 +333,13 @@ let controller = {
     },
 
     updateRefID: function(referenceNoteID) {
-        REFERENCE_SELECT.value = referenceNoteID;
+        view.REFERENCE_SELECT.value = referenceNoteID;
         model.referenceNoteID = referenceNoteID;
         localStorage.setItem("referenceNoteID", referenceNoteID);
     },
 
     playReference: function() {
-        let id = parseInt(REFERENCE_SELECT.value);
+        let id = parseInt(view.REFERENCE_SELECT.value);
         this.playPiano(id);
     },
 
@@ -352,7 +351,7 @@ let controller = {
 
     selectNumRandom: function() {
         // Write the new num of random to local storage and update model
-        localStorage.setItem("numOfRandom", RANDOM_SELECT.value);
+        localStorage.setItem("numOfRandom", view.RANDOM_SELECT.value);
         model.numOfRandom = parseInt(localStorage.getItem("numOfRandom"));
 
         // shuffle the random array everytime the number of random notes is changed
@@ -509,10 +508,10 @@ function initGame() {
     }
 
     // Init GUI
-    SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
-    STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
-    DARK_SWITCH.checked = JSON.parse(model.isDarkMode);
-    RANDOM_SELECT.value = parseInt(localStorage.getItem("numOfRandom"));
+    view.SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
+    view.STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
+    view.DARK_SWITCH.checked = JSON.parse(model.isDarkMode);
+    view.RANDOM_SELECT.value = parseInt(localStorage.getItem("numOfRandom"));
 
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
     view.initKeyNames(noteState);
