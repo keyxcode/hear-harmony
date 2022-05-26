@@ -16,6 +16,9 @@ MASTER_GAIN.gain.value = 0.7;
 MASTER_GAIN.connect(CTX.destination);
 
 // LOCAL STORAGE VARS
+if (!localStorage.getItem("referenceNoteID")) {
+    localStorage.setItem("referenceNoteID", 12);
+}
 if (!localStorage.getItem("isPreferSharp")) {
     localStorage.setItem("isPreferSharp", false);
 }
@@ -64,13 +67,14 @@ let model = {
     correctCount: 0,
     isGuessing: false,
 
-    referenceNote: localStorage.getItem("referenceNote"),
+    referenceNoteID: localStorage.getItem("referenceNoteID"),
     isPreferSharp: localStorage.getItem("isPreferSharp"),
     isStaticRef: localStorage.getItem("isStaticRef"),
     isDarkMode: localStorage.getItem("isDarkMode"),
 
     shuffleReference: function() {
-        REFERENCE_SELECT.value = Math.floor(Math.random() * model.NUM_OF_KEYS);
+        let referenceNoteID = Math.floor(Math.random() * model.NUM_OF_KEYS);
+        controller.updateRefID(referenceNoteID);
     },
     
     // Generate n random indexes within the range of number of notes
@@ -255,6 +259,7 @@ document.addEventListener("keyup", () => controller.stopAudioVisual());
 
 // Utility buttons handlers
 REFERENCE_PLAY.addEventListener("click", () => controller.playReference());
+REFERENCE_SELECT.addEventListener("change", e => controller.updateRefID(e.target.value));
 RANDOM_PLAY.addEventListener("click", () => controller.playRandom());
 RANDOM_SELECT.addEventListener("change", () => controller.selectNumRandom());
 SHUFFLE.addEventListener("click", () => controller.shuffleAll());
@@ -304,6 +309,12 @@ let controller = {
         model.stopPianoSound();
     },
 
+    updateRefID: function(referenceNoteID) {
+        REFERENCE_SELECT.value = referenceNoteID;
+        model.referenceNoteID = referenceNoteID;
+        localStorage.setItem("referenceNoteID", referenceNoteID);
+    },
+
     playReference: function() {
         let id = parseInt(REFERENCE_SELECT.value);
         this.playPiano(id);
@@ -325,7 +336,8 @@ let controller = {
     },
 
     shuffleAll: function () {
-        if (!JSON.parse(model.isStaticRef)) model.shuffleReference();
+        if (!JSON.parse(model.isStaticRef)) model.shuffleReference()
+        else controller.updateRefID(model.referenceNoteID);
 
         model.shuffleRandomNotesArray();
         model.correctCount = 0;
