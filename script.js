@@ -18,26 +18,26 @@ if (!localStorage.getItem("isDarkMode")) {
 //=====================================================================
 // MODEL: the backend, generates random notes, plays samples and manages game state. 
 // Processes notes as number indexes (0 -> NUM_OF_KEYS)
-// handles what happens when a note is played
 // communicates with CONTROLLER
 
 let model = {
     // game states for reference
     // gameState: {0: "init", 1: "won", 2: "correct", 3: "incorrect", 4: "duplicated"},
-    CTX: new (window.AudioContext || window.webkitAudioContext)(),
-    MASTER_GAIN: 0, // init on load
 
-    // init on load
+    // piano model is init on load
     PIANO_KEYS: [],
     NUM_OF_KEYS: 0,
 
-    randomNoteIndexes: [],
-    randomNoteIndexesCopy: [],
+    CTX: new (window.AudioContext || window.webkitAudioContext)(),
+    MASTER_GAIN: 0, // init on load
 
-    fetchedSamples: [],
-    pianoVoices: [],
+    fetchedSamples: [], // init on load
+    pianoVoices: [], // init on load
     numPianoVoices: 48,
     activeVoiceID: 0,
+
+    randomNoteIndexes: [],
+    randomNoteIndexesCopy: [],
 
     numOfRandom: parseInt(localStorage.getItem("numOfRandom")),
     correctCount: 0,
@@ -453,6 +453,7 @@ let controller = {
 
 window.addEventListener("load", initGame);
 function initGame() {
+    // Initialize piano model
     model.PIANO_KEYS = [ 
         {note: "C3", noteSharp: "C3", computerKey: "z"},
         {note: "Db3", noteSharp: "C#3", computerKey: "s"},
@@ -483,6 +484,7 @@ function initGame() {
     ];
     model.NUM_OF_KEYS = model.PIANO_KEYS.length;
 
+    // Initialize audio engine
     model.MASTER_GAIN = model.CTX.createGain();
     model.MASTER_GAIN.gain.value = 0.7;
     model.MASTER_GAIN.connect(model.CTX.destination);
@@ -499,7 +501,7 @@ function initGame() {
         })  
     }
 
-    // Init the voice manager/ mixer in model
+    // Init the voice manager/ mixer
     for (let i = 0; i < model.numPianoVoices; i ++) {
         let gainFader = model.CTX.createGain();
         gainFader.connect(model.MASTER_GAIN);
@@ -510,14 +512,15 @@ function initGame() {
     view.SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
     view.STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
     view.DARK_SWITCH.checked = JSON.parse(model.isDarkMode);
-    view.RANDOM_SELECT.value = parseInt(localStorage.getItem("numOfRandom"));
+    view.RANDOM_SELECT.value = parseInt(model.numOfRandom);
 
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
     view.initKeyNames(noteState);
     view.initReferenceList(noteState);
-    view.renderDarkMode(JSON.parse(localStorage.getItem("isDarkMode")));
+    view.renderDarkMode(JSON.parse(model.isDarkMode));
     view.initFeedback();
 
+    // Shuffle all everytime page refreshes
     // Can only call this after initReference above
     controller.shuffleAll();
 }

@@ -143,6 +143,16 @@ select {
 }
 
 /*=================================================================*/
+/* Toggles */
+.form-check-input {
+    background-color: var(--white-key-color);
+}
+
+.form-check-input:checked {
+    background-color: var(--bs-blue);
+}
+
+/*=================================================================*/
 #about {
     text-align: justify !important;
     width: 75%;
