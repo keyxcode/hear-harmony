@@ -1,9 +1,3 @@
-// AUDIO CONTEXT
-const CTX = new (window.AudioContext || window.webkitAudioContext)();
-const MASTER_GAIN = CTX.createGain();
-MASTER_GAIN.gain.value = 0.7;
-MASTER_GAIN.connect(CTX.destination);
-
 // LOCAL STORAGE VARS
 if (!localStorage.getItem("referenceNoteID")) {
     localStorage.setItem("referenceNoteID", 12);
@@ -21,15 +15,6 @@ if (!localStorage.getItem("isDarkMode")) {
     localStorage.setItem("isDarkMode", false);
 }
 
-// LOOK-UP ARRAYS
-// Arrays of key divs on screen to look up touch input
-const KEY_DIVS = document.querySelectorAll(".key");
-// Array of computer keys to look up key input
-const COMPUTER_KEYS = [
-    "z", "s", "x", "d", "c", "v", "g", "b", "h", "n", "j", "m", 
-    "q", "2", "w", "3", "e", "r", "5", "t", "6", "y", "7", "u", "i"
-];
-
 //=====================================================================
 // MODEL: the backend, generates random notes, plays samples and manages game state. 
 // Processes notes as number indexes (0 -> NUM_OF_KEYS)
@@ -39,8 +24,10 @@ const COMPUTER_KEYS = [
 let model = {
     // game states for reference
     // gameState: {0: "init", 1: "won", 2: "correct", 3: "incorrect", 4: "duplicated"},
+    CTX: new (window.AudioContext || window.webkitAudioContext)(),
+    MASTER_GAIN: 0, // init on load
 
-    // The piano model will be initialized on load
+    // init on load
     PIANO_KEYS: [],
     NUM_OF_KEYS: 0,
 
@@ -89,13 +76,13 @@ let model = {
         let pianoVoices = this.pianoVoices;
 
         // Load sample into the voice slot
-        pianoVoices[voiceID].node = CTX.createBufferSource();
+        pianoVoices[voiceID].node = model.CTX.createBufferSource();
         pianoVoices[voiceID].node.buffer = this.fetchedSamples[id];
         // Initialize gain fader
         pianoVoices[voiceID].gainFader.gain.value = 1;
         pianoVoices[voiceID].node.connect(this.pianoVoices[voiceID].gainFader);
         // Play note and set active
-        pianoVoices[voiceID].node.start(CTX.currentTime);
+        pianoVoices[voiceID].node.start(model.CTX.currentTime);
         pianoVoices[voiceID].isActive = true;
         // Get the next active voice ID to stream the next sample
         this.activeVoiceID = (this.activeVoiceID + 1) % this.numPianoVoices;
@@ -105,7 +92,7 @@ let model = {
         this.pianoVoices.forEach(voice => {
             if (voice.isActive == true) {
                 // Fade out
-                currentTime = CTX.currentTime;
+                currentTime = model.CTX.currentTime;
                 voice.gainFader.gain.setValueAtTime(1, currentTime);
                 voice.gainFader.gain.exponentialRampToValueAtTime(0.001, currentTime + 1);
                 // voice.stop();
@@ -165,6 +152,14 @@ let view = {
     STATIC_REF_SWITCH: document.querySelector("#static-ref-switch"),
     DARK_SWITCH: document.querySelector("#dark-switch"),
 
+    // Arrays of key divs on screen to look up touch/ mouse input
+    KEY_DIVS: document.querySelectorAll(".key"),
+    // Array of computer keys to look up key input
+    COMPUTER_KEYS: [
+        "z", "s", "x", "d", "c", "v", "g", "b", "h", "n", "j", "m", 
+        "q", "2", "w", "3", "e", "r", "5", "t", "6", "y", "7", "u", "i"
+    ],
+
     feedbackMessage1: function(msg) {
         let feedback1 = document.querySelector("#feedback1");
         feedback1.innerHTML = msg;
@@ -181,12 +176,12 @@ let view = {
     },
 
     changeNoteColor: function(id) {
-        let key = KEY_DIVS[id];
+        let key = this.KEY_DIVS[id];
         key.classList.add("active");
     },
 
     initKeyNames: function(noteState) {
-        for (let [i, key] of KEY_DIVS.entries()) {
+        for (let [i, key] of this.KEY_DIVS.entries()) {
                 key.innerHTML = model.PIANO_KEYS[i][noteState];
         }
     },
@@ -268,7 +263,7 @@ let view = {
 // detects user input to send over to CONTROLLER
 
 // Piano Mouse Input handler
-KEY_DIVS.forEach(key => {
+view.KEY_DIVS.forEach(key => {
     key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e));
 });
 document.addEventListener("pointerup", () => controller.stopAudioVisual());
@@ -301,7 +296,7 @@ view.mediaQuery.addEventListener("change", () => view.renderPianoBG());
 let controller = {
     parsePianoMouseInput: function(e) {
         // Get the note id from the key div id
-        let id = (Array.from(KEY_DIVS)).indexOf(e.target);
+        let id = (Array.from(view.KEY_DIVS)).indexOf(e.target);
         this.processNote(id);
     },
 
@@ -311,7 +306,7 @@ let controller = {
 
         // Get the note id from the computer key id
         const computerKey = e.key;
-        let id = COMPUTER_KEYS.indexOf(computerKey);
+        let id = view.COMPUTER_KEYS.indexOf(computerKey);
         if (id === -1) return false;
 
         this.processNote(id);
@@ -488,12 +483,16 @@ function initGame() {
     ];
     model.NUM_OF_KEYS = model.PIANO_KEYS.length;
 
+    model.MASTER_GAIN = model.CTX.createGain();
+    model.MASTER_GAIN.gain.value = 0.7;
+    model.MASTER_GAIN.connect(model.CTX.destination);
+
     // Fetch piano samples
     for (let i = 0; i < model.NUM_OF_KEYS; i++) {
         let noteName = model.PIANO_KEYS[i].note;
         fetch(`Weber Baby Grand keyxcode/${noteName}.mp3`)
         .then(data => data.arrayBuffer())
-        .then(arrayBuffer => CTX.decodeAudioData(arrayBuffer))
+        .then(arrayBuffer => model.CTX.decodeAudioData(arrayBuffer))
         .then(decodedAudio => {
             let audio = decodedAudio;
             model.fetchedSamples[i] = audio;
@@ -502,8 +501,8 @@ function initGame() {
 
     // Init the voice manager/ mixer in model
     for (let i = 0; i < model.numPianoVoices; i ++) {
-        let gainFader = CTX.createGain();
-        gainFader.connect(MASTER_GAIN);
+        let gainFader = model.CTX.createGain();
+        gainFader.connect(model.MASTER_GAIN);
         model.pianoVoices.push({voiceID: `${i}`, isActive: false, node: null, gainFader: gainFader});
     }
 
