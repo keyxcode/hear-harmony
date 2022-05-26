@@ -154,7 +154,7 @@ select {
     .piano {
         border-radius: 10px;
         border: 7px solid var(--white-key-color);
-        background-color: var(--black-key-active-color);
+        background-color: var(--black-key-color);
     }
 
     .key {

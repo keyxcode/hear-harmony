@@ -240,6 +240,30 @@ let view = {
             navBarAndFooterText.forEach(el => el.style.color = whiteKeyColor);
             toggleText.style.color = blackKeyColor;
         }
+
+        this.updateResponsiveComponents();
+    },
+
+    mediaQuery: window.matchMedia("(max-width: 768px)"),
+    updateResponsiveComponents() {
+        let whiteKeyColor = getComputedStyle(document.documentElement).getPropertyValue("--white-key-color");
+        let whiteKeyActiveColor = getComputedStyle(document.documentElement).getPropertyValue("--white-key-active-color");
+        let blackKeyColor = getComputedStyle(document.documentElement).getPropertyValue("--black-key-color");
+        let blackKeyActiveColor = getComputedStyle(document.documentElement).getPropertyValue("--black-key-active-color");
+
+        let piano = document.querySelector(".piano");
+        let pianoText = document.querySelector("#scroll");
+        if (this.mediaQuery.matches && JSON.parse(model.isDarkMode)) {
+            piano.style.backgroundColor = blackKeyActiveColor;
+            pianoText.style.color = whiteKeyColor;
+        } else if (this.mediaQuery.matches && JSON.parse(!model.isDarkMode)) {
+            piano.style.backgroundColor = blackKeyColor;
+            pianoText.style.color = whiteKeyActiveColor;
+        } else {
+            piano.style.backgroundColor = null;
+            pianoText.style.color = null;
+        }
+
     }
 }
 
@@ -269,6 +293,9 @@ ANSWER.addEventListener("click", () => controller.showAnswer());
 SHARP_SWITCH.addEventListener("click", () => controller.updateNoteState());
 STATIC_REF_SWITCH.addEventListener("click", () => controller.updateRefState());
 DARK_SWITCH.addEventListener("click", () => controller.updateDarkMode());
+
+// Responsive Piano
+view.mediaQuery.addEventListener("change", () => view.updateResponsiveComponents());
 
 //=====================================================================
 // CONTROLLER: lets user interact with the MODEL by guessing
