@@ -10,12 +10,12 @@
 /* https://coolors.co/22223b-4a4e69-9a8c98-c9ada7-f2e9e4 */
 
 /*=================================================================*/
+/* These are dark mode-related properties
 /* main page background color */
 body {
     background-color: var(--bg-color);
 }
 
-/*=================================================================*/
 /* navbar and footer stuff*/
 .navbar, footer {
     background-color: var(--black-key-color);
@@ -23,6 +23,11 @@ body {
 
 .navbar-brand, footer div, footer a {
     color: var(--white-key-color);
+}
+
+/* toggle options */
+.toggles {
+    color: var(--black-key-color);
 }
 
 /*=================================================================*/
@@ -135,12 +140,6 @@ select {
 
 .black.active {
     background-color: var(--black-key-active-color);
-}
-
-/*=================================================================*/
-/* toggle options */
-.toggles {
-    color: var(--black-key-color);
 }
 
 /*=================================================================*/

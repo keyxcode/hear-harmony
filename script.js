@@ -64,6 +64,7 @@ let model = {
     correctCount: 0,
     isGuessing: false,
 
+    referenceNote: localStorage.getItem("referenceNote"),
     isPreferSharp: localStorage.getItem("isPreferSharp"),
     isStaticRef: localStorage.getItem("isStaticRef"),
     isDarkMode: localStorage.getItem("isDarkMode"),
@@ -213,15 +214,9 @@ let view = {
 
     updateDarkMode: function(isDarkMode) {
         let body = document.querySelector("body");
-
-        let navbar = document.querySelector(".navbar");
-        let footer = document.querySelector("footer");
-
-        let navBarBrand = document.querySelector(".navbar-brand");
-        let footerDiv = document.querySelector("footer div");
-        let footerA = document.querySelector("footer a"); 
-
-        let toggles = document.querySelector(".toggles");
+        let navBarAndFooter = document.querySelectorAll(".navbar, footer");
+        let navBarAndFooterText = document.querySelectorAll(".navbar-brand, footer div, footer a");
+        let toggleText = document.querySelector(".toggles");
 
         let bgColor = getComputedStyle(document.documentElement).getPropertyValue("--bg-color");
         let whiteKeyColor = getComputedStyle(document.documentElement).getPropertyValue("--white-key-color");
@@ -231,27 +226,15 @@ let view = {
 
         if (isDarkMode === true) {
             body.style.backgroundColor = blackKeyColor;
-
-            navbar.style.backgroundColor = blackKeyActiveColor;
-            footer.style.backgroundColor = blackKeyActiveColor;
-
-            navBarBrand.style.color = whiteKeyActiveColor;
-            footerDiv.style.color = whiteKeyActiveColor;
-            footerA.style.color = whiteKeyActiveColor;
-
-            toggles.style.color = whiteKeyColor;
+            navBarAndFooter.forEach(el => el.style.backgroundColor = blackKeyActiveColor);
+            navBarAndFooterText.forEach(el => el.style.color = whiteKeyActiveColor);
+            toggleText.style.color = whiteKeyColor;
 
         } else {
             body.style.backgroundColor = bgColor;
-
-            navbar.style.backgroundColor = blackKeyColor;
-            footer.style.backgroundColor = blackKeyColor;
-
-            navBarBrand.style.color = whiteKeyColor;
-            footerDiv.style.color = whiteKeyColor;
-            footerA.style.color = whiteKeyColor; 
-
-            toggles.style.color = blackKeyColor;
+            navBarAndFooter.forEach(el => el.style.backgroundColor = blackKeyColor);
+            navBarAndFooterText.forEach(el => el.style.color = whiteKeyColor);
+            toggleText.style.color = blackKeyColor;
         }
     }
 }
