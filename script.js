@@ -216,54 +216,51 @@ let view = {
         this.initReferenceList(noteState);
     },
 
-    updateDarkMode: function(isDarkMode) {
+    bgColor: getComputedStyle(document.documentElement).getPropertyValue("--bg-color"),
+    whiteKeyColor: getComputedStyle(document.documentElement).getPropertyValue("--white-key-color"),
+    whiteKeyActiveColor: getComputedStyle(document.documentElement).getPropertyValue("--white-key-active-color"),
+    blackKeyColor: getComputedStyle(document.documentElement).getPropertyValue("--black-key-color"),
+    blackKeyActiveColor: getComputedStyle(document.documentElement).getPropertyValue("--black-key-active-color"),
+
+    renderDarkMode: function(isDarkMode) {
         let body = document.querySelector("body");
         let navBarAndFooter = document.querySelectorAll(".navbar, footer");
         let navBarAndFooterText = document.querySelectorAll(".navbar-brand, footer div, footer a");
         let toggleText = document.querySelector(".toggles");
 
-        let bgColor = getComputedStyle(document.documentElement).getPropertyValue("--bg-color");
-        let whiteKeyColor = getComputedStyle(document.documentElement).getPropertyValue("--white-key-color");
-        let whiteKeyActiveColor = getComputedStyle(document.documentElement).getPropertyValue("--white-key-active-color");
-        let blackKeyColor = getComputedStyle(document.documentElement).getPropertyValue("--black-key-color");
-        let blackKeyActiveColor = getComputedStyle(document.documentElement).getPropertyValue("--black-key-active-color");
-
         if (isDarkMode === true) {
-            body.style.backgroundColor = blackKeyColor;
-            navBarAndFooter.forEach(el => el.style.backgroundColor = blackKeyActiveColor);
-            navBarAndFooterText.forEach(el => el.style.color = whiteKeyActiveColor);
-            toggleText.style.color = whiteKeyColor;
+            body.style.backgroundColor = this.blackKeyColor;
+            navBarAndFooter.forEach(el => el.style.backgroundColor = this.blackKeyActiveColor);
+            navBarAndFooterText.forEach(el => el.style.color = this.whiteKeyActiveColor);
+            toggleText.style.color = this.whiteKeyColor;
 
         } else {
-            body.style.backgroundColor = bgColor;
-            navBarAndFooter.forEach(el => el.style.backgroundColor = blackKeyColor);
-            navBarAndFooterText.forEach(el => el.style.color = whiteKeyColor);
-            toggleText.style.color = blackKeyColor;
+            body.style.backgroundColor = this.bgColor;
+            navBarAndFooter.forEach(el => el.style.backgroundColor = this.blackKeyColor);
+            navBarAndFooterText.forEach(el => el.style.color = this.whiteKeyColor);
+            toggleText.style.color = this.blackKeyColor;
         }
 
-        this.updateResponsiveComponents();
+        this.renderPianoBG();
     },
 
     mediaQuery: window.matchMedia("(max-width: 768px)"),
-    updateResponsiveComponents() {
-        let whiteKeyColor = getComputedStyle(document.documentElement).getPropertyValue("--white-key-color");
-        let whiteKeyActiveColor = getComputedStyle(document.documentElement).getPropertyValue("--white-key-active-color");
-        let blackKeyColor = getComputedStyle(document.documentElement).getPropertyValue("--black-key-color");
-        let blackKeyActiveColor = getComputedStyle(document.documentElement).getPropertyValue("--black-key-active-color");
-
+    renderPianoBG() {
         let piano = document.querySelector(".piano");
-        let pianoText = document.querySelector("#scroll");
+        let scrollText = document.querySelector("#scroll");
+        // Screen size small & dark mode
         if (this.mediaQuery.matches && JSON.parse(model.isDarkMode)) {
-            piano.style.backgroundColor = blackKeyActiveColor;
-            pianoText.style.color = whiteKeyColor;
-        } else if (this.mediaQuery.matches && JSON.parse(!model.isDarkMode)) {
-            piano.style.backgroundColor = blackKeyColor;
-            pianoText.style.color = whiteKeyActiveColor;
-        } else {
+            piano.style.backgroundColor = this.blackKeyActiveColor;
+            scrollText.style.color = this.whiteKeyColor;
+            // Screen size small & not dark mode
+        } else if (this.mediaQuery.matches && !JSON.parse(model.isDarkMode)) {
+            piano.style.backgroundColor = this.blackKeyColor;
+            scrollText.style.color = this.whiteKeyActiveColor;
+            // Screen size big
+        } else { 
             piano.style.backgroundColor = null;
-            pianoText.style.color = null;
+            scrollText.style.color = null;
         }
-
     }
 }
 
@@ -295,7 +292,7 @@ STATIC_REF_SWITCH.addEventListener("click", () => controller.updateRefState());
 DARK_SWITCH.addEventListener("click", () => controller.updateDarkMode());
 
 // Responsive Piano
-view.mediaQuery.addEventListener("change", () => view.updateResponsiveComponents());
+view.mediaQuery.addEventListener("change", () => view.renderPianoBG());
 
 //=====================================================================
 // CONTROLLER: lets user interact with the MODEL by guessing
@@ -453,7 +450,7 @@ let controller = {
     updateDarkMode: function() {
         model.isDarkMode = (JSON.parse(model.isDarkMode) === true) ? false : true;
         localStorage.setItem("isDarkMode", model.isDarkMode);
-        view.updateDarkMode(model.isDarkMode)
+        view.renderDarkMode(model.isDarkMode)
     }
 }
 
@@ -520,7 +517,7 @@ function initGame() {
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
     view.initKeyNames(noteState);
     view.initReferenceList(noteState);
-    view.updateDarkMode(JSON.parse(localStorage.getItem("isDarkMode")));
+    view.renderDarkMode(JSON.parse(localStorage.getItem("isDarkMode")));
     view.initFeedback();
 
     // Can only call this after initReference above
