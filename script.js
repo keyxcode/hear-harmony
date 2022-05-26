@@ -1,4 +1,5 @@
 // LOCAL STORAGE VARS
+
 if (!localStorage.getItem("referenceNoteID")) {
     localStorage.setItem("referenceNoteID", 12);
 }
@@ -216,22 +217,29 @@ let view = {
     blackKeyColor: getComputedStyle(document.documentElement).getPropertyValue("--black-key-color"),
     blackKeyActiveColor: getComputedStyle(document.documentElement).getPropertyValue("--black-key-active-color"),
 
-    renderDarkMode: function(isDarkMode) {
+    renderDarkModeGlobal: function(isDarkMode) {
         let body = document.querySelector("body");
         let navBarAndFooter = document.querySelectorAll(".navbar, footer");
         let navBarAndFooterText = document.querySelectorAll(".navbar-brand, footer div, footer a");
-        let toggleText = document.querySelector(".toggles");
 
         if (isDarkMode === true) {
             body.style.backgroundColor = this.blackKeyColor;
             navBarAndFooter.forEach(el => el.style.backgroundColor = this.blackKeyActiveColor);
             navBarAndFooterText.forEach(el => el.style.color = this.whiteKeyActiveColor);
-            toggleText.style.color = this.whiteKeyColor;
-
         } else {
             body.style.backgroundColor = this.bgColor;
             navBarAndFooter.forEach(el => el.style.backgroundColor = this.blackKeyColor);
             navBarAndFooterText.forEach(el => el.style.color = this.whiteKeyColor);
+        }
+    },
+    
+    renderDarkModeTrain: function(isDarkMode) {
+        this.renderDarkModeGlobal(isDarkMode);
+
+        let toggleText = document.querySelector(".toggles");
+        if (isDarkMode === true) {
+            toggleText.style.color = this.whiteKeyColor;
+        } else {
             toggleText.style.color = this.blackKeyColor;
         }
 
@@ -262,31 +270,34 @@ let view = {
 // EVENT HANDLERS
 // detects user input to send over to CONTROLLER
 
-// Piano Mouse Input handler
-view.KEY_DIVS.forEach(key => {
-    key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e));
-});
-document.addEventListener("pointerup", () => controller.stopAudioVisual());
+function initEventHandlers() {
+    // Piano Mouse Input handler
+    view.KEY_DIVS.forEach(key => {
+        key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e));
+    });
+    document.addEventListener("pointerup", () => controller.stopAudioVisual());
 
-// Piano Computer Keyboard Input handlers
-document.addEventListener("keydown", e => controller.parsePianoKeyInput(e));
-document.addEventListener("keyup", () => controller.stopAudioVisual());
+    // Piano Computer Keyboard Input handlers
+    document.addEventListener("keydown", e => controller.parsePianoKeyInput(e));
+    document.addEventListener("keyup", () => controller.stopAudioVisual());
 
-// Utility buttons handlers
-view.REFERENCE_PLAY.addEventListener("click", () => controller.playReference());
-view.REFERENCE_SELECT.addEventListener("change", e => controller.updateRefID(e.target.value));
-view.RANDOM_PLAY.addEventListener("click", () => controller.playRandom());
-view.RANDOM_SELECT.addEventListener("change", () => controller.selectNumRandom());
-view.SHUFFLE.addEventListener("click", () => controller.shuffleAll());
-view.ANSWER.addEventListener("click", () => controller.showAnswer());
+    // Utility buttons handlers
+    view.REFERENCE_PLAY.addEventListener("click", () => controller.playReference());
+    view.REFERENCE_SELECT.addEventListener("change", e => controller.updateRefID(e.target.value));
+    view.RANDOM_PLAY.addEventListener("click", () => controller.playRandom());
+    view.RANDOM_SELECT.addEventListener("change", () => controller.selectNumRandom());
+    view.SHUFFLE.addEventListener("click", () => controller.shuffleAll());
+    view.ANSWER.addEventListener("click", () => controller.showAnswer());
 
-// Toggle Switches
-view.SHARP_SWITCH.addEventListener("click", () => controller.updateNoteState());
-view.STATIC_REF_SWITCH.addEventListener("click", () => controller.updateRefState());
-view.DARK_SWITCH.addEventListener("click", () => controller.updateDarkMode());
+    // Toggle Switches
+    view.SHARP_SWITCH.addEventListener("click", () => controller.updateNoteState());
+    view.STATIC_REF_SWITCH.addEventListener("click", () => controller.updateRefState());
+    view.DARK_SWITCH.addEventListener("click", () => controller.updateDarkMode());
 
-// Responsive Piano
-view.mediaQuery.addEventListener("change", () => view.renderPianoBG());
+    // Responsive Piano
+    view.mediaQuery.addEventListener("change", () => view.renderPianoBG());
+}
+
 
 //=====================================================================
 // CONTROLLER: lets user interact with the MODEL by guessing
@@ -444,14 +455,22 @@ let controller = {
     updateDarkMode: function() {
         model.isDarkMode = (JSON.parse(model.isDarkMode) === true) ? false : true;
         localStorage.setItem("isDarkMode", model.isDarkMode);
-        view.renderDarkMode(model.isDarkMode)
+        view.renderDarkModeTrain(model.isDarkMode)
     }
 }
 
 //=====================================================================
 // INIT
 
-window.addEventListener("load", initGame);
+window.addEventListener("load", initCommon);
+function initCommon() {    
+    if (document.querySelector("body").dataset.title === "train-page") {
+        initGame();
+        return;
+    }
+
+    view.renderDarkModeGlobal(JSON.parse(model.isDarkMode));
+}
 function initGame() {
     // Initialize piano model
     model.PIANO_KEYS = [ 
@@ -508,6 +527,9 @@ function initGame() {
         model.pianoVoices.push({voiceID: `${i}`, isActive: false, node: null, gainFader: gainFader});
     }
 
+    // Init eventhandlers
+    initEventHandlers();
+    
     // Init GUI
     view.SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
     view.STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
@@ -517,8 +539,8 @@ function initGame() {
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
     view.initKeyNames(noteState);
     view.initReferenceList(noteState);
-    view.renderDarkMode(JSON.parse(model.isDarkMode));
     view.initFeedback();
+    view.renderDarkModeTrain(JSON.parse(model.isDarkMode));
 
     // Shuffle all everytime page refreshes
     // Can only call this after initReference above
