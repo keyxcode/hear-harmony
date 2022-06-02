@@ -15,6 +15,9 @@ if (!localStorage.getItem("numOfRandom")) {
 if (!localStorage.getItem("isDarkMode")) {
     localStorage.setItem("isDarkMode", false);
 }
+if (!localStorage.getItem("isRandomNumOfRandom")) {
+    localStorage.setItem("isRandomNumOfRandom", false);
+}
 
 //=====================================================================
 // MODEL: the backend, generates random notes, plays samples and manages game state. 
@@ -40,6 +43,7 @@ let model = {
     randomNoteIndexes: [],
     randomNoteIndexesCopy: [],
 
+    totalNumOfRandom: 5,
     numOfRandom: parseInt(localStorage.getItem("numOfRandom")),
     correctCount: 0,
     isGuessing: false,
@@ -47,6 +51,7 @@ let model = {
     referenceNoteID: localStorage.getItem("referenceNoteID"),
     isPreferSharp: localStorage.getItem("isPreferSharp"),
     isStaticRef: localStorage.getItem("isStaticRef"),
+    isRandomNumOfRandom: localStorage.getItem("isRandomNumOfRandom"),
     isDarkMode: localStorage.getItem("isDarkMode"),
 
     shuffleReference: function() {
@@ -70,6 +75,12 @@ let model = {
     
         // Save and sort this random array into a copy for later use
         this.randomNoteIndexesCopy = this.randomNoteIndexes.slice().sort((a,b) => a - b);
+    },
+
+    shuffleNumOfRandom: function() {
+        randomNumber = Math.floor(Math.random() * model.totalNumOfRandom) + 1;
+        localStorage.setItem("numOfRandom", randomNumber);
+        model.numOfRandom = parseInt(localStorage.getItem("numOfRandom"));
     },
 
     playNoteSound: function(id) {
@@ -151,6 +162,7 @@ let view = {
     ANSWER: document.querySelector("#answer"),
     SHARP_SWITCH: document.querySelector("#sharp-switch"),
     STATIC_REF_SWITCH: document.querySelector("#static-ref-switch"),
+    RANDOM_NUM_RANDOM_SWITCH: document.querySelector("#random-num-of-random"),
     DARK_SWITCH: document.querySelector("#dark-switch"),
 
     // Arrays of key divs on screen to look up touch/ mouse input
@@ -189,8 +201,9 @@ let view = {
     },
     
     initReferenceList: function(noteState) {
-        // Init the options
         let referenceNotes = Array.from(document.querySelectorAll("#referenceNote"));
+
+        // If the options don't exist yet, init them 
         if (referenceNotes.length === 0) {
             for (let i = 0; i < model.NUM_OF_KEYS; ++i) {
                 let option = document.createElement("option");
@@ -201,10 +214,42 @@ let view = {
             }
         }
         
-        // Name them. Separated to support sharp-flat toggle
+        // Name the options. Separated to support sharp-flat toggle
         for (let [i, option] of referenceNotes.entries()) {
             option.text = model.PIANO_KEYS[i][noteState];
         }
+    },
+
+    initNumOfRandomList: function() {
+        let numOfRandomOptions = Array.from(document.querySelectorAll("#numOfRandomOption"));
+        if (numOfRandomOptions.length === 0) {
+            for (let i = 0; i < model.totalNumOfRandom; ++i) {
+                let option = document.createElement("option");
+                option.value = i + 1;
+                option.text = i + 1;
+                option.id = "numOfRandomOption"
+                this.RANDOM_SELECT.add(option);
+            }
+        }
+
+        let questionMark = document.querySelector("#questionMark");
+        if (questionMark) questionMark.parentNode.removeChild(questionMark);
+
+    },
+
+    initNumOfRandomListHidden: function() {
+        let numOfRandomOptions = Array.from(document.querySelectorAll("#numOfRandomOption"));
+        if (numOfRandomOptions.length > 0) {
+            numOfRandomOptions.forEach(e => {
+                e.parentNode.removeChild(e);
+            })
+        }
+
+        let questionMark = document.createElement("option");
+        questionMark.text = "?";
+        questionMark.id = "questionMark";
+        questionMark.setAttribute("selected", "selected");
+        this.RANDOM_SELECT.add(questionMark);
     },
 
     updateSharpFlat: function(noteState) {
@@ -293,6 +338,7 @@ function initEventHandlers() {
     // Toggle Switches
     view.SHARP_SWITCH.addEventListener("click", () => controller.updateNoteState());
     view.STATIC_REF_SWITCH.addEventListener("click", () => controller.updateRefState());
+    view.RANDOM_NUM_RANDOM_SWITCH.addEventListener("click", () => controller.updateNumOfRandomState());
     view.DARK_SWITCH.addEventListener("click", () => controller.updateDarkMode());
 
     // Responsive Piano
@@ -369,6 +415,8 @@ let controller = {
         if (!JSON.parse(model.isStaticRef)) model.shuffleReference()
         else controller.updateRefID(model.referenceNoteID);
 
+        if (JSON.parse(model.isRandomNumOfRandom)) model.shuffleNumOfRandom();
+
         model.shuffleRandomNotesArray();
         model.correctCount = 0;
         this.gameStateChanged(0); // init
@@ -417,7 +465,11 @@ let controller = {
                 break;
             case 2: // correct
                 view.feedbackMessage1("Correct!");
-                view.feedbackMessage2((notesLeft) + " more to go.");
+                if (JSON.parse(model.isRandomNumOfRandom)) {
+                    view.feedbackMessage2("Keep guessing.");
+                } else {
+                    view.feedbackMessage2((notesLeft) + " more to go.");
+                };
                 break;
             case 3: // incorrect
                 view.feedbackMessage1("Incorrect!");
@@ -451,6 +503,18 @@ let controller = {
     updateRefState: function() {
         model.isStaticRef = (JSON.parse(model.isStaticRef) === true) ? false : true;
         localStorage.setItem("isStaticRef", model.isStaticRef);
+    },
+
+    updateNumOfRandomState: function() {
+        if (JSON.parse(model.isRandomNumOfRandom) === true) {
+            model.isRandomNumOfRandom = false;
+            view.initNumOfRandomList();
+        } else if (JSON.parse(model.isRandomNumOfRandom) === false) {
+            model.isRandomNumOfRandom = true;
+            view.initNumOfRandomListHidden();
+        }
+
+        localStorage.setItem("isRandomNumOfRandom", model.isRandomNumOfRandom);
     },
 
     updateDarkMode: function() {
@@ -541,11 +605,19 @@ function initGame() {
 
     view.SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
     view.STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
+    view.RANDOM_NUM_RANDOM_SWITCH.checked = JSON.parse(model.isRandomNumOfRandom);
     view.DARK_SWITCH.checked = JSON.parse(model.isDarkMode);
     view.RANDOM_SELECT.value = parseInt(model.numOfRandom);
 
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
     view.initKeyNames(noteState);
     view.initReferenceList(noteState);
+
+    if (JSON.parse(model.isRandomNumOfRandom)) {
+        view.initNumOfRandomListHidden()
+    } else {
+        view.initNumOfRandomList()
+    };
+
     view.renderDarkModeTrain(JSON.parse(model.isDarkMode));    
 }
