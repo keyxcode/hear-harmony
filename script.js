@@ -77,7 +77,7 @@ let model = {
         let pianoVoices = this.pianoVoices;
 
         // Load sample into the voice slot
-        pianoVoices[voiceID].node = model.CTX.createBufferSource();
+        pianoVoices[voiceID].node = this.CTX.createBufferSource();
         pianoVoices[voiceID].node.buffer = this.fetchedSamples[id];
         // Initialize gain fader
         pianoVoices[voiceID].gainFader.gain.value = 1;
@@ -161,14 +161,15 @@ let view = {
         "q", "2", "w", "3", "e", "r", "5", "t", "6", "y", "7", "u", "i"
     ],
 
+    FEEDBACK1: document.querySelector("#feedback1"),
+    FEEDBACK2: document.querySelector("#feedback2"),
+
     feedbackMessage1: function(msg) {
-        let feedback1 = document.querySelector("#feedback1");
-        feedback1.innerHTML = msg;
+        this.FEEDBACK1.innerHTML = msg;
     },
 
     feedbackMessage2: function(msg) {
-        let feedback2 = document.querySelector("#feedback2");
-        feedback2.innerHTML = msg;
+        this.FEEDBACK2.innerHTML = msg;
     },
 
     initFeedback: function() {
@@ -462,15 +463,15 @@ let controller = {
 //=====================================================================
 // INIT
 
-window.addEventListener("load", initGlobal);
-function initGlobal() {    
+window.addEventListener("load", () => {
     if (document.querySelector("body").dataset.title === "train-page") {
         initGame();
         return;
     }
 
     view.renderDarkModeGlobal(JSON.parse(model.isDarkMode));
-}
+});
+
 function initGame() {
     // Initialize piano model
     model.PIANO_KEYS = [ 
@@ -517,6 +518,10 @@ function initGame() {
         .then(decodedAudio => {
             let audio = decodedAudio;
             model.fetchedSamples[i] = audio;
+        })
+        .then(() => {
+            // Shuffle all after all the samples are loaded
+            if (model.fetchedSamples.length === 25) controller.shuffleAll();
         })  
     }
 
@@ -531,6 +536,9 @@ function initGame() {
     initEventHandlers();
     
     // Init GUI
+    view.feedbackMessage1("<i>Loading</i>")
+    view.feedbackMessage2("...");
+
     view.SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
     view.STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
     view.DARK_SWITCH.checked = JSON.parse(model.isDarkMode);
@@ -539,10 +547,5 @@ function initGame() {
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
     view.initKeyNames(noteState);
     view.initReferenceList(noteState);
-    view.initFeedback();
-    view.renderDarkModeTrain(JSON.parse(model.isDarkMode));
-
-    // Shuffle all everytime page refreshes
-    // Can only call this after initReference above
-    controller.shuffleAll();
+    view.renderDarkModeTrain(JSON.parse(model.isDarkMode));    
 }

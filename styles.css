@@ -31,6 +31,23 @@ body {
 }
 
 /*=================================================================*/
+/* Dark mode switch*/
+#dark-label {
+    color: var(--bs-navbar-color);
+}
+
+#dark-switch:focus {
+    border-color: var(--bs-success);
+    outline: 0;
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+}
+
+#dark-switch:checked {
+    background-color: var(--bs-success);
+    border-color: var(--bs-success);
+}
+
+/*=================================================================*/
 /* main area has a 5vw padding LR*/
 main {
     padding: 0 5vw;
