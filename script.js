@@ -316,7 +316,7 @@ let view = {
 // EVENT HANDLERS
 // detects user input to send over to CONTROLLER
 
-function initEventHandlers() {
+function initTrainEventHandlers() {
     // Piano Mouse Input handler
     view.KEY_DIVS.forEach(key => {
         key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e));
@@ -339,10 +339,13 @@ function initEventHandlers() {
     view.SHARP_SWITCH.addEventListener("click", () => controller.updateNoteState());
     view.STATIC_REF_SWITCH.addEventListener("click", () => controller.updateRefState());
     view.RANDOM_NUM_RANDOM_SWITCH.addEventListener("click", () => controller.updateNumOfRandomState());
-    view.DARK_SWITCH.addEventListener("click", () => controller.updateDarkMode());
 
     // Responsive Piano
     view.mediaQuery.addEventListener("change", () => view.renderPianoBG());
+}
+
+function initGlobalEventHandlers() {
+    view.DARK_SWITCH.addEventListener("click", () => controller.updateDarkMode());
 }
 
 
@@ -520,7 +523,11 @@ let controller = {
     updateDarkMode: function() {
         model.isDarkMode = (JSON.parse(model.isDarkMode) === true) ? false : true;
         localStorage.setItem("isDarkMode", model.isDarkMode);
-        view.renderDarkModeTrain(model.isDarkMode)
+        view.renderDarkModeGlobal(model.isDarkMode);
+
+        if (document.querySelector("body").dataset.title === "train-page") {
+            view.renderDarkModeTrain(model.isDarkMode);
+        }
     }
 }
 
@@ -528,12 +535,14 @@ let controller = {
 // INIT
 
 window.addEventListener("load", () => {
+    initGlobalEventHandlers();
+    view.renderDarkModeGlobal(JSON.parse(model.isDarkMode));  
+    view.DARK_SWITCH.checked = JSON.parse(model.isDarkMode);
+
     if (document.querySelector("body").dataset.title === "train-page") {
         initGame();
         return;
     }
-
-    view.renderDarkModeGlobal(JSON.parse(model.isDarkMode));
 });
 
 function initGame() {
@@ -597,7 +606,7 @@ function initGame() {
     }
 
     // Init eventhandlers
-    initEventHandlers();
+    initTrainEventHandlers();
     
     // Init GUI
     view.feedbackMessage1("<i>Loading</i>")
@@ -606,7 +615,6 @@ function initGame() {
     view.SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
     view.STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
     view.RANDOM_NUM_RANDOM_SWITCH.checked = JSON.parse(model.isRandomNumOfRandom);
-    view.DARK_SWITCH.checked = JSON.parse(model.isDarkMode);
     view.RANDOM_SELECT.value = parseInt(model.numOfRandom);
 
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 

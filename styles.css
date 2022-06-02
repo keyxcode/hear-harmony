@@ -176,6 +176,19 @@ select {
 }
 
 /*=================================================================*/
+#contact-form {
+    color: var(--black-key-color);
+    background-color: var(--white-key-color);
+    border-radius: 5px;
+    width: 75%;
+    border: 1px solid var(--black-key-color);
+}
+
+#contact-submit {
+    border-radius: 5px;
+}
+
+/*=================================================================*/
 /* Responsive design when screen too small*/
 @media screen and (max-width: 768px) {
     .piano {
