@@ -1,17 +1,17 @@
 # Hear Harmony
-#### Video Demo:  <URL HERE>
+### Video Demo:  <URL HERE>
 
 ---
 
-#### Description
+### Description
 
 **Hear Harmony** was developed to help musicians improve their *relative pitch*. 
 
-*Relative pitch* is the ability to identify one or many given musical notes by comparing it to a reference note. Unlike perfect pitch, this can be developed through ear training.
+*Relative pitch* is the ability to identify one or many given musical notes by comparing it to a reference note. This can be developed through ear training.
 
 ---
 
-#### How to use
+### How to use
 
 On the ***Train*** page, press the *"Reference"* button, carefully listen to it, then press *"Random"*, which gives you from one to five random notes, depending on the number you select. Next, play your guess on the on-screen piano until you get it right.
 
@@ -24,13 +24,13 @@ The *"Static reference note"* switch determines whether or not the reference not
 If you are looking for something more challenging, try turning on the *"Random number of random notes"* switch. This will hide the number of random notes from you, and will also change this number each time you *"Shuffle"*. 
 
 ---
-#### Pro-tip
+### Pro-tip
 
 You could play the on-screen piano using your computer keyboard. The lower octave starts with "Z" as C3 and the upper octave starts with "Q" as C4. See if you could figure out how they map to the rest of the piano!
 
 ---
 
-#### Methodology
+### Methodology
 
 **Hear Harmony** is uniqe in that it does not restrict the random notes to only conventional combinations, such as major, minor, diminished, etc. We believe that true relative pitch should mean being able to hear any strange note combination. Besides, this will be especially helpful for musicians who wish to enrich their harmonic vocabulary. Sometimes, the chord you can not name is the one you wish you could use.
 
