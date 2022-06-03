@@ -21,7 +21,7 @@ The *"Prefer sharp spelling"* switch toggles between flat and sharp spelling for
 
 The *"Static reference note"* switch determines whether or not the reference note changes when you *"Shuffle"*. This might be useful when you want to train your relative pitch against a specific note, for example C3.
 
-If you are looking for something more challenging, you could try turning on the *"Random number of random notes"* switch. This will hide the number of random notes from you, and will also change this number each time you *"Shuffle"*. 
+If you are looking for something more challenging, try turning on the *"Random number of random notes"* switch. This will hide the number of random notes from you, and will also change this number each time you *"Shuffle"*. 
 
 ---
 #### Pro-tip
