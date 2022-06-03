@@ -41,45 +41,47 @@
   </nav>
   
   <main>
-    <div class="container p-3 p-md-5 my-4" id="contact-form">
+    <form>
+      <div class="container p-3 p-md-5 my-4" id="contact-form">
 
-      <div class="text-center">
-        <h1 class="mb-3">Contact Us</h1>            
-      </div>
+        <div class="text-center">
+          <h1 class="mb-3">Contact Us</h1>            
+        </div>
 
 
-      <div class="row">
-        <div class="col-md-6 pb-2">
-          <div class="form-group">
-            <input id="form-name" type="text" name="name" class="form-control" placeholder="First name" required="required" data-error="Firstname is required.">
+        <div class="row">
+          <div class="col-md-6 pb-2">
+            <div class="form-group">
+              <input id="form-name" type="text" name="name" class="form-control" placeholder="First name" required>
+            </div>
+          </div>
+          <div class="col-md-6 pb-2">
+            <div class="form-group">
+              <input id="form-lastname" type="text" name="lastname" class="form-control" placeholder="Last name" required>
+            </div>
           </div>
         </div>
-        <div class="col-md-6 pb-2">
-          <div class="form-group">
-            <input id="form-lastname" type="text" name="lastname" class="form-control" placeholder="Last name" required="required" data-error="Lastname is required.">
+
+        <div class="row">
+          <div class="form-group py-2">
+            <input id="form-email" type="email" name="email" class="form-control" placeholder="E-mail address" required>
           </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="form-group py-2">
-          <input id="form-email" type="email" name="email" class="form-control" placeholder="E-mail address" required="required" data-error="Valid email is required.">
+        <div class="row">
+          <div class="form-group py-2">
+            <textarea id="form-message" name="message" class="form-control" placeholder="Write your message here..." rows="4" required></textarea>
+          </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="form-group py-2">
-          <textarea id="form-message" name="message" class="form-control" placeholder="Write your message here." rows="4" required="required" data-error="Please, leave us a message."></textarea>
+        <div class="row">
+          <div class="text-center py-3">
+            <input type="submit" class="btn btn-success btn-send mx-auto" id="contact-submit" value="Send Message">
+          </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="text-center py-3">
-          <input type="submit" class="btn btn-success btn-send mx-auto" id="contact-submit" value="Send Message">
-        </div>
       </div>
-
-    </div>
+    </form>
   </main>
 
 
