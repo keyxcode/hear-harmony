@@ -188,6 +188,12 @@ select {
     border-radius: 5px;
 }
 
+#form-name, #form-lastname, #form-email, #form-message {
+    color: var(--black-key-color);
+    background-color: var(--white-key-color);
+    border: 1px solid var(--black-key-color);
+}
+
 /*=================================================================*/
 /* Responsive design when screen too small*/
 @media screen and (max-width: 768px) {

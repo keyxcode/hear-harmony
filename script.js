@@ -78,9 +78,10 @@ let model = {
     },
 
     shuffleNumOfRandom: function() {
-        randomNumber = Math.floor(Math.random() * model.totalNumOfRandom) + 1;
-        localStorage.setItem("numOfRandom", randomNumber);
-        model.numOfRandom = parseInt(localStorage.getItem("numOfRandom"));
+        // randomNumber = Math.floor(Math.random() * model.totalNumOfRandom) + 1;
+        // localStorage.setItem("numOfRandom", randomNumber);
+        // model.numOfRandom = parseInt(localStorage.getItem("numOfRandom"));
+        model.numOfRandom = Math.floor(Math.random() * model.totalNumOfRandom) + 1;
     },
 
     playNoteSound: function(id) {
@@ -149,7 +150,7 @@ let model = {
 }
 
 //=====================================================================
-//VIEW: alters the UI based on given inputs from CONTROLLER
+// VIEW: alters the UI based on given inputs from CONTROLLER
 // feedback message, key colors, key names, key states (sharp flat), init options
 // does read-only operation on model
 
@@ -320,8 +321,11 @@ function initTrainEventHandlers() {
     // Piano Mouse Input handler
     view.KEY_DIVS.forEach(key => {
         key.addEventListener("pointerdown", e => controller.parsePianoMouseInput(e));
+        key.addEventListener("pointerup", () => controller.stopAudioVisual());
     });
-    document.addEventListener("pointerup", () => controller.stopAudioVisual());
+    document.querySelector(".buttons").addEventListener("pointerup", () => controller.stopAudioVisual());
+
+    // document.addEventListener("pointerup", () => controller.stopAudioVisual());
 
     // Piano Computer Keyboard Input handlers
     document.addEventListener("keydown", e => controller.parsePianoKeyInput(e));
@@ -512,9 +516,15 @@ let controller = {
         if (JSON.parse(model.isRandomNumOfRandom) === true) {
             model.isRandomNumOfRandom = false;
             view.initNumOfRandomList();
+            view.RANDOM_SELECT.value = localStorage.getItem("numOfRandom");
+            this.selectNumRandom();
+            this.gameStateChanged(0);
         } else if (JSON.parse(model.isRandomNumOfRandom) === false) {
             model.isRandomNumOfRandom = true;
             view.initNumOfRandomListHidden();
+            model.shuffleNumOfRandom();
+            model.shuffleRandomNotesArray();
+            this.gameStateChanged(0);
         }
 
         localStorage.setItem("isRandomNumOfRandom", model.isRandomNumOfRandom);
@@ -615,16 +625,16 @@ function initGame() {
     view.SHARP_SWITCH.checked = JSON.parse(model.isPreferSharp);
     view.STATIC_REF_SWITCH.checked = JSON.parse(model.isStaticRef);
     view.RANDOM_NUM_RANDOM_SWITCH.checked = JSON.parse(model.isRandomNumOfRandom);
-    view.RANDOM_SELECT.value = parseInt(model.numOfRandom);
 
     let noteState = (JSON.parse(model.isPreferSharp) === true) ? "noteSharp" : "note"; 
     view.initKeyNames(noteState);
     view.initReferenceList(noteState);
 
     if (JSON.parse(model.isRandomNumOfRandom)) {
-        view.initNumOfRandomListHidden()
+        view.initNumOfRandomListHidden();
     } else {
-        view.initNumOfRandomList()
+        view.initNumOfRandomList();
+        view.RANDOM_SELECT.value = parseInt(model.numOfRandom);
     };
 
     view.renderDarkModeTrain(JSON.parse(model.isDarkMode));    
