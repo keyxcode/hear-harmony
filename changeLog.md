@@ -1,5 +1,10 @@
 # Change Log
 
+* ### Version 1.0.0
+    * Implemented "Random number of random notes" feature.
+    * Added a contact form.
+    * Improved UI.
+
 * ### Version 0.9.0
     * Improved internal MVC model.
     * "Show answers" now shows a better-formatted answer.
