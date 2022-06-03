@@ -1,5 +1,5 @@
 # Hear Harmony
-### Video Demo:  
+### Video Demo
 https://youtu.be/vyOhJAVDdOM
 
 ---
