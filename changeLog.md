@@ -3,6 +3,7 @@
 * ### Version 1.0.0
     * Implemented "Random number of random notes" feature.
     * Added a contact form.
+    * Edited README and added video demonstration.
     * Improved UI.
 
 * ### Version 0.9.0

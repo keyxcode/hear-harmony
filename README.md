@@ -26,7 +26,7 @@ https://youtu.be/vyOhJAVDdOM
 
 ### How to use
 
-On the ***Train*** page, press *"Reference"*, carefully listen to it, then press *"Play"*, which plays from one to five random notes, depending on the number you select. Next, play your guesses on the on-screen piano until you get all of them right.
+On the ***Train*** page, press *"Reference"*, carefully listen to it, then press *"Play"*, which plays from one to five random notes, depending on the number of notes you select. Next, play your guesses on the on-screen piano until you get all of them right.
 
 After you get the answer right, press *"Shuffle"* to get a new set of random notes. If the challenge is too difficult, you could press *"Answers"*, which reveals the notes to you.
 
@@ -45,7 +45,7 @@ You could play the on-screen piano using your computer keyboard. The lower octav
 
 ### Methodology
 
-**Hear Harmony** is uniqe in that it does not restrict the random notes to only conventional combinations, such as major, minor, diminished, etc. We believe that true relative pitch means being able to hear any strange note combination. Besides, this will be especially helpful for musicians who wish to enrich their harmonic vocabulary. Sometimes, the chord you can not name is the one you wish you could use.
+**Hear Harmony** is uniqe in that it does not restrict the random notes to only conventional combinations, such as major, minor, diminished, etc. I believe that true relative pitch means being able to hear any strange note combination. Besides, this will be especially helpful for musicians who wish to enrich their harmonic vocabulary. Sometimes, the chord you can not name is the one you wish you could use.
 
 Happy ear training! 🎹
 
