@@ -5,7 +5,7 @@
 
 ### Description
 
-**Hear Harmony** was developed to help musicians improve their *relative pitch*. 
+[**Hear Harmony**](https://keyxcode.github.io/hear-harmony/) was developed to help musicians improve their *relative pitch*. 
 
 *Relative pitch* is the ability to identify one or many given musical notes by comparing it to a reference note. This can be developed through ear training.
 
@@ -13,9 +13,9 @@
 
 ### How to use
 
-On the ***Train*** page, press the *"Reference"* button, carefully listen to it, then press *"Random"*, which gives you from one to five random notes, depending on the number you select. Next, play your guess on the on-screen piano until you get it right.
+On the ***Train*** page, press *"Reference"*, carefully listen to it, then press *"Random"*, which gives you one to five random notes, depending on the number you select. Next, play your guesses on the on-screen piano until you get all of them right.
 
-After you get the answers right, press *"Shuffle"* to get a new set of random notes. If it's too difficult, you could press *"Answers"*, which reveals the notes to you.
+After you get the answer right, press *"Shuffle"* to get a new set of random notes. If the challenge is too difficult, you could press *"Answers"*, which reveals the notes to you.
 
 The *"Prefer sharp spelling"* switch toggles between flat and sharp spelling for the on-screen note names.
 
@@ -32,7 +32,7 @@ You could play the on-screen piano using your computer keyboard. The lower octav
 
 ### Methodology
 
-**Hear Harmony** is uniqe in that it does not restrict the random notes to only conventional combinations, such as major, minor, diminished, etc. We believe that true relative pitch should mean being able to hear any strange note combination. Besides, this will be especially helpful for musicians who wish to enrich their harmonic vocabulary. Sometimes, the chord you can not name is the one you wish you could use.
+**Hear Harmony** is uniqe in that it does not restrict the random notes to only conventional combinations, such as major, minor, diminished, etc. We believe that true relative pitch means being able to hear any strange note combination. Besides, this will be especially helpful for musicians who wish to enrich their harmonic vocabulary. Sometimes, the chord you can not name is the one you wish you could use.
 
 Happy ear training!
 
