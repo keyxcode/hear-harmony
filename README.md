@@ -11,6 +11,18 @@
 
 ---
 
+### Screenshots
+
+<img src="Images/DesktopUI.png" alt="Desktop UI"/>
+
+*Desktop UI - Light Mode*
+
+<img src="Images/MobileUI.png" alt="Mobile Dark UI" style="height: 500px"/>
+
+*Mobile UI - Dark Mode*
+
+---
+
 ### How to use
 
 On the ***Train*** page, press *"Reference"*, carefully listen to it, then press *"Random"*, which gives you one to five random notes, depending on the number you select. Next, play your guesses on the on-screen piano until you get all of them right.
