@@ -25,7 +25,7 @@
 
 ### How to use
 
-On the ***Train*** page, press *"Reference"*, carefully listen to it, then press *"Random"*, which gives you one to five random notes, depending on the number you select. Next, play your guesses on the on-screen piano until you get all of them right.
+On the ***Train*** page, press *"Reference"*, carefully listen to it, then press *"Play"*, which plays from one to five random notes, depending on the number you select. Next, play your guesses on the on-screen piano until you get all of them right.
 
 After you get the answer right, press *"Shuffle"* to get a new set of random notes. If the challenge is too difficult, you could press *"Answers"*, which reveals the notes to you.
 
@@ -33,7 +33,7 @@ The *"Prefer sharp spelling"* switch toggles between flat and sharp spelling for
 
 The *"Static reference note"* switch determines whether or not the reference note changes when you *"Shuffle"*. This might be useful when you want to train your relative pitch against a specific note, for example C3.
 
-If you are looking for something more challenging, try turning on the *"Random number of random notes"* switch. This will hide the number of random notes from you, and will also change this number each time you *"Shuffle"*. 
+If you are looking for an extra challenge, try turning on the *"Random number of random notes"* switch. This will hide the number of random notes from you, and will also change this number each time you *"Shuffle"*. 
 
 ---
 ### Pro-tip
@@ -46,5 +46,5 @@ You could play the on-screen piano using your computer keyboard. The lower octav
 
 **Hear Harmony** is uniqe in that it does not restrict the random notes to only conventional combinations, such as major, minor, diminished, etc. We believe that true relative pitch means being able to hear any strange note combination. Besides, this will be especially helpful for musicians who wish to enrich their harmonic vocabulary. Sometimes, the chord you can not name is the one you wish you could use.
 
-Happy ear training!
+Happy ear training! 🎹
 
