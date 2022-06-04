@@ -5,6 +5,7 @@
     * Added a contact form.
     * Edited README and added video demonstration.
     * Improved UI.
+    * Launched custom domain: hearharmony.com
 
 * ### Version 0.9.0
     * Improved internal MVC model.
