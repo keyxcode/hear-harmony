@@ -25,6 +25,14 @@ You could play the on-screen piano using your computer keyboard. The lower octav
 
 Happy ear training! 🎹
 
+If you are looking for an extra challenge, try turning on the *"Random number of random notes"* switch. This will hide the number of random notes from you, and will also change this number each time you *"Shuffle"*. 
+
+You could play the on-screen piano using your computer keyboard. The lower octave starts with "Z" as C3 and the upper octave starts with "Q" as C4. See if you could figure out how they map to the rest of the piano!
+
+**Hear Harmony** is uniqe in that it does not restrict the random notes to only conventional combinations, such as major, minor, diminished, etc. I believe that true relative pitch means being able to hear any strange note combination. Besides, this will be especially helpful for musicians who wish to enrich their harmonic vocabulary. Sometimes, the chord you can not name is the one you wish you could use.
+
+Happy ear training! 🎹
+
 ---
 
 ### Screenshots
