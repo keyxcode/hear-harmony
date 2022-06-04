@@ -14,6 +14,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100" data-title="train-page">
+
   <!--Navigation bar-->
   <nav class="navbar navbar-expand-md navbar-dark p-2">
     <div class="container-fluid">
@@ -23,13 +24,13 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <!--Nav items-->
-
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav me-auto">
             <li class="nav-item"><a class="nav-link" href="index.html">Train</a></li>
             <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
             <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
           </ul>
+          <!--Dark mode switch-->
           <form class="ms-auto py-2">
             <div class="form-check form-switch">
               <input class="form-check-input" type="checkbox" id="dark-switch" value="no">
@@ -42,6 +43,7 @@
 
   <!--Main content-->
   <main>
+
     <!--Buttons-->
     <div class="buttons container mx-auto mt-4 p-0">
       <div class="row gx-4">
@@ -88,51 +90,54 @@
 
     <div class="piano mt-4">
       <!--First octave-->
-      <div id="C3-key" class="key white mb-4"><span></span></div>
-      <div id="Db3-key" class="key black mb-4"><span></span></div>
-      <div id="D3-key" class="key white mb-4"><span></span></div>
-      <div id="Eb3-key" class="key black mb-4"><span></span></div>
-      <div id="E3-key" class="key white mb-4"><span></span></div>
-      <div id="F3-key" class="key white mb-4"><span></span></div>
-      <div id="Gb3-key" class="key black mb-4"><span></span></div>
-      <div id="G3-key" class="key white mb-4"><span></span></div>
-      <div id="Ab3-key" class="key black mb-4"><span></span></div>
-      <div id="A3-key" class="key white mb-4"><span></span></div>
-      <div id="Bb3-key" class="key black mb-4"><span></span></div>
-      <div id="B3-key" class="key white mb-4"><span></span></div>
+      <div id="C3-key" class="key white mb-4"></div>
+      <div id="Db3-key" class="key black mb-4"></div>
+      <div id="D3-key" class="key white mb-4"></div>
+      <div id="Eb3-key" class="key black mb-4"></div>
+      <div id="E3-key" class="key white mb-4"></div>
+      <div id="F3-key" class="key white mb-4"></div>
+      <div id="Gb3-key" class="key black mb-4"></div>
+      <div id="G3-key" class="key white mb-4"></div>
+      <div id="Ab3-key" class="key black mb-4"></div>
+      <div id="A3-key" class="key white mb-4"></div>
+      <div id="Bb3-key" class="key black mb-4"></div>
+      <div id="B3-key" class="key white mb-4"></div>
 
       <!--Second octave-->
-      <div id="C4-key" class="key white mb-4"><span></span></div>
-      <div id="Db4-key" class="key black mb-4"><span></span></div>
-      <div id="D4-key" class="key white mb-4"><span></span></div>
-      <div id="Eb4-key" class="key black mb-4"><span></span></div>
-      <div id="E4-key" class="key white mb-4"><span></span></div>
-      <div id="F4-key" class="key white mb-4"><span></span></div>
-      <div id="Gb4-key" class="key black mb-4"><span></span></div>
-      <div id="G4-key" class="key white mb-4"><span></span></div>
-      <div id="Ab4-key" class="key black mb-4"><span></span></div>
-      <div id="A4-key" class="key white mb-4"><span></span></div>
-      <div id="Bb4-key" class="key black mb-4"><span></span></div>
-      <div id="B4-key" class="key white mb-4"><span></span></div>
-      <div id="C5-key" class="key white mb-4"><span></span></div>
+      <div id="C4-key" class="key white mb-4"></div>
+      <div id="Db4-key" class="key black mb-4"></div>
+      <div id="D4-key" class="key white mb-4"></div>
+      <div id="Eb4-key" class="key black mb-4"></div>
+      <div id="E4-key" class="key white mb-4"></div>
+      <div id="F4-key" class="key white mb-4"></div>
+      <div id="Gb4-key" class="key black mb-4"></div>
+      <div id="G4-key" class="key white mb-4"></div>
+      <div id="Ab4-key" class="key black mb-4"></div>
+      <div id="A4-key" class="key white mb-4"></div>
+      <div id="Bb4-key" class="key black mb-4"></div>
+      <div id="B4-key" class="key white mb-4"></div>
+      <div id="C5-key" class="key white mb-4"></div>
 
-      <div id="scroll">- scroll -</div>
+      <div id="scroll"><i>- scroll -</i></div>
     </div>
 
     <!--Toggle options-->
     <div class="container toggles p-1 ms-0 my-4">
+      <!--Prefer sharp spelling-->
       <form>
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" id="sharp-switch" value="no">
           <label class="form-check-label" for="sharp-switch">Prefer sharp spelling</label>
         </div>
       </form>
+      <!--Static reference note-->
       <form>
-        <div class="form-check form-switch">
+        <div class="form-check form-switch py-2">
           <input class="form-check-input" type="checkbox" id="static-ref-switch" value="no">
           <label class="form-check-label" for="static-ref-switch">Static reference note</label>
         </div>
       </form>
+      <!--Random number of random notes-->
       <form>
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" id="random-num-of-random" value="no">
@@ -145,7 +150,7 @@
   <!--Footer-->
   <footer class="text-center mt-auto">
     <div class="container p-3">
-      All rights reserved © <span>keyxcode</span>
+      All rights reserved © keyxcode
     </div>
   </footer>
 </body>

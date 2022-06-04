@@ -556,9 +556,6 @@ window.addEventListener("load", () => {
 });
 
 function initGame() {
-    // This line takes care of Apple audio when silent switch is on
-    unmuteAudio();
-
     // Initialize piano model
     model.PIANO_KEYS = [ 
         {note: "C3", noteSharp: "C3", computerKey: "z"},

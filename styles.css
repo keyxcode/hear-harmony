@@ -125,13 +125,6 @@ select {
     -webkit-user-select: none;
 }
 
-/* piano note name container */
-.key span {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-}
-
 /* Black and white key design */
 .white {
     /* white key is about 1.75 the size of black key */
