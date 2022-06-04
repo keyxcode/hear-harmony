@@ -17,7 +17,7 @@
 
 *Main buttons*
 
-On the ***Train*** page, press *"Reference"* to listen the reference note, then press *"Play"*, which plays from one to five random notes, depending on the number of notes you select. Next, play your guesses on the on-screen piano until you get all of them right.
+On the ***Train*** page, press *"Reference"* to listen the reference note, which you could either choose yourself or let the program automatically pick for you. Then, press *"Play"*, which plays from one to five random notes, depending on the number of notes you select. Next, play your guesses on the on-screen piano until you get all of them right.
 
 After you get the answer right, press *"Shuffle"* to get a new set of random notes. If the challenge is too difficult, you could press *"Answers"*, which reveals the notes to you.
 
