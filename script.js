@@ -556,8 +556,7 @@ window.addEventListener("load", () => {
 });
 
 function initGame() {
-    // These lines take care of Apple audio when silent switch is on
-    const unmuteAudio = require('unmute-ios-audio');
+    // This line takes care of Apple audio when silent switch is on
     unmuteAudio();
 
     // Initialize piano model
