@@ -13,7 +13,7 @@
 
 ### How To Use
 
-<img src="Images/mainButtons.png" alt="Main buttons" style="height: 50px"/>
+<img src="Images/mainButtons.png" alt="Main buttons" style="height: 100px"/>
 
 *Main buttons*
 
@@ -21,7 +21,7 @@ On the ***Train*** page, press *"Reference"* to listen the reference note, then 
 
 After you get the answer right, press *"Shuffle"* to get a new set of random notes. If the challenge is too difficult, you could press *"Answers"*, which reveals the notes to you.
 
-<img src="Images/toggleSwitches.png" alt="Main buttons" style="height: 50px"/>
+<img src="Images/toggleSwitches.png" alt="Main buttons" style="height: 100px"/>
 
 *Toggle switches*
 
