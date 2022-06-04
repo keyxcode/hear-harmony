@@ -27,17 +27,17 @@
 
 This website was implemented using HTML, CSS with the Boostrap framework, and JavaScript. A lot of work was put into assuring both the desktop and mobile experience are as flawless as possible, especially when it comes to interacting with the on-screen piano. In the end, the scrolling piano interface was chosen for mobile because it offers the most compact, easy-to-use, as well as aesthetically pleasing design.
 
-When it comes to the JavaScript, two of the difficult challenges I faced were how to organize the game logic, and how to implement the audio engine.
+When it comes to the JavaScript, two challenges I faced were how to organize the game logic, and how to implement the audio engine.
 
-At the beginning, there was barely any organization to the code, and everything was in the global scope. As the program grew, I soon found out that it was to difficult to navigate and manage the code as there was too much dependency between different functions. After some research, I found a good way to solve this is to utilize an MVC model, putting components in their appropriate namespace Model, View, and Controller. The end result is still not perfect, but is much easier to navigate than what it originally was.
+At the beginning, there was barely any organization to the code, and everything was in the global scope. As the program grew, I soon found out that it was to difficult to navigate and manage as there was too much dependency between different functions and variables. After some research, I found a good way to solve this is to utilize an MVC model, putting components in their appropriate namespace Model, View, and Controller. The end result is still not perfect, but is much easier to navigate than what it originally was.
 
-The other challenge was the audio engine. At the beginning, I used the HTML `<audio>` tag to play the piano sample for each note. However, I soon found out that it did not offer the best playback for short samples, so I ended up using the Web Audio API for this. Another thing I tried to implement is to emulate the piano action to be as realistic as possible. This means that if you press a note quickly, it will give you a short release, while holding a note will lengthen the tail. Many piano web apps I came across default to either one of these two actions: all short notes, or all long notes for simplicity.
+The other challenge was implementing the audio engine. At the beginning, I used the HTML `<audio>` tag to play my piano samples. However, I soon found out that it did not offer the best playback for short samples, so I ended up using the Web Audio API instead. Another thing I tried to implement is to emulate the piano action to be as realistic as possible. This means that if you press a note quickly, it will give you a short release, while holding a note for a long time will lengthen the tail. Many piano web apps I came across default to either one of those two behaviors: all short notes, or all long notes for simplicity.
 
-I considered building a backend for users to log in on this app, but after further consideration, decided that it was not necessary for the purpose of this site, and would add unwanted complexities. In the end, the only backend I use is a Formspree service to point the contact form to.
+I considered building a backend for users to log in to this app, but after further consideration, decided that it was not necessary for the purpose of this site, and would only add unwanted complexities for both me and the users. In the end, the only backend I use is a Formspree service to point the contact form to.
 
 ---
 
-### How to use
+### How To Use
 
 On the ***Train*** page, press *"Reference"*, carefully listen to it, then press *"Play"*, which plays from one to five random notes, depending on the number of notes you select. Next, play your guesses on the on-screen piano until you get all of them right.
 
@@ -47,7 +47,7 @@ The *"Prefer sharp spelling"* switch toggles between flat and sharp spelling for
 
 The *"Static reference note"* switch determines whether or not the reference note changes when you *"Shuffle"*. This might be useful when you want to train your relative pitch against a specific note, for example C3.
 
-If you are looking for an extra challenge, try turning on the *"Random number of random notes"* switch. This will hide the number of random notes from you, and will also change this number each time you *"Shuffle"*.
+If you are looking for an extra challenge, try turning on the *"Random number of random notes"* switch. This will hide the number of random notes from you, and will also change this number each time you *"Shuffle"*. The purpose of this switch is to help you get used to distinguishing the texture of 2-note chords, 3-note chords, 4-note chords, etc. without knowing this number in advance.
 
 ---
 
