@@ -43,11 +43,11 @@ You could play the on-screen piano using your computer keyboard. The lower octav
 
 This website was implemented using HTML, CSS with the Boostrap framework, and JavaScript. A lot of work was put into assuring a flawless experience on desktop as well as mobile devices, especially when it comes to interacting with the on-screen piano. In the end, the scrolling piano design was chosen for mobile because it offers the most compact, easy-to-use, as well as aesthetically pleasing design.
 
-<img src="Images/DesktopUI.png" alt="Desktop UI"/>
+<img src="Images/desktopUI-light.png" alt="Desktop UI - light mode"/>
 
 *Desktop UI - Light Mode*
 
-<img src="Images/MobileUI.png" alt="Mobile Dark UI" style="height: 500px"/>
+<img src="Images/mobileUI-dark.png" alt="Mobile UI - dark mode" style="height: 500px"/>
 
 *Mobile UI - Dark Mode*
 
