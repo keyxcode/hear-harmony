@@ -4,7 +4,7 @@ https://youtu.be/YyhchssUR-s
 
 ---
 
-### Description
+### Overview
 
 [**Hear Harmony**](https://keyxcode.github.io/hear-harmony/) was developed to help musicians improve their *relative pitch*. 
 
@@ -24,7 +24,7 @@ https://youtu.be/YyhchssUR-s
 
 ---
 
-### How to use
+### Description
 
 On the ***Train*** page, press *"Reference"*, carefully listen to it, then press *"Play"*, which plays from one to five random notes, depending on the number of notes you select. Next, play your guesses on the on-screen piano until you get all of them right.
 
