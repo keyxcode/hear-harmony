@@ -1,13 +1,12 @@
 # Hear Harmony
-### Video Demo: https://youtu.be/YyhchssUR-s
 
 ---
 
 ### Description
 
-[**Hear Harmony**](https://keyxcode.github.io/hear-harmony/) was developed to help musicians improve their *relative pitch*. 
+[**Hear Harmony**](https://keyxcode.github.io/hear-harmony/) was developed to help musicians improve their _relative pitch_.
 
-*Relative pitch* is the ability to identify one or many given musical notes by comparing them to a reference note. This can be developed through ear training.
+_Relative pitch_ is the ability to identify one or many given musical notes by comparing them to a reference note. This can be developed through ear training.
 
 ---
 
@@ -15,21 +14,21 @@
 
 <img src="Images/mainButtons.png" alt="Main buttons" style="height: 100px"/>
 
-*Main buttons*
+_Main buttons_
 
-On the ***Train*** page, press *"Reference"* to listen the reference note, which you could either choose yourself or let the program automatically pick for you. Then, press *"Play"*, which plays from one to five random notes, depending on the number of notes you select. Next, play your guesses on the on-screen piano until you get all of them right.
+On the **_Train_** page, press _"Reference"_ to listen the reference note, which you could either choose yourself or let the program automatically pick for you. Then, press _"Play"_, which plays from one to five random notes, depending on the number of notes you select. Next, play your guesses on the on-screen piano until you get all of them right.
 
-After you get the answer right, press *"Shuffle"* to get a new set of random notes. If the challenge is too difficult, you could press *"Answers"*, which reveals the notes to you.
+After you get the answer right, press _"Shuffle"_ to get a new set of random notes. If the challenge is too difficult, you could press _"Answers"_, which reveals the notes to you.
 
 <img src="Images/toggleSwitches.png" alt="Main buttons" style="height: 100px"/>
 
-*Toggle switches*
+_Toggle switches_
 
-The *"Prefer sharp spelling"* switch toggles between flat and sharp spelling for the on-screen note names.
+The _"Prefer sharp spelling"_ switch toggles between flat and sharp spelling for the on-screen note names.
 
-The *"Static reference note"* switch determines whether or not the reference note changes when you *"Shuffle"*. This might be useful when you want to train your ear against a specific note, for example F3.
+The _"Static reference note"_ switch determines whether or not the reference note changes when you _"Shuffle"_. This might be useful when you want to train your ear against a specific note, for example F3.
 
-If you are looking for an extra challenge, try turning on the *"Random number of random notes"* switch. This will hide the number of random notes from you, and will also change this number each time you *"Shuffle"*. The purpose of this switch is to help you get used to distinguishing the texture of 2-note chords, 3-note chords, 4-note chords, etc. without knowing this number in advance. More than once in the past I have asked myself when transcribing chords: "I think I heard 3 notes, but I'm not sure if that's all of them." This mode is designed to hopefully help with that feeling. 
+If you are looking for an extra challenge, try turning on the _"Random number of random notes"_ switch. This will hide the number of random notes from you, and will also change this number each time you _"Shuffle"_. The purpose of this switch is to help you get used to distinguishing the texture of 2-note chords, 3-note chords, 4-note chords, etc. without knowing this number in advance. More than once in the past I have asked myself when transcribing chords: "I think I heard 3 notes, but I'm not sure if that's all of them." This mode is designed to hopefully help with that feeling.
 
 ---
 
@@ -45,11 +44,11 @@ This website was implemented using HTML, CSS with the Boostrap framework, and Ja
 
 <img src="Images/desktopUI-light.png?" alt="Desktop UI - light mode"/>
 
-*Desktop UI - Light Mode*
+_Desktop UI - Light Mode_
 
 <img src="Images/mobileUI-dark.png?" alt="Mobile UI - dark mode" style="height: 500px"/>
 
-*Mobile UI - Dark Mode*
+_Mobile UI - Dark Mode_
 
 When it comes to JavaScript, two challenges I faced were how to organize the game logic, and how to implement the audio engine.
 
